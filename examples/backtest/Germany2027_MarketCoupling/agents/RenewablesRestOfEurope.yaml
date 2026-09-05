@@ -1,0 +1,74 @@
+Agents:
+  # Simplified: no per-country subsidy scheme researched for 9 countries (documented gap -
+  # unlike DE's real EEG/BNetzA-sourced FIT/MPVAR rates). Uses AMIRIS's own NoSupportTrader
+  # pattern (the same one its SimpleCoupled demo uses for a secondary zone) - a
+  # SupportPolicy with TsFit: 0 neutralises any actual subsidy payment, so renewables bid at
+  # their real marginal cost (~0) with no top-up, structurally valid but not a real subsidy
+  # model.
+  - Type: NoSupportTrader
+    Id: 9011
+    Attributes:
+      ShareOfRevenues: 0.0
+      ForecastError:
+        Mean: 0.0
+        StandardDeviation: 0.0
+
+  - Type: SupportPolicy
+    Id: 9090
+    Attributes:
+      SetSupportData:
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.0
+
+  # Wind onshore - 70,993 MW (real Eurostat 2023, 9 countries). Yield profile: real 2009
+  # weather (renewables.ninja), capacity-weighted blend across the 9 countries (Phase 33).
+  - Type: VariableRenewableOperator
+    Id: 9401
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 70993.096
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile_restofeurope_2027.csv"
+
+  # Wind offshore - 10,520 MW (real Eurostat 2023, 5 countries with real offshore capacity).
+  - Type: VariableRenewableOperator
+    Id: 9402
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 10519.9
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_offshore_profile_restofeurope_2027.csv"
+
+  # Solar PV - 83,421 MW (real Eurostat 2023, 9 countries; openfield/rooftop not split at
+  # this data granularity, modelled as one combined PV category).
+  - Type: VariableRenewableOperator
+    Id: 9403
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: PV
+      InstalledPowerInMW: 83421.005
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile_restofeurope_2027.csv"
+
+  # Hydro (all types combined) - 97,880 MW (real Eurostat 2023, 9 countries). DOCUMENTED
+  # SIMPLIFICATION: Eurostat's Hydro_total does not split dispatchable reservoir/pumped
+  # storage from weather-driven run-of-river, and no per-country breakdown was researched -
+  # modelled here as a flat 40% capacity factor (a commonly cited real-world average for
+  # mixed European hydro fleets), not a true weather-driven or dispatchable profile. Flagged
+  # for refinement (e.g. splitting into a proper GenericFlexibilityTrader storage component)
+  # in a future pass.
+  - Type: VariableRenewableOperator
+    Id: 9404
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 97880.144
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_profile_restofeurope_FLAT.csv"

@@ -1,0 +1,113 @@
+{
+  "AT": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 0.0,
+    "Natural_gas": 4562.139,
+    "Oil": 498.514,
+    "Nuclear": 0.0,
+    "Hydro_total": 14952.109,
+    "Wind_onshore": 3896.294,
+    "Wind_offshore": 0.0,
+    "Solar_PV": 6888.54,
+    "Biofuels_and_waste": 745.115
+  },
+  "BE": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 9.4,
+    "Natural_gas": 3728.9,
+    "Oil": 158.8,
+    "Nuclear": 3928.0,
+    "Hydro_total": 1429.1,
+    "Wind_onshore": 3192.2,
+    "Wind_offshore": 2261.8,
+    "Solar_PV": 8360.4,
+    "Biofuels_and_waste": 452.5
+  },
+  "CH": {
+    "year": null
+  },
+  "CZ": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 0.0,
+    "Natural_gas": 0.0,
+    "Oil": 0.0,
+    "Nuclear": 4290.0,
+    "Hydro_total": 2288.392,
+    "Wind_onshore": 342.5,
+    "Wind_offshore": 0.0,
+    "Solar_PV": 3250.961,
+    "Biofuels_and_waste": 0.0
+  },
+  "DK": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 0.0,
+    "Natural_gas": 1776.238,
+    "Oil": 1030.147,
+    "Nuclear": 0.0,
+    "Hydro_total": 7.091,
+    "Wind_onshore": 4821.733,
+    "Wind_offshore": 2469.1,
+    "Solar_PV": 3529.0,
+    "Biofuels_and_waste": 265.188
+  },
+  "FR": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 19.193,
+    "Natural_gas": 10878.066,
+    "Oil": 3779.715,
+    "Nuclear": 61400.0,
+    "Hydro_total": 26058.343,
+    "Wind_onshore": 21609.93,
+    "Wind_offshore": 1486.5,
+    "Solar_PV": 19749.307,
+    "Biofuels_and_waste": 1480.3
+  },
+  "NO": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 26.0,
+    "Natural_gas": 290.0,
+    "Oil": 21.0,
+    "Nuclear": 0.0,
+    "Hydro_total": 34291.0,
+    "Wind_onshore": 5064.0,
+    "Wind_offshore": 0.0,
+    "Solar_PV": 614.959,
+    "Biofuels_and_waste": 127.0
+  },
+  "NL": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 2714.06,
+    "Natural_gas": 17987.823,
+    "Oil": 70.25,
+    "Nuclear": 512.0,
+    "Hydro_total": 37.7,
+    "Wind_onshore": 6692.118,
+    "Wind_offshore": 4109.5,
+    "Solar_PV": 21956.638,
+    "Biofuels_and_waste": 1248.599
+  },
+  "PL": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 27017.4,
+    "Natural_gas": 4269.1,
+    "Oil": 378.7,
+    "Nuclear": 0.0,
+    "Hydro_total": 2410.409,
+    "Wind_onshore": 9343.321,
+    "Wind_offshore": 0.0,
+    "Solar_PV": 15078.2,
+    "Biofuels_and_waste": 1341.421
+  },
+  "SE": {
+    "year": "2023",
+    "Coal_and_manufactured_gases": 69.0,
+    "Natural_gas": 17.0,
+    "Oil": 3071.0,
+    "Nuclear": 7001.0,
+    "Hydro_total": 16406.0,
+    "Wind_onshore": 16031.0,
+    "Wind_offshore": 193.0,
+    "Solar_PV": 3993.0,
+    "Biofuels_and_waste": 3376.0
+  }
+}

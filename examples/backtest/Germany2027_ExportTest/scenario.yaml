@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_ExportTest"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, built on top of Germany2027_HeatPump2009_WithImport. EXPERIMENTAL EXPORT SINK: diagnosis of a midday price-bias pattern (AMIRIS running 25-45 EUR/MWh below Brainpool specifically during solar hours) found a real, coherent cause - at a diagnosed oversupply hour (2027-07-14 12:00), MPVAR-subsidised solar/wind were being curtailed while FIT-subsidised solar was not, and Germany had no way to relieve the domestic glut by exporting to neighbours, since only an ImportTrader was ever built (no ExportTrader agent type exists in AMIRIS's schema - confirmed by checking). This build adds an experimental 'virtual export sink': a GenericFlexibilityTrader (agent 703, added to Storage.yaml) configured as a one-way, never-discharging device (NetDischargingPowerInMW: 0), following the real pattern AMIRIS's own SectorCoupling demo uses for one-way 'Heat Pump' and 'Load Shifting' devices. Charging ceiling set to 30,000 MW, mirroring the calibrated import ceiling as a symmetric first-pass assumption; EnergyContentUpperLimitInMWH set high enough (262,800,000 MWh) to never actually bind. UNVALIDATED going in: whether AMIRIS's MIN_SYSTEM_COST assessment gives a device that can never discharge any real incentive to charge at all was untested before this run - checked directly against the simulation output, not assumed. All other inputs are unchanged from Germany2027_HeatPump2009_WithImport."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

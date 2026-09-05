@@ -1,0 +1,89 @@
+AgentGroups:
+  - &exchange 1
+  - &carbonMarket 3
+  - &fuelsMarket 4  
+  - &builders  [2004]
+  - &traders   [1004]
+  - &operators [504]
+
+Contracts:
+#################################
+# -- PlantBuildingManagement -- #
+#################################
+  - SenderId: *builders
+    ReceiverId: *operators
+    ProductName: PowerPlantPortfolio
+    FirstDeliveryTime: -60
+    Every: 1 year
+
+#################
+# -- Bidding -- #
+#################
+  - SenderId: *exchange
+    ReceiverId: *traders
+    ProductName: GateClosureInfo
+    FirstDeliveryTime: -30
+    Every: 1 hour
+    
+  - SenderId: *traders
+    ReceiverId: *operators
+    ProductName: GateClosureForward
+    FirstDeliveryTime: -9
+    Every: 1 hour    
+
+  - SenderId: *operators
+    ReceiverId: *fuelsMarket
+    ProductName: FuelPriceRequest
+    FirstDeliveryTime: -3
+    Every: 1 hour
+    
+  - SenderId: *operators
+    ReceiverId: *carbonMarket
+    ProductName: Co2PriceRequest
+    FirstDeliveryTime: -3
+    Every: 1 hour
+
+  - SenderId: *fuelsMarket
+    ReceiverId: *operators
+    ProductName: FuelPrice
+    FirstDeliveryTime: -2
+    Every: 1 hour
+
+  - SenderId: *carbonMarket
+    ReceiverId: *operators
+    ProductName: Co2Price
+    FirstDeliveryTime: -2
+    Every: 1 hour
+
+  - SenderId: *operators
+    ReceiverId: *traders
+    ProductName: MarginalCost
+    FirstDeliveryTime: -1
+    Every: 1 hour
+
+  - SenderId: *traders
+    ReceiverId: *exchange
+    ProductName: Bids
+    FirstDeliveryTime: 0
+    Every: 1 hour
+    
+####################
+# -- Evaluation -- #
+####################  
+  - SenderId: *exchange
+    ReceiverId: *traders
+    ProductName: Awards
+    FirstDeliveryTime: 4
+    Every: 1 hour
+
+  - SenderId: *traders
+    ReceiverId: *operators
+    ProductName: DispatchAssignment
+    FirstDeliveryTime: 5
+    Every: 1 hour
+    
+  - SenderId: *traders
+    ReceiverId: *operators
+    ProductName: Payout
+    FirstDeliveryTime: 6
+    Every: 1 hour

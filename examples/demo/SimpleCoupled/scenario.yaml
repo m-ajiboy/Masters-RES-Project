@@ -1,0 +1,38 @@
+Metadata:
+  runId: "SimpleCoupled"
+  description: "Simple AMIRIS scenario for a single day with two market zones A and B"
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-04-20"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2020-12-30_23:58:00
+    StopTime: 2021-01-01_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/**.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas"
+          OEONearestConcept: OEO_00000292
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['Undefined', 'PVRooftop', 'WindOn']
+  MarketZone:
+    Values: ['DE', 'FR', 'PL', 'AT', 'BE', 'NL', 'NO', 'LU', 'SE', 'DKW', 'DKO', 'CZ', 'CH', 'A', 'B']

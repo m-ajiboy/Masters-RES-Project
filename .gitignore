@@ -1,0 +1,21 @@
+# Python virtual environment and caches
+py313env/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# AMIRIS simulation outputs (large, regenerable by re-running the scenario)
+**/result_*/
+**/result/
+*.pb
+
+# Secrets - never commit API tokens
+Token.txt
+
+# Office lock/temp files
+~$*
+~WRL*.tmp
+
+# OS/editor
+.DS_Store
+Thumbs.db

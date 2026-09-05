@@ -1,0 +1,13 @@
+Agents:
+  # Rest-of-Europe aggregate demand - real annual total (1,200,341,335 MWh, Eurostat 2023 +
+  # Switzerland/ENTSO-E, 10 countries, FROZEN across all years - no future-year real
+  # Rest-of-Europe demand data exists), shaped using Germany's OWN REAL 2029 demand pattern
+  # (Phase 38 - re-derived from Germany2029_Feb29DropFix's own already-correctly-redated
+  # demand file, not by redating 2027's derived ROE file directly, to avoid re-introducing a
+  # Phase-28-style weekday-misalignment risk). See build_restofeurope_yeardata.py.
+  - Type: DemandTrader
+    Id: 9500
+    Attributes:
+      Loads:
+        - ValueOfLostLoad: 3000.0
+          DemandSeries: "./timeseries/load_restofeurope_2029_shapeFromDE.csv"

@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2027_MarketCoupling"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - the FIRST MARKET-COUPLING BUILD (Phase 34), built on top of Germany2027_Feb29DropFix. Converts the single-zone DE market to a genuine two-zone coupled market (DayAheadMarketMultiZone + a MarketCoupling coordinator agent), following AMIRIS's own real, working two-zone template (examples/demo/SimpleCoupled) - per the Phase 32 scoping decision, one simplified aggregate 'Rest of Europe' (ROE) zone first, escalating to real named neighbour zones only if this does not meaningfully improve correlation. The old one-way ImportTrader/30,000 MW-ceiling mechanism is RETIRED here, replaced entirely by the coupling result - Germany2027_Feb29DropFix is kept as the pre-coupling comparison baseline, unmodified. ROE zone's demand, generation capacity, renewable yield profiles, and fuel prices are all real, sourced data (Phase 33: Eurostat for demand/capacity, renewables.ninja for capacity-weighted 2009 wind/solar profiles, Germany's own real price series reused for internationally-traded coal/gas/oil, a real NEI/EUCG 2023 figure for nuclear) - see examples/backtest/RestOfEurope2023/ for the full sourcing trail. Two remaining, explicitly flagged placeholders pending ENTSO-E's ongoing outage (still down as of this build, 3-hourly cron retry active): (1) the DE<->ROE transmission capacity is a FLAT 30,000 MW in both directions, reusing this project's own already-calibrated import ceiling as a reasonable starting estimate, NOT real cross-border NTC data; (2) Switzerland is excluded from the ROE aggregate entirely (Eurostat does not cover it - confirmed directly, not a fetch bug), pending an ENTSO-E backfill. ROE's hydro (97,880 MW) is modelled as a flat 40% capacity factor, since Eurostat's Hydro_total does not split dispatchable reservoir/pumped storage from weather-driven run-of-river. ROE's renewables use no real per-country subsidy scheme (not researched for 9 countries) - AMIRIS's own NoSupportTrader pattern is used instead (zero FIT, structurally valid, not a real subsidy model). Every DE-zone mechanism (demand, storage, electrolysis, e-mobility, subsidy rates) is otherwise completely unchanged from Germany2027_Feb29DropFix."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined']
+  MarketZone:
+    Values: ['DE', 'ROE']

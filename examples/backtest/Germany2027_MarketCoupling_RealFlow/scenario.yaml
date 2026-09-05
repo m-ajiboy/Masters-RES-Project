@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2027_MarketCoupling_RealFlow"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - the SECOND MARKET-COUPLING BUILD (Phase 36), built on top of Germany2027_MarketCoupling (Phase 34). Replaces Phase 34's flat 30,000 MW transmission-capacity placeholder with a real, flow-data-grounded estimate: the 98th percentile of real 2023 ENTSO-E hourly cross-border physical flow (Phase 35), summed across the 10 real available borders (AT, BE, CH, CZ, DK_1, DK_2, FR, NL, NO_2, PL), giving 21,593 MW (DE->ROE) and 22,012 MW (ROE->DE) - genuinely more constraining than Phase 34's placeholder, not an arbitrary reused number. Documented caveat: physical flow is not the same as true NTC (net transfer capacity) - flow reflects what actually moved given prices/weather/availability, not the physical limit - but this is a real, grounded improvement over Phase 34's placeholder, using the same physical-flow-as-NTC-proxy approach already decided in Phase 32's scoping. SE_4 is excluded (Phase 35's one documented flow-fetch gap) - a genuine, flagged undercount by that border's real share, not silently patched. Every other mechanism (ROE's demand, capacity, renewable profiles, fuel prices, flat 40% hydro capacity factor, zero-subsidy NoSupportTrader renewables, and DE-zone mechanisms) is completely unchanged from Germany2027_MarketCoupling - ROE storage/subsidy realism remains a separate, not-yet-attempted follow-up. Germany2027_MarketCoupling (Phase 34, placeholder-based) and Germany2027_Feb29DropFix (pre-coupling baseline) are both kept fully unmodified for comparison."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined']
+  MarketZone:
+    Values: ['DE', 'ROE']

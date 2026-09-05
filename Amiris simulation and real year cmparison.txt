@@ -1,0 +1,71 @@
+"""
+Compare AMIRIS-simulated day-ahead price against real historical price.
+
+Usage:
+    python compare_price.py --sim result_Germany2018/DayAheadMarketSingleZone.csv \
+                             --real historical_price_2018.csv --year 2018
+"""
+import argparse
+import pandas as pd
+
+
+def load_simulated(path: str) -> pd.S
+    df = pd.read_csv(path, sep=";")
+    df["TimeStep"] = pd.to_datetime(d
+    df = df.set_index("TimeStep")
+    return df["ElectricityPriceInEURp
+
+
+def load_real(path: str, timestamp_col: str, price_col: str) -> pd.Series:
+    """Adjust timestamp_col / price_cnloaded
+    SMARD/ENTSO-E export actually calls its columns."""
+    df = pd.read_csv(path)
+    df[timestamp_col] = pd.to_datetime(df[timestamp_col])
+    df = df.set_index(timestamp_col)
+    return df[price_col].rename("real")
+
+
+def compare(sim: pd.Series, real: pd.
+    joined = pd.concat([sim, real], axis=1).dropna()
+    joined["error"] = joined["simulat
+    return joined
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sim", requ
+    parser.add_argument("--real", required=True)
+    parser.add_argument("--real-time-
+    parser.add_argument("--real-price-col", default="Day-ahead Price [EUR/MWh]")
+    args = parser.parse_args()
+
+    sim = load_simulated(args.sim)
+    real = load_real(args.real, args.real_time_col, args.real_price_col)
+    joined = compare(sim, real)
+
+    mae = joined["error"].abs().mean(
+    rmse = (joined["error"] ** 2).mean() ** 0.5
+    corr = joined["simulated"].corr(j
+
+    print(f"Hours compared: {len(join
+    print(f"MAE:  {mae:.2f} EUR/MWh")
+    print(f"RMSE: {rmse:.2f} EUR/MWh"
+    print(f"Correlation: {corr:.3f}")
+
+    joined.to_csv("price_comparison.csv", sep=";")
+
+    try:
+        import matplotlib.pyplot as p
+
+        joined[["simulated", "real"]]0.8)
+        plt.ylabel("EUR/MWh")
+        plt.title("AMIRIS simulated v
+        plt.tight_layout()
+        plt.savefig("price_comparison
+        print("Saved plot to price_comparison.png")
+    except ImportError:
+        print("matplotlib not installed — skipping plot (pip install matplotlib)")
+
+
+if __name__ == "__main__":
+    main()

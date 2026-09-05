@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_CyclingCostTest"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - a CYCLING-COST SENSITIVITY TEST, built on top of Germany2027_Feb29DropFix (this project's current best 2027 build). Tests whether giving conventional plants a real, non-zero start-up/cycling cost reduces AMIRIS's excess negative-price frequency/depth relative to Brainpool's real forecast (which rarely goes negative at all - see the Phase 29 price-floor investigation). Every prior build left CyclingCostInEURperMW at 0.0 (AMIRIS's own placeholder default) for every fuel type. Decompiled AMIRIS's actual engine (amiris-core_4.1.2) to confirm this parameter is genuinely used (agents.conventionals.PowerPlant.calcSpecificCostOfLoadChangeInEURperMW): it adds cost specifically when a plant transitions from an OFF state (previous load level 0) to producing again, i.e. a start-up cost - it does NOT apply a cost to an already-running plant continuing to run through low or negative prices, so this is a narrower mechanism than a general 'discourage negative bidding' lever. Sourced real values from Roques/Hach et al., 'Start-up costs of thermal power plants in markets with increasing shares of variable renewable generation' (Nature Energy 2017 / DIW Discussion Paper 1540): EUR50,000 for an 800 MW lignite block (62.5 EUR/MW, rounded to 65), EUR70,000 for an 800 MW hard coal block (87.5 EUR/MW, rounded to 85), EUR60,000 for a 500 MW CCGT block (120 EUR/MW). Oil/Other-Fossil has no direct sourced figure - documented assumption using the CCGT value (120 EUR/MW) as the closest real reference. Only Conventionals.yaml's four CyclingCostInEURperMW values change; every other mechanism (demand, import, storage, electrolysis, e-mobility, subsidy rates) is unchanged from Germany2027_Feb29DropFix. See examples/backtest/Germany2027_Feb29DropFix for the unmodified baseline."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

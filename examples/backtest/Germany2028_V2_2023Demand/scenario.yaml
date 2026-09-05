@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2028_V2_2023Demand"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2028 - a DEMAND-SOURCE-YEAR ISOLATION TEST, built on top of Germany2028. The ceiling sweep (see progress report) found the calibrated 30,000 MW import ceiling behaves very differently out-of-sample, raising the question of whether the 2016-base demand-shape choice (Phase 17, chosen for its weather match to 2009) is itself part of what's driving the correlation loss, separate from the import question. This build swaps the inflexible-base demand component back to the ORIGINAL V2 recipe (real 2023 ENTSO-E load data, weekday-aligned per Phase 11's method: shifted 6 days for 2028) while keeping every other mechanism identical to Germany2028 (real 2009 heat-pump temperature, flexible electrolysis/e-mobility agents, 30,000 MW import ceiling, 11-country blended import price) - isolating the demand-source-year variable specifically. See build_v2_2023demand_multiyear.py."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2027-12-31_23:58:00
+    StopTime: 2028-12-30_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

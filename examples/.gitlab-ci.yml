@@ -1,0 +1,53 @@
+image: python:3.9
+
+stages:
+  - changelog
+  - lint
+  - build
+
+# Ensure CHANGELOG.md was updated
+changelog:
+  stage: changelog
+  cache: [ ] # do not use cached files here, as those are not required
+  before_script: [ ] # do not install project dependencies
+  script:
+    - git fetch --no-tags
+    - 'echo "Base is: $CI_MERGE_REQUEST_DIFF_BASE_SHA"'
+    - CHANGELOG_CHANGED=$(git diff --name-only $CI_MERGE_REQUEST_DIFF_BASE_SHA...HEAD CHANGELOG.md)
+    - 'if [[ "CHANGELOG.md" == $CHANGELOG_CHANGED ]]; then exit 0; else echo "No changes found in CHANGELOG.md compared to target branch."; exit 1; fi'
+  only: [ merge_requests ]
+
+
+.lint:
+  stage: lint
+  cache: [ ] # do not use cached files here, as those are not required
+  before_script: [ ] # do not install project dependencies
+  only: [ merge_requests, dev, main ]
+
+#reuse:
+#  extends: .lint
+#  image:
+#    name: fsfe/reuse:latest
+#    entrypoint: [ "" ]
+#  script: [ "reuse lint" ]
+
+
+packaging:
+  stage: build
+  script:
+    - pip3 install fameio
+    - mkdir binaries
+    - cd demo/Simple; makeFameRunConfig -f scenario.yaml -o ../../binaries/simple.pb
+    - cd ../SimpleCoupled; makeFameRunConfig -f scenario.yaml -o ../../binaries/simpleCoupled.pb
+    - cd ../..
+    - cd backtest/Austria2019; makeFameRunConfig -f scenario.yaml -o ../../binaries/austria2019.pb
+    - cd ../Germany2015; makeFameRunConfig -f scenario.yaml -o ../../binaries/germany2015.pb
+    - cd ../Germany2016; makeFameRunConfig -f scenario.yaml -o ../../binaries/germany2016.pb
+    - cd ../Germany2017; makeFameRunConfig -f scenario.yaml -o ../../binaries/germany2017.pb
+    - cd ../Germany2018; makeFameRunConfig -f scenario.yaml -o ../../binaries/germany2018.pb
+    - cd ../Germany2019; makeFameRunConfig -f scenario.yaml -o ../../binaries/germany2019.pb
+
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - binaries

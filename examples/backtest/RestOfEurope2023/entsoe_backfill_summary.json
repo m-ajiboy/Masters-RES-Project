@@ -1,0 +1,33 @@
+{
+  "flows_MWh_annual_total": {
+    "DE_to_AT": 10533850.160999998,
+    "AT_to_DE": 7549815.575999999,
+    "DE_to_BE": 2511586.214404,
+    "BE_to_DE": 3550377.83,
+    "DE_to_CH": 8792082.577,
+    "CH_to_DE": 5046410.9135,
+    "DE_to_CZ": 6425820.475,
+    "CZ_to_DE": 7504658.3100000005,
+    "DE_to_DK_1": 2467556.4725,
+    "DK_1_to_DE": 6184663.885,
+    "DE_to_DK_2": 647461.90625,
+    "DK_2_to_DE": 2900684.6925,
+    "DE_to_FR": 3700546.6644999995,
+    "FR_to_DE": 12951690.97025,
+    "DE_to_NO_2": 1636242.4975,
+    "NO_2_to_DE": 6169171.805,
+    "DE_to_NL": 7443284.72,
+    "NL_to_DE": 9355427.350000001,
+    "DE_to_PL": 8175738.92,
+    "PL_to_DE": 702409.41,
+    "DE_to_SE_4": null,
+    "SE_4_to_DE": null
+  },
+  "ch_annual_demand_GWh": 61070.97078,
+  "ch_capacity_MW": {
+    "Hydro Pumped Storage": 6696.7,
+    "Hydro Run-of-river and poundage": 604.5,
+    "Hydro Water Reservoir": 5588.0,
+    "Nuclear": 2970.0
+  }
+}

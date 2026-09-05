@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_Feb29DropFix"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - a BUG-FIX build, built on top of Germany2027_FlexEMobility. Re-running the granular breakdown on the out-of-sample years (2028/2029) found a genuine weekday-alignment bug in Phase 17's 2016-base demand source, present in this project's 'current best' 2027 build ever since: dropping Feb-29-2016 (a date in the MIDDLE of the leap-year source) to get a clean 365-day series creates a 2-real-day gap between Feb 28 and Mar 1, silently shifting every day from March 1 onward (84% of the year) one weekday off from its intended target. Verified directly: array position 59 (meant to represent 2027-03-01, a Monday) actually contained real 2016-03-01 data - a Tuesday. FIX: drop Dec 31 instead of Feb 29 (the same technique Germany2028's build already used successfully, for an unrelated reason) - Dec 31 sits at the END of the array, so removing it shortens the tail without any mid-year discontinuity. The same weekday shift (0 days - both 2016-01-01 and 2027-01-01 are Fridays) remains correct, now genuinely holding for the whole year, verified: the fixed inflexible-base component's weekday pattern now cleanly matches the raw 2016 source's real pattern (Mon-Fri high and consistent, Sat lower, Sun lowest) for the first time. Only the inflexible-base demand component changes; heat pumps, electrolysis, e-mobility, import, and every other mechanism are unchanged from Germany2027_FlexEMobility. See build_demand_feb29fix.py, build_combined_feb29fix.py."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

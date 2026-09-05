@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_Demand2016Base"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, built on top of Germany2027_ImportBlended. 2016-BASE DEMAND EXPERIMENT: the inflexible-base demand component (604.85 of 656.32 TWh, ~92% of total demand) previously rescaled real 2023 German load data. A direct comparison of real hourly temperature for every year we have real German demand data for (2015-2019, 2023) against real 2009 (Brainpool's own confirmed weather-year basis) found 2023 was the WORST weather match of all six candidates (monthly-pattern RMSE 3.37C, heating-degree-day deficit -508), while 2016 was the closest match (RMSE 2.31C, HDD deficit only -40) - see fetch_candidate_years_temperature.py, compare_candidate_years_to_2009.py. 2016 is also a structurally 'normal' pre-COVID, pre-energy-crisis year, unlike 2023. This build rescales real 2016 German load data (examples/backtest/Germany2016/timeseries/load.csv, AMIRIS's own historical example) instead - see build_2027_demand_v2_2016base.py. A genuine coincidence: both 2016-01-01 and 2027-01-01 are Fridays, so no weekday shift was needed at all (unlike the 2023 source, which needed a 5-day shift). One pre-existing gap in AMIRIS's own 2016 file (Dec 31 2016 entirely missing) was filled with a nearest-neighbour copy of Dec 30 2016, documented in the build script. Heat pumps (real 2009 temperature), electrolysis, e-mobility, the 30,000 MW import ceiling, and the 11-country blended import price are all unchanged from Germany2027_ImportBlended."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

@@ -1,0 +1,33 @@
+Agents:
+  - Type: DayAheadMarketSingleZone
+    Id: 1
+    Attributes:
+      Clearing: &clearingParameters
+        DistributionMethod: SAME_SHARES
+      GateClosureInfoOffsetInSeconds: 31
+
+  - Type: CarbonMarket
+    Id: 3
+    Attributes:
+      OperationMode: FIXED
+      Co2Prices: "./timeseries/co2_price.csv"
+
+  - Type: FuelsMarket
+    Id: 4
+    Attributes:
+      FuelPrices:
+        - FuelType: OIL
+          Price: 65.0
+          ConversionFactor: 0.6141751628 #conversion from Brent oil price to MWt (megawatts thermal)
+        - FuelType: HARD_COAL
+          Price: 5.0
+          ConversionFactor: 1.0
+        - FuelType: NATURAL_GAS
+          Price: "./timeseries/natural_gas_price.csv"
+          ConversionFactor: 1.0
+
+  - Type: SensitivityForecaster
+    Id: 6
+    Attributes:
+      Clearing: *clearingParameters
+      ForecastPeriodInHours: 168

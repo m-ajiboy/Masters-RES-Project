@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_V1WithImport_Fix"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, built from Energy Brainpool 2027 input data plus documented AMIRIS-own/EEG-researched gap-fills (see build_2027_*.py). With-import FIXED version: replaces the original ImportTrader's real-2023-net-flow-shaped AvailableEnergyForImport with a flat, constant ceiling of 37,649.98 MW every hour (the real observed peak single-hour gross import into DE_LU in 2023), decoupling import availability from any historical timing pattern - diagnosis showed 64% of shortage hours in the original with-import build had zero import available purely by 2023-timing coincidence (see build_2027_import_fix.py). A calibration sweep (20,000/25,000/30,000/37,650 MW, see build_2027_import_moderate.py and compare_2027_import_ceiling_sweep.py), run against the V2 build, found that a smaller 30,000 MW ceiling improved V2's fit further - but tested against THIS V1 build, 30,000 MW is NOT enough: shortage hours rise (73->164) and bias worsens (+7.42->+39.46), because V1's demand shape (peak 138 GW, well above Brainpool's own 119 GW stated peak) needs more import headroom to stay covered. V1 therefore keeps the full 37,649.98 MW ceiling as its final, calibrated value - a genuine finding that the needed import buffer depends on how realistic the underlying demand shape already is. No annual import total is targeted; the realized cleared volume is a fully endogenous market outcome. ImportCostInEURperMWH (real 2023 French day-ahead price) is unchanged. Demand V1: pure BDEW Standardlastprofil applied to the whole combined demand total (see build_2027_demand_v1_bdew.py)."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

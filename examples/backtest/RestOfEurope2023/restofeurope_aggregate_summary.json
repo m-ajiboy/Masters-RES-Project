@@ -1,0 +1,164 @@
+{
+  "covered_countries": [
+    "AT",
+    "BE",
+    "CZ",
+    "DK",
+    "FR",
+    "NO",
+    "NL",
+    "PL",
+    "SE",
+    "CH"
+  ],
+  "missing_countries": [],
+  "source": "Eurostat nrg_cb_e (demand, FC) and nrg_inf_epc (capacity, CAP_NET_ELC), real 2023 annual data; Switzerland (CH) via ENTSO-E Transparency Platform, real 2023 annual data",
+  "total_demand_GWh": 1200341.3347800002,
+  "capacity_MW_by_tech": {
+    "Coal_and_manufactured_gases": 29855.053,
+    "Natural_gas": 43509.266,
+    "Oil": 9008.126,
+    "Nuclear": 80101.0,
+    "Hydro_total": 110769.344,
+    "Wind_onshore": 70993.096,
+    "Wind_offshore": 10519.9,
+    "Solar_PV": 83421.005,
+    "Biofuels_and_waste": 9036.123
+  },
+  "per_country_demand_GWh": {
+    "AT": 64476.931,
+    "BE": 75629.6,
+    "CZ": 56850.161,
+    "DK": 31651.459,
+    "FR": 407334.23,
+    "NO": 126205.458,
+    "NL": 106247.968,
+    "PL": 147581.557,
+    "SE": 123293.0,
+    "CH": 61070.97078
+  },
+  "per_country_capacity_MW": {
+    "AT": {
+      "Coal_and_manufactured_gases": 0.0,
+      "Natural_gas": 4562.139,
+      "Oil": 498.514,
+      "Nuclear": 0.0,
+      "Hydro_total": 14952.109,
+      "Wind_onshore": 3896.294,
+      "Wind_offshore": 0.0,
+      "Solar_PV": 6888.54,
+      "Biofuels_and_waste": 745.115
+    },
+    "BE": {
+      "Coal_and_manufactured_gases": 9.4,
+      "Natural_gas": 3728.9,
+      "Oil": 158.8,
+      "Nuclear": 3928.0,
+      "Hydro_total": 1429.1,
+      "Wind_onshore": 3192.2,
+      "Wind_offshore": 2261.8,
+      "Solar_PV": 8360.4,
+      "Biofuels_and_waste": 452.5
+    },
+    "CZ": {
+      "Coal_and_manufactured_gases": 0.0,
+      "Natural_gas": 0.0,
+      "Oil": 0.0,
+      "Nuclear": 4290.0,
+      "Hydro_total": 2288.392,
+      "Wind_onshore": 342.5,
+      "Wind_offshore": 0.0,
+      "Solar_PV": 3250.961,
+      "Biofuels_and_waste": 0.0
+    },
+    "DK": {
+      "Coal_and_manufactured_gases": 0.0,
+      "Natural_gas": 1776.238,
+      "Oil": 1030.147,
+      "Nuclear": 0.0,
+      "Hydro_total": 7.091,
+      "Wind_onshore": 4821.733,
+      "Wind_offshore": 2469.1,
+      "Solar_PV": 3529.0,
+      "Biofuels_and_waste": 265.188
+    },
+    "FR": {
+      "Coal_and_manufactured_gases": 19.193,
+      "Natural_gas": 10878.066,
+      "Oil": 3779.715,
+      "Nuclear": 61400.0,
+      "Hydro_total": 26058.343,
+      "Wind_onshore": 21609.93,
+      "Wind_offshore": 1486.5,
+      "Solar_PV": 19749.307,
+      "Biofuels_and_waste": 1480.3
+    },
+    "NO": {
+      "Coal_and_manufactured_gases": 26.0,
+      "Natural_gas": 290.0,
+      "Oil": 21.0,
+      "Nuclear": 0.0,
+      "Hydro_total": 34291.0,
+      "Wind_onshore": 5064.0,
+      "Wind_offshore": 0.0,
+      "Solar_PV": 614.959,
+      "Biofuels_and_waste": 127.0
+    },
+    "NL": {
+      "Coal_and_manufactured_gases": 2714.06,
+      "Natural_gas": 17987.823,
+      "Oil": 70.25,
+      "Nuclear": 512.0,
+      "Hydro_total": 37.7,
+      "Wind_onshore": 6692.118,
+      "Wind_offshore": 4109.5,
+      "Solar_PV": 21956.638,
+      "Biofuels_and_waste": 1248.599
+    },
+    "PL": {
+      "Coal_and_manufactured_gases": 27017.4,
+      "Natural_gas": 4269.1,
+      "Oil": 378.7,
+      "Nuclear": 0.0,
+      "Hydro_total": 2410.409,
+      "Wind_onshore": 9343.321,
+      "Wind_offshore": 0.0,
+      "Solar_PV": 15078.2,
+      "Biofuels_and_waste": 1341.421
+    },
+    "SE": {
+      "Coal_and_manufactured_gases": 69.0,
+      "Natural_gas": 17.0,
+      "Oil": 3071.0,
+      "Nuclear": 7001.0,
+      "Hydro_total": 16406.0,
+      "Wind_onshore": 16031.0,
+      "Wind_offshore": 193.0,
+      "Solar_PV": 3993.0,
+      "Biofuels_and_waste": 3376.0
+    },
+    "CH": {
+      "Hydro_total": 12889.2,
+      "Nuclear": 2970.0,
+      "Coal_and_manufactured_gases": 0,
+      "Natural_gas": 0,
+      "Oil": 0,
+      "Wind_onshore": 0,
+      "Wind_offshore": 0,
+      "Solar_PV": 0,
+      "Biofuels_and_waste": 0
+    }
+  },
+  "net_flows_MWh_2023": {
+    "AT": 2984034.584999999,
+    "BE": -1038791.6155960001,
+    "CH": 3745671.6635,
+    "CZ": -1078837.835000001,
+    "DK_1": -3717107.4124999996,
+    "DK_2": -2253222.78625,
+    "FR": -9251144.30575,
+    "NO_2": -4532929.307499999,
+    "NL": -1912142.6300000018,
+    "PL": 7473329.51
+  }
+}

@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_FlexEMobility"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, built on top of Germany2027_FlexElectrolysis (2016-base demand, real 2009 heat-pump temperature, 30,000 MW import ceiling, 11-country blended import price, price-responsive electrolysis agent 704). PRICE-RESPONSIVE E-MOBILITY (SMART CHARGING) EXPERIMENT: until now, e-mobility (17.81 of 656.32 TWh) was baked into the combined demand series as an assumed, fixed evening-peaked daily shape (matching typical UNMANAGED/home-dominant charging). This build pulls it out into its own separate agent (agents/EMobility.yaml, Id 705) instead, following the exact same proven pattern used for electrolysis (Phase 20): a GenericFlexibilityTrader with NetDischargingPowerInMW=0 (one-way, no vehicle-to-grid), a constant NetInflowPowerInMW=-2032.78 MW draining an internal buffer (representing the mandatory annual driving-related charging demand), forcing periodic recharging, but MAX_PROFIT lets it choose WHEN within the buffer's slack - i.e. genuine 'smart charging' instead of the fixed unmanaged shape used until now. GrossChargingPowerInMW=6000 MW (~34% average capacity factor, deliberately kept above the old unmanaged profile's own peak of 4,835 MW) and a 40,000 MWh buffer (~0.8 days of average draw, deliberately smaller than electrolysis's 2.4-day buffer since real EV drivers need their cars, unlike an industrial electrolyser) are both documented, round-number assumptions - no real fleet-level smart-charging capacity figure for 2027 exists to source from. Annual electricity total is unchanged (still 17.807 TWh); only the timing is now free to shift toward cheap/negative-price hours. The remaining demand series (examples/backtest/Germany2027_FlexEMobility/timeseries/load_v2_2016base_noEV_noelectrolysis.csv) excludes both electrolysis and e-mobility and sums to 623.54 TWh - see build_2027_demand_v2_2016base_noEV.py."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

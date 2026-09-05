@@ -1,0 +1,22 @@
+AgentGroups:
+  - &exchange 111
+  - &demand 10011
+
+Contracts:
+  - SenderId: *exchange
+    ReceiverId: *demand
+    ProductName: GateClosureInfo
+    FirstDeliveryTime: -30
+    Every: 1 hour
+  
+  - SenderId: *demand
+    ReceiverId: *exchange
+    ProductName: Bids
+    FirstDeliveryTime: 0
+    Every: 1 hour
+
+  - SenderId: *exchange
+    ReceiverId: *demand
+    ProductName: Awards
+    FirstDeliveryTime: 4
+    Every: 1 hour

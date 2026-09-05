@@ -1,0 +1,108 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  # Lignite - 12.202 GW (Brainpool 2028). Efficiency/opex/markup: AMIRIS own (Germany2019),
+  # unchanged from the 2027 build (no re-tuning). CO2 factor: Brainpool's, unchanged (static
+  # across years in Brainpool's emission_factor sheet).
+  - Type: PredefinedPlantBuilder
+    Id: 2001
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: LIGNITE
+        SpecificCo2EmissionsInTperMWH: 0.407
+        OutageFactor: "./timeseries/lignite_outage.csv"
+        MustRunFactor: "./timeseries/lignite_must_run.csv"
+        OpexVarInEURperMWH: 2.0
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.3108
+        Maximal: 0.45
+      BlockSizeInMW: 500.0
+      InstalledPowerInMW: 12202.0
+
+  # Hard Coal - 4.083 GW (Brainpool 2028). CO2 factor: Brainpool (0.338 t/MWh), unchanged.
+  - Type: PredefinedPlantBuilder
+    Id: 2002
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: HARD_COAL
+        SpecificCo2EmissionsInTperMWH: 0.338
+        OutageFactor: "./timeseries/hard_coal_outage.csv"
+        MustRunFactor: "./timeseries/hard_coal_must_run.csv"
+        OpexVarInEURperMWH: 2.5
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.339
+        Maximal: 0.492
+      BlockSizeInMW: 300.0
+      InstalledPowerInMW: 4083.0
+
+  # Natural Gas - 38.147 GW (Brainpool 2028), modelled as ONE combined block (CCGT+OCGT
+  # merged - unchanged convention from 2027).
+  - Type: PredefinedPlantBuilder
+    Id: 2003
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS
+        SpecificCo2EmissionsInTperMWH: 0.202
+        OutageFactor: "./timeseries/natural_gas_outage.csv"
+        MustRunFactor: "./timeseries/natural_gas_must_run.csv"
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.516
+        Maximal: 0.617
+      BlockSizeInMW: 200.0
+      InstalledPowerInMW: 38147.0
+
+  # Oil + Other Fossil combined - 1.328 + 8.25 = 9.578 GW (Brainpool 2028). Same merge
+  # convention as 2027.
+  - Type: PredefinedPlantBuilder
+    Id: 2005
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: OIL
+        SpecificCo2EmissionsInTperMWH: 0.266
+        OutageFactor: 0.07
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.311
+        Maximal: 0.397
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 9578.0
+
+  - Type: ConventionalTrader # LIGNITE
+    Id: 1001
+    Attributes:
+      minMarkup: -60
+      maxMarkup: 0
+  - Type: ConventionalTrader # HARD_COAL
+    Id: 1002
+    Attributes:
+      minMarkup: -15
+      maxMarkup: 5
+  - Type: ConventionalTrader # NATURAL_GAS (combined)
+    Id: 1003
+    Attributes:
+      minMarkup: -10
+      maxMarkup: 10
+  - Type: ConventionalTrader # OIL (+ Other Fossil)
+    Id: 1005
+    Attributes:
+      minMarkup: 0
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator # LIGNITE
+    Id: 501
+  - Type: ConventionalPlantOperator # HARD_COAL
+    Id: 502
+  - Type: ConventionalPlantOperator # NATURAL_GAS (combined)
+    Id: 503
+  - Type: ConventionalPlantOperator # OIL (+ Other Fossil)
+    Id: 505

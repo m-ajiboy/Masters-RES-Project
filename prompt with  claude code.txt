@@ -1,0 +1,47 @@
+ I have a meeting soon with my lecturer regarding the amiris input file request, I do not know what he will ask but I need to understand all the input required well. I have some questions for you. The hourly load is clear. for B, the conventional fleet, let us take for instance, Nuclear, the installed capacity, efficiency, is it for the entire nuclear plants or individual, if it is entire, then the efficiency will be the average efficiency right? Oh, typical block size answers the above that the installed capacity is for the whole plant. However, is the efficiency an average value? for the variable operating cost, is it per plant or average for the whole plant, same as CO2 emission factor and outage? Also, what do you mean by one value/year or per capacity change, one value or range per fuel type, one value per fuel type, 
+
+For C (Renewable), say for wind, is the installed capacity for the whole wind plants or individual plant? for the generation profile, yu aid mw/hr, I presume that means generated energy by the wind per hour, is it individual plant or total? also, for the capacity factor (0-1), is it based on say the highest wind was at 12pm in day 1, will that be represented as 1 and other wind for other hours be epressed as a percentage of that particular on? for the subsidy, how does Amiris use it?
+
+for D, say for Batteries, same questions applies, is it for individual plants or total? explain round trip efficiency better.
+
+for E, how are those costs used in Amiris? 
+
+Answer all these questions, think of other possible questions that can emanate from this meeting and answer them also. Generate a pdf file for the question and answer.
+
+
+I had a meeting with my supervisor and I was able to get a lot of input from brain pool and the missing ones will be sourced from amiris. He gave me 2027 input data and the output time series, I will feed it here later. If we feed it into Amiris and maybe the results are similar, of what use will it be to the department to ditch brainpool for Amiris, where will they be sourcing the input data from or is it that most of the input data requirements are easy to source independently? if the brainpool result differs from what Amiris has, since we want to use brainpool output a standar, s there any tweak you can figure out that can be done to maybe amiris configuration just to produce that result brainpool yields? can the tweaks if any be done?
+
+
+I have the data for brainpool 2027. The headings are in German, the first task you should do is reproduce the excel file and translate those headings to English for all the sheets.  The load demand is a total sum figure. Since Amiris load demand profile is hourly, The lecturer suggested that I should use a site bdew.de or use a python package, demandlib to generate a profile by converting that total load to hourly profile. How do I go about it if I want to use either approach and what is your own opinion on taking this approach towards our result?
+
+For conventional energy demand capacity, I have a wholesome figure and no block size, try to look at the most consistet block size amiris used and use it, then we can have another simulation scenario where we will use it as a whole unit.
+For the variable cost, the price are in usd but the euro/usd conversion rate is in one of the columns. for the Renewables, The solar seems to be split into dfferent components, I suggest we will add them together to get the total solar figures, same for the wind. The emission factors are also given. The input file is in the root folde wih name amiris input data. In addition to you tackling the above, do we have any other data w ought to have that is not present?
+
+for the outages, wind offshore generation shape, renewable subsidy support rates, storage energy capacity, (work around how we can use amiris to convert the gw from brainpool to mwh in Amiris, we will use amiris consistent figures to populate that. Also, we are assuming no import like amiris (using amiris assumptions). If you know another way we can get thoe figures without usin Amiris own, point it out. 
+
+Document all the shortcomings above and how we intend to fix it in a pdf, in same document, give me a better explanation for that load profile with bdew.de and demand lib with better example for me to understand the mathematical and computer computation, the reason why it is not efficient here and your suggestion on what we can do
+
+
+https://www.amazon.de/-/en/JELEX-Retro-Tracksuit-Mens-Presentation/dp/B0H2M6M113/ref=sr_1_3?crid=3ROJ5SV27Y49K&dib=eyJ2IjoiMSJ9.uyKF1YT8DHthmXNGqeX4nBXa0DgQPr81OlWslBwoweik-td8MzltA_okFkb-mFWjlGjHS9j8yob-RhfGBYL4d38zG-DahBxVFOO9OWu7IDpNo13D3yys1sM5ycvcLeh5ndkU-D5LwTpNaJkQ1RwEbj-EE2c1phILvvwsjmsT2VYOPWM4F8iE45vquuhu42XpSev6jgw6mmnF7Fg5OgoxPoDkOpZiYElzDsH07caQHqMNOZ69O11GwWZvIQWeH_GAHutqLfclrJrQefe-u0bf6ipby45agnF0Z42kB8jEbeI.N9-b_85PMdZPz_xNSs5mWb6Hb5E_nN2aNKgrPvaVyhc&dib_tag=se&keywords=german%2Bnational%2Bteam%2Btrack%2Bsuit&qid=1786205473&sprefix=german%2Bnational%2Bteam%2Btrack%2Bsuit%2Caps%2C127&sr=8-3&th=1&psc=1
+
+
+From the gaps you highlighted in the amiris 2027 data gap file, let us tackle them as follows:
+number 1 (conventional plan outage / must run factors) : let us use Amiris own validated outage/must run time series
+number 2: Wind offshore profile: We can use amiris own and revalidate with the renewable.ninja that you mentioned in your recommendation.
+numbe 3: Renewable subsidy: Let us look at Germany's EEG pblication
+number 4: for the battery storage capacity duration, use the suggestion you provided by cecking MastR
+for number 5: let us assume o for crossborder for now.
+for the load profile, firstly, let us use the bdew way for all the demands, then for the second version, we can use the methods you proferred 
+
+in summary, we will have various versions of the build cos we will do for neglecting import and also capture it later. Let us start building
+
+
+The Amiris Germany 2027 build document is cool, however, I want you to reproduce in ms word format, in addition, demonstrate example with maybe one figure for the conversions done (e.g hard coal price), the outage figures of amiris used for fuels lke lignite, natural gas, e.t.c, answer these questions and put in pdf file were they constant from 2015 to 2019? wind offshore profile, run-of river profile of amiris used, were they constant fro 2015 to 2019, if no, how did you come up with the value? I do not understand your explanation for the other res profile and biomass profile, also it seems the brainpool data does not have any capacity for biomass, how did you handle that? The load demand, explain again how you calculated it and came up with the excel numbers
+How does block size work again, what o you think informed the decisions amiris used to determine the blocksize, e.g 500 for lignite, what is cycling factor? The efficiency are ranges with minimal and maximal, how are they applied across the hours, what is value of lost load (I saw that in the demand yaml file), Explain the renewable and policy yaml better, also what is MPVAR and FIT, also provide link for rate sources, WHAT IS lcoe
+
+Also, help find price history of those fuels (hard coal, lignite, ol, e.t.c) from 2015 to date to have an historical idea
+What is the mark up band, how is it determined? Clarify must run and outage as used in Natural gas time series, use examples for better understanding
+
+In the scenario file, what does random seed and  OEONearestConcept mean? what does lost load mean in the demand yaml, explain in detail the storage yaml content and terms, explain clearly each yaml file in the contract folder.
+
+

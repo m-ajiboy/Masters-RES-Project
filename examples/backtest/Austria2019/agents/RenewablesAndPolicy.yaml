@@ -1,0 +1,71 @@
+Agents:
+  - Type: NoSupportTrader
+    Id: 12
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 13
+
+  - Type: SupportPolicy
+    Id: 90
+    Attributes:
+      SetSupportData:
+        - PolicySet: PVRooftop
+          FIT:
+            TsFit: 76.7
+        - PolicySet: WindOn
+          FIT:
+            TsFit: 81.2
+
+  - Type: VariableRenewableOperator
+    Id: 10
+    Attributes:
+      PolicySet: PVRooftop
+      EnergyCarrier: PV
+      SupportInstrument: FIT
+      InstalledPowerInMW: 1193
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 20
+    Attributes:
+      PolicySet: WindOn
+      SupportInstrument: FIT
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 3035
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 50
+    Attributes:
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 7998
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/run_of_river_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 51
+    Attributes:
+      EnergyCarrier: RunOfRiver #reservoir + pumped hydro storage operating "reservoir-like"
+      InstalledPowerInMW: 2000 #estimate
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_reservoir_profile.csv" #profile can be >1: profile represents reservoir + pumped hydro storage operating "reservoir-like"
+
+  - Type: VariableRenewableOperator
+    Id: 52
+    Attributes:
+      EnergyCarrier: Other #biomass
+      InstalledPowerInMW: 500
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/biomass_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 53
+    Attributes:
+      EnergyCarrier: Other #waste
+      InstalledPowerInMW: 122
+      OpexVarInEURperMWH: 1.2
+      YieldProfile: 1

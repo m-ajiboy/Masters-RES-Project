@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2028_MarketCoupling_ROEFlex"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2028 - the OUT-OF-SAMPLE MARKET-COUPLING EXTENSION (Phase 38), built on top of Germany2028 (DE-side, real Brainpool 2028 data, unchanged) and Germany2027_MarketCoupling_ROEFlex (Phase 37, the ROE-side agent/contract structure). Converts DE's DayAheadMarketSingleZone to DayAheadMarketMultiZone, retires the old ImportTrader, and couples DE to the same Rest-of-Europe (ROE) zone structure proven in Phase 34-37: real Eurostat/ENTSO-E demand and capacity, real capacity-weighted 2009-weather renewable profiles, real GenericFlexibilityTrader storage (pumped storage + reservoir hydro, split via the real IHA 2023 EU-wide pumped-share and Switzerland's real ENTSO-E hydro-type ratio), and real MPVAR subsidy realism (Germany's own BNetzA 2026 auction figures). METHODOLOGICAL CHOICE, stated directly: ROE's economic SIZE (total demand, total capacity, transmission capacity) is held FROZEN at its real 2023 snapshot for this out-of-sample year - no future-year Rest-of-Europe data exists to source, directly mirroring this project's own established out-of-sample principle (Phase 24: reuse calibrated mechanisms unchanged, do not re-tune per year). Only each series' hourly SHAPE is redated to match 2028's real calendar: renewable profiles via elapsed-hours-since-Jan-1 repositioning (FAME's leap-year 365-day, Jan1-Dec30 representation, the same proven technique as build_2028_timeseries.py); ROE's demand shape re-derived fresh from Germany2028's own real, already-weekday-correct demand file (not by redating Phase 37's already-derived 2027 ROE file directly, to avoid re-introducing a Phase-28-style weekday-misalignment risk); ROE's coal/gas/oil fuel prices reused from Germany2028's own real 2028 Brainpool-sourced series (not 2027's values). See build_restofeurope_yeardata.py for the full build. Germany2028 (pre-coupling baseline) is kept fully unmodified for comparison."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2027-12-31_23:58:00
+    StopTime: 2028-12-30_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE']

@@ -1,0 +1,33 @@
+Agents:
+  - Type: NoSupportTrader
+    Id: 12
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SupportPolicy
+    Id: 90
+    Attributes:
+      SetSupportData:
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.
+
+  - Type: VariableRenewableOperator
+    Id: 10
+    Attributes:
+      PolicySet: PVRooftop
+      EnergyCarrier: PV
+      SupportInstrument: FIT
+      InstalledPowerInMW: 55000.
+      OpexVarInEURperMWH: 0.
+      YieldProfile: "./timeseries/pv_yield_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 20
+    Attributes:
+      PolicySet: WindOn
+      EnergyCarrier: WindOn
+      SupportInstrument: CP
+      InstalledPowerInMW: 55000.
+      OpexVarInEURperMWH: 0.
+      YieldProfile: "./timeseries/wind_yield_profile.csv"

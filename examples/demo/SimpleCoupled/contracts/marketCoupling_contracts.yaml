@@ -1,0 +1,15 @@
+AgentGroups:
+  - &markets  [1, 111]
+
+Contracts:
+  - SenderId: *markets
+    ReceiverId: 99
+    ProductName: TransmissionAndBids
+    FirstDeliveryTime: 2
+    Every: 1 hour
+    
+  - SenderId: 99
+    ReceiverId: *markets
+    ProductName: MarketCouplingResult
+    FirstDeliveryTime: 3
+    Every: 1 hour

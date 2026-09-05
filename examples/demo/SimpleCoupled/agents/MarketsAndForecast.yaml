@@ -1,0 +1,51 @@
+Agents:
+  - Type: MarketCoupling
+    Id: 99
+
+  - Type: CarbonMarket
+    Id: 3
+    Attributes:
+      OperationMode: FIXED
+      Co2Prices: 70.0
+#######################
+#      Market A       #
+#######################
+  - Type: DayAheadMarketMultiZone
+    Id: 1
+    Attributes:
+      Clearing:
+        DistributionMethod: SAME_SHARES
+      GateClosureInfoOffsetInSeconds: 31
+      MarketZone: A
+      Transmission:
+        - MarketZone: B
+          CapacityInMW: "./timeseries/transfer_AtoB.csv"
+
+  - Type: FuelsMarket
+    Id: 4
+    Attributes:
+      FuelPrices:
+        - FuelType: NATURAL_GAS
+          Price: 90.0
+          ConversionFactor: 1.0
+#######################
+#      Market B       #
+#######################
+  - Type: DayAheadMarketMultiZone
+    Id: 111
+    Attributes:
+      Clearing:
+        DistributionMethod: SAME_SHARES
+      GateClosureInfoOffsetInSeconds: 31
+      MarketZone: B
+      Transmission:
+        - MarketZone: A
+          CapacityInMW: "./timeseries/transfer_BtoA.csv"
+
+  - Type: FuelsMarket
+    Id: 411
+    Attributes:
+      FuelPrices:
+        - FuelType: NATURAL_GAS
+          Price: 70.0
+          ConversionFactor: 1.0

@@ -1,0 +1,7 @@
+Agents:
+  - Type: ImportTrader
+    Id: 112
+    Attributes:
+      Imports:
+        - AvailableEnergyForImport: "./timeseries/AvailableEnergyForImport.csv"
+          ImportCostInEURperMWH: "./timeseries/ImportCostInEURperMWH.csv"

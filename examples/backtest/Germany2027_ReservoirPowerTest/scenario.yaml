@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_ReservoirPowerTest"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, built on top of Germany2027_FlexEMobility (2016-base demand, real 2009 heat-pump temperature, 30,000 MW import ceiling, 11-country blended import price, price-responsive electrolysis agent 704, price-responsive e-mobility agent 705). RESERVOIR HYDRO POWER-RATING SENSITIVITY TEST: unlike the electrolysis/e-mobility experiments, the three storage agents (700-702) were already verified to be genuinely price-responsive by design (GenericFlexibilityTrader with MAX_PROFIT/MIN_SYSTEM_COST assessment) - correlation between net discharge and price was +0.48 to +0.71 for all three, so there was no 'flat/unmanaged' baseline to fix. However, checking each agent's own utilization found Reservoir Hydro (Id 702) hitting its charging power cap (1,540 MW) in 3,032 of 8,760 hours (35% of the year) and its discharge cap in another 1,949 hours (22%) - a genuinely capacity-constrained agent, unlike Pumped Hydro (0 hours at cap) or Battery (130 hours). IMPORTANT HONESTY NOTE: unlike the import-ceiling calibration (Phase 8), Reservoir Hydro's 1.54 GW power rating is Brainpool's own explicitly stated real capacity figure for 2027, not an AMIRIS-side artifact or bug - only its energy capacity (171,282 MWh) was ever a borrowed/estimated figure (Brainpool gives no hydro storage energy figure). This experiment is therefore a genuine SENSITIVITY TEST (what would happen if reservoir hydro had more power capacity than Brainpool assumes), not a bug fix - and is documented as such. Tested 2x (3,080/3,603.6 MW) and 3x (4,620/5,405.4 MW) the original charging/discharging power, energy capacity and all other agents held fixed - see agents/Storage.yaml, run separately as result_Reservoir2x and result_Reservoir3x."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_Weather2009_WithImport"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, combining two experiments on top of the V2/with-import baseline (Germany2027_WithImport_Fix): (1) the calibrated 30,000 MW flat import ceiling (see build_2027_import_fix.py, build_2027_import_moderate.py) and (2) the Weather2009 experiment - wind onshore, wind offshore, and both solar profiles rebuilt from real 2009 weather-year data pulled from renewables.ninja (MERRA-2 reanalysis), averaged across representative regional points and redated to 2027 (see fetch_2009_renewables_ninja.py, build_2027_weather2009_profiles.py), testing whether aligning AMIRIS's renewable weather-year with Brainpool's own (reportedly 2009-based) weather assumption improves correlation. On its own (no-import), Weather2009 improved correlation with Brainpool (0.327 -> 0.414) but worsened shortage hours (7.52% -> 11.21%) since there was no import to absorb the added scarcity - this build tests whether combining it with the calibrated import ceiling fixes that shortage increase while keeping the correlation gain. Run-of-river is NOT rebuilt (renewables.ninja has no hydro data) - stays as AMIRIS's own reused profile. Demand V2 and all other inputs are otherwise identical to Germany2027_WithImport_Fix."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

@@ -1,0 +1,114 @@
+Agents:
+  - Type: GenericFlexibilityTrader # Pumped Hydro
+    Id: 700
+    Attributes:
+      Device:
+        GrossChargingPowerInMW: 8988.8
+        NetDischargingPowerInMW: 7120.
+        ChargingEfficiency: 0.89
+        DischargingEfficiency: 0.89
+        EnergyContentUpperLimitInMWH: 40000.
+        InitialEnergyContentInMWH: 1000.
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 160
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24
+
+  - Type: GenericFlexibilityTrader # Heat Pump
+    Id: 701
+    Attributes:
+      Device:
+        GrossChargingPowerInMW: 58.
+        NetDischargingPowerInMW: 0.
+        ChargingEfficiency: ./timeseries/heat_pump_efficiency_scaled.csv
+        DischargingEfficiency: 1.
+        EnergyContentLowerLimitInMWH: 18. # in Kelvin
+        EnergyContentUpperLimitInMWH: 22. # in Kelvin
+        InitialEnergyContentInMWH: 20. # in Kelvin
+        NetInflowPowerInMW: ./timeseries/heat_pump_thermal_inflow.csv # in Kelvin
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 0.1 # in Kelvin
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24
+
+  - Type: GenericFlexibilityTrader # EV unidirectional
+    Id: 702
+    Attributes:
+      Device:
+        ChargingEfficiency: 0.97
+        DischargingEfficiency: 0.97
+        GrossChargingPowerInMW: ./timeseries/ev_connection_power.csv
+        NetDischargingPowerInMW: 0.0
+        EnergyContentLowerLimitInMWH: ./timeseries/ev_min_battery_content.csv
+        EnergyContentUpperLimitInMWH: ./timeseries/ev_max_battery_content.csv
+        InitialEnergyContentInMWH: 56.
+        NetInflowPowerInMW: ./timeseries/ev_inflow_driving.csv
+        VariableCostInEURperMWH: 0.
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 0.5
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24
+
+  - Type: GenericFlexibilityTrader # EV bidirectional
+    Id: 703
+    Attributes:
+      Device:
+        ChargingEfficiency: 0.97
+        DischargingEfficiency: 0.97
+        GrossChargingPowerInMW: ./timeseries/ev_connection_power.csv
+        NetDischargingPowerInMW: ./timeseries/ev_connection_power.csv
+        EnergyContentLowerLimitInMWH: ./timeseries/ev_min_battery_content.csv
+        EnergyContentUpperLimitInMWH: ./timeseries/ev_max_battery_content.csv
+        InitialEnergyContentInMWH: 56.
+        NetInflowPowerInMW: ./timeseries/ev_inflow_driving.csv
+        VariableCostInEURperMWH: 0.
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 1.
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24
+
+  - Type: GenericFlexibilityTrader # Load Shifting
+    Id: 704
+    Attributes:
+      Device:
+        ChargingEfficiency: 1
+        DischargingEfficiency: 1
+        GrossChargingPowerInMW: ./timeseries/load_shifting_power.csv
+        NetDischargingPowerInMW: ./timeseries/load_shifting_power.csv
+        EnergyContentLowerLimitInMWH: ./timeseries/load_shifting_lower_energy_limit.csv
+        EnergyContentUpperLimitInMWH: ./timeseries/load_shifting_upper_energy_limit.csv
+        InitialEnergyContentInMWH: 0.
+        NetInflowPowerInMW: 0.
+        VariableCostInEURperMWH: 5
+        MaximumShiftTimeInHours: 2
+        EnableProlonging: 1
+        PenaltyCostInEURperMWH: 10000
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: ENERGY_AND_TIME
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 20.
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24

@@ -1,0 +1,20 @@
+Agents:
+  - Type: GenericFlexibilityTrader # Pumped Hydro
+    Id: 7
+    Attributes:
+      Device:
+        GrossChargingPowerInMW: 3777.8
+        NetDischargingPowerInMW: 3060.
+        ChargingEfficiency: 0.90
+        DischargingEfficiency: 0.90
+        EnergyContentUpperLimitInMWH: 66300.
+        InitialEnergyContentInMWH: 15000.
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 68
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24

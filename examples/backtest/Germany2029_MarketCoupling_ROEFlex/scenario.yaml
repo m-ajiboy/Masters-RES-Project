@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2029_MarketCoupling_ROEFlex"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2029 - the SECOND OUT-OF-SAMPLE MARKET-COUPLING EXTENSION (Phase 38), built on top of Germany2029_Feb29DropFix (DE-side, real Brainpool 2029 data, the project's most accurate 2029 build, unchanged) and Germany2027_MarketCoupling_ROEFlex (Phase 37, the ROE-side agent/contract structure). Converts DE's DayAheadMarketSingleZone to DayAheadMarketMultiZone, retires the old ImportTrader, and couples DE to the same Rest-of-Europe (ROE) zone structure proven in Phase 34-37. METHODOLOGICAL CHOICE, stated directly: ROE's economic SIZE (total demand, total capacity, transmission capacity) is held FROZEN at its real 2023 snapshot for this out-of-sample year - no future-year Rest-of-Europe data exists to source, directly mirroring this project's own established out-of-sample principle (Phase 24). Only each series' hourly SHAPE is redated to match 2029's real calendar: renewable profiles via a direct year-swap (both 2009 and 2029 are real, non-leap 365-day years - simpler than 2028's elapsed-hours technique, the same relative simplicity Germany2029's own build already has vs. Germany2028's); ROE's demand shape re-derived fresh from Germany2029_Feb29DropFix's own real, already-weekday-correct demand file; ROE's coal/gas/oil fuel prices reused from Germany2029's own real 2029 Brainpool-sourced series. See build_restofeurope_yeardata.py for the full build. Germany2029_Feb29DropFix (pre-coupling baseline) is kept fully unmodified for comparison."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2028-12-30_23:58:00
+    StopTime: 2029-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE']

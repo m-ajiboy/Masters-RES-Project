@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_WithImport_Fix"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, built from Energy Brainpool 2027 input data plus documented AMIRIS-own/EEG-researched gap-fills (see build_2027_*.py). With-import FIXED version (calibrated): replaces the original ImportTrader's real-2023-net-flow-shaped AvailableEnergyForImport with a flat, constant ceiling, decoupling import availability from any historical timing pattern - diagnosis showed 64% of shortage hours in the original with-import build had zero import available purely by 2023-timing coincidence (see build_2027_import_fix.py). A first pass used 37,649.98 MW (the real observed peak single-hour gross import into DE_LU in 2023), which eliminated shortage hours entirely but overshot Brainpool's average price (bias -12.59 EUR/MWh). A small calibration sweep (20,000/25,000/30,000/37,650 MW, see build_2027_import_moderate.py and compare_2027_import_ceiling_sweep.py) found 30,000 MW/hour gives the best overall fit: near-elimination of shortage hours (3 remaining, 0.03%), MAE and correlation essentially matching the full-ceiling version, and a meaningfully smaller bias (-10.70). This is the final calibrated value for V2 - note the equivalent V1 build (Germany2027_V1WithImport_Fix) needed the FULL 37,649.98 MW ceiling instead, since V1's more extreme demand shape requires more import headroom to stay covered; 30,000 MW made V1's fit worse, not better. No annual import total is targeted; the realized cleared volume is a fully endogenous market outcome. ImportCostInEURperMWH (real 2023 French day-ahead price) is unchanged. Demand V2: component-split build - inflexible base rescaled from real 2023 ENTSO-E load shape, heat pumps from demandlib's BDEW HeatBuilding profile (DWD TRY temperature data), electrolysis flat, e-mobility an assumed evening-peaked daily shape (see build_2027_demand_v2_split.py)."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

@@ -1,0 +1,28 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  - Type: ConventionalPlantOperator
+    Id: 504
+
+  - Type: PredefinedPlantBuilder
+    Id: 2004
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS
+        SpecificCo2EmissionsInTperMWH: 0.202
+        OutageFactor: 0.0397
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 30.0
+      Efficiency: 
+        Minimal: 0.3
+        Maximal: 0.42
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 30000.
+
+  - Type: ConventionalTrader
+    Id: 1004
+    Attributes:
+      minMarkup: 0
+      maxMarkup: 0

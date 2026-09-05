@@ -1,0 +1,96 @@
+Agents:
+  #############################################
+  # Zone DE (Germany) - converted from single-zone to multi-zone, coupled to ROE
+  #############################################
+  # Transmission capacity: REAL-FLOW-DERIVED (Phase 35/36), replacing Phase 34's flat
+  # 30,000 MW placeholder. 98th percentile of real 2023 ENTSO-E hourly cross-border physical
+  # flow, summed across the 10 real available borders (AT, BE, CH, CZ, DK_1, DK_2, FR, NL,
+  # NO_2, PL) - SE_4 excluded (Phase 35's one documented flow-fetch gap, a real undercount by
+  # that border's share, not silently patched). See build_real_transmission_capacity.py.
+  - Type: DayAheadMarketMultiZone
+    Id: 1
+    Attributes:
+      Clearing: &clearingParameters
+        DistributionMethod: SAME_SHARES
+      GateClosureInfoOffsetInSeconds: 31
+      MarketZone: DE
+      Transmission:
+        - MarketZone: ROE
+          CapacityInMW: "./timeseries/transfer_DEtoROE_realflow.csv"
+
+  - Type: CarbonMarket
+    Id: 3
+    Attributes:
+      OperationMode: FIXED
+      Co2Prices: "./timeseries/co2_price.csv"
+
+  # Sources: LIGNITE and NUCLEAR fuel costs are AMIRIS's own flat estimates (Nuclear is moot
+  # for DE - 0 GW capacity). Hard coal / natural gas / oil: built from Brainpool's
+  # Variable_cost sheet with unit conversions - see build_2027_timeseries.py.
+  - Type: FuelsMarket
+    Id: 4
+    Attributes:
+      FuelPrices:
+        - FuelType: LIGNITE
+          Price: 5.00
+          ConversionFactor: 1.0
+        - FuelType: HARD_COAL
+          Price: "./timeseries/hard_coal_price.csv"
+          ConversionFactor: 1.0
+        - FuelType: NATURAL_GAS
+          Price: "./timeseries/natural_gas_price.csv"
+          ConversionFactor: 1.0
+        - FuelType: OIL
+          Price: "./timeseries/oil_price.csv"
+          ConversionFactor: 1.0
+
+  - Type: SensitivityForecaster
+    Id: 6
+    Attributes:
+      Clearing: *clearingParameters
+      ForecastPeriodInHours: 730
+      MultiplierEstimation:
+        InitialEstimateWeight: 6
+        DecayInterval: 168
+
+  #############################################
+  # Zone ROE (Rest of Europe, aggregate) - new
+  #############################################
+  - Type: DayAheadMarketMultiZone
+    Id: 9001
+    Attributes:
+      Clearing:
+        DistributionMethod: SAME_SHARES
+      GateClosureInfoOffsetInSeconds: 31
+      MarketZone: ROE
+      Transmission:
+        - MarketZone: DE
+          CapacityInMW: "./timeseries/transfer_ROEtoDE_realflow.csv"
+
+  # ROE's own fuel prices - see fuel_prices_plan.json (RestOfEurope2023) for full sourcing.
+  # HARD_COAL/NATURAL_GAS/OIL reused directly from DE's own real series (internationally
+  # traded commodities); NUCLEAR is new for this zone, real 2023 NEI/EUCG figure ($5.32/MWh,
+  # ~4.90 EUR/MWh, rounded to a flat 5.0). Coal_and_manufactured_gases (Eurostat) uses the
+  # HARD_COAL price - lignite/hard-coal split not available at this data granularity.
+  - Type: FuelsMarket
+    Id: 9004
+    Attributes:
+      FuelPrices:
+        - FuelType: NUCLEAR
+          Price: 5.00
+          ConversionFactor: 1.0
+        - FuelType: HARD_COAL
+          Price: "./timeseries/hard_coal_price_restofeurope_2027.csv"
+          ConversionFactor: 1.0
+        - FuelType: NATURAL_GAS
+          Price: "./timeseries/natural_gas_price_restofeurope_2027.csv"
+          ConversionFactor: 1.0
+        - FuelType: OIL
+          Price: "./timeseries/oil_price_restofeurope_2027.csv"
+          ConversionFactor: 1.0
+
+  #############################################
+  # Market Coupling coordinator
+  #############################################
+  - Type: MarketCoupling
+    Id: 9099

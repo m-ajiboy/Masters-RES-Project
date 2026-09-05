@@ -1,0 +1,10 @@
+AgentGroups:
+  - &exchange 1
+  - &forecaster 6
+
+Contracts:
+  - SenderId: *exchange
+    ReceiverId: *forecaster
+    ProductName: GateClosureInfo
+    FirstDeliveryTime: -30
+    Every: 1 hour

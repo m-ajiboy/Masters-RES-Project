@@ -1,0 +1,37 @@
+Agents:
+  - Type: GenericFlexibilityTrader # Pumped Hydro
+    Id: 7
+    Attributes:
+      Device:
+        GrossChargingPowerInMW: 8988.8
+        NetDischargingPowerInMW: 7120.
+        ChargingEfficiency: 0.89
+        DischargingEfficiency: 0.89
+        EnergyContentUpperLimitInMWH: 40000.
+        InitialEnergyContentInMWH: 1000.
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 160
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24
+
+  - Type: StorageTrader # Emergency backup storage employed January 23rd 2017
+    Id: 77
+    Attributes:
+      Device:
+        EnergyToPowerRatio: 1.0
+        SelfDischargeRatePerHour: 0.0
+        ChargingEfficiency: 1
+        DischargingEfficiency: 1
+        InitialEnergyLevelInMWH: 2000.
+        InstalledPowerInMW: 2000.
+      Strategy:
+        StrategistType: DISPATCH_FILE
+        ForecastPeriodInHours: 168
+        ScheduleDurationInHours: 24
+        FixedDispatch:
+          Schedule: "./timeseries/backup_storage_dispatch.csv"

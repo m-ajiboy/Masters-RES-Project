@@ -1,0 +1,30 @@
+Agents:
+  # Price-responsive electrolysis - OUT-OF-SAMPLE VALIDATION for 2029 (second validation
+  # year): exact same design as Phase 20 (Germany2027_FlexElectrolysis), no re-tuning - only
+  # rescaled to 2029's own Brainpool target, using the SAME ratios:
+  # GrossChargingPowerInMW/avg = 1.4633, buffer = 58.53 hours of average draw.
+  #
+  # Target average draw: 24.827 TWh / 8760 h = 2834.13 MW (2029's own Brainpool electrolysis
+  # target - up from 19.733 TWh in 2028, 14.966 TWh in 2027).
+  - Type: GenericFlexibilityTrader
+    Id: 704
+    Attributes:
+      Device:
+        ChargingEfficiency: 1.0
+        DischargingEfficiency: 1.0
+        GrossChargingPowerInMW: 4147.23
+        NetDischargingPowerInMW: 0.0
+        EnergyContentLowerLimitInMWH: 0.0
+        EnergyContentUpperLimitInMWH: 165889.28
+        InitialEnergyContentInMWH: 82944.64
+        NetInflowPowerInMW: -2834.13
+        VariableCostInEURperMWH: 0.0
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 829.45
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24

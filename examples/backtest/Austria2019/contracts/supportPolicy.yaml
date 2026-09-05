@@ -1,0 +1,42 @@
+AgentGroups:
+  - &exchange 1
+  - &systemoperatortrader 13
+  - &allMarketers [12, 13]
+  - &supportpolicy 90
+
+Contracts:
+  - SenderId: *systemoperatortrader
+    ReceiverId: *supportpolicy
+    ProductName: SupportInfoRequest
+    FirstDeliveryTime: -35
+    Every: 1 year
+
+  - SenderId: *supportpolicy
+    ReceiverId: *systemoperatortrader
+    ProductName: SupportInfo
+    FirstDeliveryTime: -33
+    Every: 1 year
+
+  - SenderId: *allMarketers
+    ReceiverId: *supportpolicy
+    ProductName: YieldPotential
+    FirstDeliveryTime: 1
+    Every: 1 hour
+
+  - SenderId: *exchange
+    ReceiverId: *supportpolicy
+    ProductName: Awards
+    FirstDeliveryTime: 4
+    Every: 1 hour
+
+  - SenderId: *systemoperatortrader
+    ReceiverId: *supportpolicy
+    ProductName: SupportPayoutRequest
+    FirstDeliveryTime: 2626200
+    Every: 1 month
+
+  - SenderId: *supportpolicy
+    ReceiverId: *systemoperatortrader
+    ProductName: SupportPayout
+    FirstDeliveryTime: 2626202
+    Every: 1 month

@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2028"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2028 - an OUT-OF-SAMPLE VALIDATION build (Phase 24). The 2027-calibrated 30,000 MW import ceiling is KEPT AS THE DEFAULT after a full round-trip evaluation: Phase 25's sweep found smaller ceilings (15,000/20,000 MW) improve excl-shortage correlation sharply (0.45 to 0.70), and 20,000 MW was briefly adopted as a deliberate exception - but Phase 27's fuller all-hours analysis found this trade-off cuts both ways: all-hours correlation actually WORSENS at smaller ceilings (0.394 at 30k vs 0.358 at 20k vs 0.285 at 15k) and all-hours bias swings from a modest undershoot to a large overshoot (mean price 20-36% too high vs. Brainpool's real mean), driven by shortage hours growing from 1 to 22-49 - a much bigger, and growing, excluded slice of the year. Given this fuller picture, 30,000 MW was RE-ADOPTED as the default (2026-08-26) - the smaller-ceiling exploration remains fully documented (result_Germany2028_15k/20k/25k/37650) as real, useful evidence, just not adopted. Every other mechanism (2016-base demand shape, real 2009 heat-pump temperature, 11-country blended real-2023 import price, price-responsive electrolysis and e-mobility agents, same subsidy rates, same storage durations) remains unchanged from Phase 24. LEAP YEAR HANDLING: 2028 is a real calendar leap year (366 days), but AMIRIS's underlying FAME framework does not support a true 366-day year at all - confirmed directly by FAME's own error message when a 2028-12-31 timestamp was attempted ('last day of leap year is Dec 30th!'). Every year in FAME, including 2028, is represented as exactly 365 days (8760 hours) - Dec 31 is simply omitted for leap years, not Feb 29. So this scenario runs Jan 1 - Dec 30 2028 (8760 hours, StopTime 2028-12-30_23:58:00), the same hour count as every other build in this project. The 2016 demand-shape source (also a leap year) is truncated to its first 8760 hours, which conveniently drops only real Dec-31-2016 and keeps real Feb-29-2016 intact - no artificial duplication needed. Non-leap 365-day source data (2009 temperature, 2019 outage/profiles, 2023 import price) is redated by elapsed-hours-since-Jan-1 position rather than literal month/day matching, since a non-leap and FAME's-leap calendar have different day-per-month shapes despite both totalling 365 days - a documented, harmless ~1-day seasonal drift on data that already carries larger reuse caveats. See build_2028_timeseries.py, build_2028_demand.py, build_2028_import.py for the full build. Compared against Brainpool's real 2028 hourly price forecast (also included in the new file, with its own real Dec-31 hours excluded for a fair like-for-like comparison)."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2027-12-31_23:58:00
+    StopTime: 2028-12-30_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

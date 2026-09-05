@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_LigniteMarkupTest"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - a LIGNITE-MARKUP SENSITIVITY TEST, built on top of Germany2027_Feb29DropFix (this project's current best 2027 build). Follow-up to Phase 30's cycling-cost dead end: since AMIRIS clears negative 18.4% of the year (vs. real Germany's 3% in 2023 / 5% in 2024, per Eurelectric/GEM Energy Analytics), and lignite's minMarkup (-60 EUR/MWh) is by far the widest negative-bidding allowance of any fuel (gas -10, hard coal -15), narrowed it to -20 EUR/MWh to test whether this reduces AMIRIS's excess negative-price frequency. Unlike Phase 30's cycling cost, minMarkup IS confirmed wired into the bid: decompiled ConventionalTrader.prepareBids and confirmed bid = marginal_cost + linearly-interpolated markup (minMarkup for the cheapest block, maxMarkup for the most expensive), applied directly to the submitted price. No direct literature figure exists for a 'real' lignite markup band (unlike start-up costs, this is an AMIRIS-internal bid-shaping parameter, not a published real-world metric) - so the test is anchored instead to a real, sourced market target (Germany's actual negative-price frequency) rather than a plant-level cost figure. Caveat, checked directly in the same decompilation: lignite's own marginal cost (fuel+CO2+opex) means even the full -60 EUR/MWh markup could only reach roughly -15 to -25 EUR/MWh - well short of the -66 to -85 EUR/MWh troughs actually observed in this project's results, which are more likely driven by a separate mechanism (MustRunFactor-tagged blocks bid at exactly -500 EUR/MWh, unrelated to markup). Tested anyway rather than assumed, since bytecode reasoning alone isn't proof. Only lignite's ConventionalTrader minMarkup changes (1001: -60 to -20); every other mechanism is unchanged from Germany2027_Feb29DropFix."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

@@ -1,0 +1,67 @@
+Agents:
+#######################
+#      Market A       #
+#######################
+  - Type: NoSupportTrader
+    Id: 12
+    Attributes:
+      ShareOfRevenues: 0.0
+      ForecastError:
+        Mean: 0.
+        StandardDeviation: 0.
+
+  - Type: SupportPolicy
+    Id: 90
+    Attributes:
+      SetSupportData:
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.
+
+  - Type: VariableRenewableOperator
+    Id: 10
+    Attributes:
+      PolicySet: PVRooftop
+      EnergyCarrier: PV
+      SupportInstrument: FIT
+      InstalledPowerInMW: 55000.
+      OpexVarInEURperMWH: 0.
+      YieldProfile: "./timeseries/pv_yield_profile.csv"
+
+  - Type: VariableRenewableOperator
+    Id: 20
+    Attributes:
+      PolicySet: WindOn
+      EnergyCarrier: WindOn
+      SupportInstrument: CP
+      InstalledPowerInMW: 55000.
+      OpexVarInEURperMWH: 0.
+      YieldProfile: "./timeseries/wind_yield_profile_A.csv"
+#######################
+#      Market B       #
+#######################
+  - Type: NoSupportTrader
+    Id: 1211
+    Attributes:
+      ShareOfRevenues: 0.0
+      ForecastError:
+        Mean: 0.
+        StandardDeviation: 0.
+
+  - Type: SupportPolicy
+    Id: 9011
+    Attributes:
+      SetSupportData:
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.
+
+  - Type: VariableRenewableOperator
+    Id: 2011
+    Attributes:
+      PolicySet: WindOn
+      EnergyCarrier: WindOn
+      SupportInstrument: CP
+      InstalledPowerInMW: 40000.
+      OpexVarInEURperMWH: 0.
+      YieldProfile: "./timeseries/wind_yield_profile_B.csv"

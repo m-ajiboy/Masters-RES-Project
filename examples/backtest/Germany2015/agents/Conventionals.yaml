@@ -1,0 +1,153 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  - Type: PredefinedPlantBuilder
+    Id: 2000
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NUCLEAR
+        SpecificCo2EmissionsInTperMWH: 0.0
+        OutageFactor: "./timeseries/nuclear_outage.csv"
+        OpexVarInEURperMWH: 0.5
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.330
+        Maximal: 0.331
+      BlockSizeInMW: 900.0
+      InstalledPowerInMW: 11472.
+
+  - Type: PredefinedPlantBuilder
+    Id: 2001
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: LIGNITE
+        SpecificCo2EmissionsInTperMWH: 0.364
+        OutageFactor: "./timeseries/lignite_outage.csv"
+        OpexVarInEURperMWH: 2.0
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.3111
+        Maximal: 0.4502
+      BlockSizeInMW: 500.0
+      InstalledPowerInMW: 21062.
+
+  - Type: PredefinedPlantBuilder
+    Id: 2002
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: HARD_COAL
+        SpecificCo2EmissionsInTperMWH: 0.341
+        OutageFactor: "./timeseries/hard_coal_outage.csv"
+        OpexVarInEURperMWH: 2.5
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.3296
+        Maximal: 0.4882
+      BlockSizeInMW: 300.0
+      InstalledPowerInMW: 27030.
+      
+  - Type: PredefinedPlantBuilder
+    Id: 2003
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS # CCGT
+        SpecificCo2EmissionsInTperMWH: 0.201
+        OutageFactor: 0.03
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0
+      Efficiency:
+        Minimal: 0.5159
+        Maximal: 0.6097
+      BlockSizeInMW: 200.0
+      InstalledPowerInMW: 12506.329
+
+  - Type: PredefinedPlantBuilder
+    Id: 2004
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS # OCGT
+        SpecificCo2EmissionsInTperMWH: 0.201
+        OutageFactor: 0.03
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.3116
+        Maximal: 0.4463
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 13230.4415
+
+  - Type: PredefinedPlantBuilder
+    Id: 2005
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: OIL # oil, other fossil fuels, mixed fossil fuels
+        SpecificCo2EmissionsInTperMWH: 0.264
+        OutageFactor: 0.07
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.304
+        Maximal: 0.3982
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 4338.1
+
+  - Type: ConventionalTrader # NUCLEAR
+    Id: 1000
+    Attributes:
+      minMarkup: -150
+      maxMarkup: -100
+
+  - Type: ConventionalTrader # LIGNITE
+    Id: 1001
+    Attributes:
+      minMarkup: -90
+      maxMarkup: -10
+
+  - Type: ConventionalTrader # HARD_COAL
+    Id: 1002
+    Attributes:
+      minMarkup: -25
+      maxMarkup: -5
+
+  - Type: ConventionalTrader # NATURAL_GAS CCGT
+    Id: 1003
+    Attributes:
+      minMarkup: -15
+      maxMarkup: 0
+
+  - Type: ConventionalTrader # NATURAL_GAS OCGT
+    Id: 1004
+    Attributes:
+      minMarkup: -10
+      maxMarkup: 10
+
+  - Type: ConventionalTrader # OIL
+    Id: 1005
+    Attributes:
+      minMarkup: 10
+      maxMarkup: 20
+
+  - Type: ConventionalPlantOperator # NUCLEAR
+    Id: 500
+
+  - Type: ConventionalPlantOperator # LIGNITE
+    Id: 501
+
+  - Type: ConventionalPlantOperator # HARD_COAL
+    Id: 502
+
+  - Type: ConventionalPlantOperator # NATURAL_GAS CCGT
+    Id: 503
+
+  - Type: ConventionalPlantOperator # NATURAL_GAS OCGT
+    Id: 504
+
+  - Type: ConventionalPlantOperator # OIL
+    Id: 505

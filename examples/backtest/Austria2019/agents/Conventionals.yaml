@@ -1,0 +1,103 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  - Type: PredefinedPlantBuilder
+    Id: 2001
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: HARD_COAL
+        SpecificCo2EmissionsInTperMWH: 0.354
+        OutageFactor: 0.02
+        OpexVarInEURperMWH: 2.0
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.40
+        Maximal: 0.40
+      BlockSizeInMW: 50.0
+      InstalledPowerInMW: 264.0
+
+  - Type: PredefinedPlantBuilder
+    Id: 2003
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS # CCGT
+        SpecificCo2EmissionsInTperMWH: 0.201
+        OutageFactor: 0.03
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0
+      Efficiency:
+        Minimal: 0.40
+        Maximal: 0.60
+      BlockSizeInMW: 200.0
+      InstalledPowerInMW: 3260.0
+
+  - Type: PredefinedPlantBuilder
+    Id: 2004
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS # OCGT
+        SpecificCo2EmissionsInTperMWH: 0.201
+        OutageFactor: 0.03
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.30
+        Maximal: 0.40
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 1208
+
+  - Type: PredefinedPlantBuilder
+    Id: 2005
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: OIL
+        SpecificCo2EmissionsInTperMWH: 0.264
+        OutageFactor: 0.07
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.35
+        Maximal: 0.35
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 178
+
+  - Type: ConventionalTrader # HARD_COAL
+    Id: 1001
+    Attributes:
+      minMarkup: -25.0
+      maxMarkup: -10.0
+
+  - Type: ConventionalTrader # CCGT
+    Id: 1003
+    Attributes:
+      minMarkup: -5.0
+      maxMarkup: 17.0
+
+  - Type: ConventionalTrader # OCGT
+    Id: 1004
+    Attributes:
+      minMarkup: 0.0
+      maxMarkup: 80.0
+
+  - Type: ConventionalTrader # OIL
+    Id: 1005
+    Attributes:
+      minMarkup: 0.0
+      maxMarkup: 120.0
+
+  - Type: ConventionalPlantOperator # HARD_COAL
+    Id: 501
+
+  - Type: ConventionalPlantOperator # CCGT
+    Id: 503
+
+  - Type: ConventionalPlantOperator # OCGT
+    Id: 504
+
+  - Type: ConventionalPlantOperator # OIL
+    Id: 505

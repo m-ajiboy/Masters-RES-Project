@@ -1,0 +1,102 @@
+Agents:
+  # Pumped Hydro Storage - 8.3776 GW power (Brainpool 2027); 53607.5 MWh energy
+  # (6.3989h duration, AMIRIS's own validated pumped-hydro-fleet figure).
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 53607.55
+        GrossChargingPowerInMW: 8377.60
+        InitialEnergyContentInMWH: 26803.77
+        NetDischargingPowerInMW: 7958.72
+      StateDiscretisation:
+        EnergyResolutionInMWH: 1576.69
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 700
+    Type: GenericFlexibilityTrader
+
+  # Large-Scale Battery Storage - 5.1517 GW power (Brainpool 2027); 10303.4 MWh
+  # energy (2.0h duration - real MaStR/RWE Hambach-derived research figure,
+  # not AMIRIS's own pumped-hydro-skewed value).
+  - Attributes:
+      Assessment:
+        Type: MAX_PROFIT
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: STORAGE_CONTENT_VALUE
+      Device:
+        ChargingEfficiency: 0.95
+        DischargingEfficiency: 0.95
+        EnergyContentUpperLimitInMWH: 10303.40
+        GrossChargingPowerInMW: 5151.70
+        InitialEnergyContentInMWH: 5151.70
+        NetDischargingPowerInMW: 4997.15
+      StateDiscretisation:
+        EnergyResolutionInMWH: 303.04
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 701
+    Type: GenericFlexibilityTrader
+
+  # Reservoir Hydro - 1.54 GW power (Brainpool 2027); 171282.2 MWh energy
+  # (111.22h duration - borrowed from AMIRIS's own long-duration reservoir-type
+  # unit, since Brainpool gives no hydro storage energy figure).
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 171282.22
+        GrossChargingPowerInMW: 1540.00
+        InitialEnergyContentInMWH: 75364.18
+        NetDischargingPowerInMW: 1801.80
+      StateDiscretisation:
+        EnergyResolutionInMWH: 140.05
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 702
+    Type: GenericFlexibilityTrader
+
+  # EXPERIMENTAL: virtual export sink - AMIRIS has no dedicated ExportTrader agent type
+  # (confirmed by checking schema.yaml). Modelled as a one-way GenericFlexibilityTrader
+  # that only ever charges (draws power from the German market) and never discharges,
+  # following the real pattern used by AMIRIS's own SectorCoupling demo for one-way
+  # "Heat Pump" and "Load Shifting" devices (NetDischargingPowerInMW: 0). Represents
+  # surplus domestic power leaving the system permanently via cross-border export, mirroring
+  # the calibrated 30,000 MW import ceiling as a symmetric first-pass assumption for export
+  # capacity. EnergyContentUpperLimitInMWH is set to GrossChargingPowerInMW*8760 (the most
+  # it could possibly draw if charging at full power every hour of the year) purely so the
+  # capacity constraint is never actually binding - only the hourly MW rate matters.
+  # UNVALIDATED: whether AMIRIS's MIN_SYSTEM_COST assessment gives a one-way, never-
+  # discharging device any real incentive to charge at all (vs. sitting permanently idle)
+  # is untested - to be checked directly against simulation output, not assumed.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 1.0
+        DischargingEfficiency: 1.0
+        EnergyContentUpperLimitInMWH: 262800000
+        GrossChargingPowerInMW: 30000.00
+        InitialEnergyContentInMWH: 0
+        NetDischargingPowerInMW: 0
+        VariableCostInEURperMWH: 0
+      StateDiscretisation:
+        EnergyResolutionInMWH: 6570000
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 703
+    Type: GenericFlexibilityTrader

@@ -1,0 +1,55 @@
+Agents:
+  # ROE Pumped Storage (Phase 37) - 33,303.20 MW. Split out of the real Eurostat+ENTSO-E
+  # Hydro_total (110,769.3 MW, 10 countries) using the real EU-wide pumped-storage share
+  # (30%, 46 GW PSH / 153 GW total EU hydro, IHA 2023 "EU report details importance of
+  # hydropower and pumped storage"). Duration (6.3989h), efficiency (0.875/0.852), and the
+  # charge/discharge power ratio all REUSE Germany's own real, already-calibrated pumped-
+  # hydro figures as technology characteristics (engineering properties reasonably similar
+  # across countries, unlike demand or capacity, which are genuinely national) - the same
+  # category of reuse already applied to internationally-traded fuel prices. See
+  # compute_roe_storage_split.py for the full calculation.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 213104.35
+        GrossChargingPowerInMW: 33303.20
+        InitialEnergyContentInMWH: 106552.18
+        NetDischargingPowerInMW: 31638.04
+      StateDiscretisation:
+        EnergyResolutionInMWH: 6267.78
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 9601
+    Type: GenericFlexibilityTrader
+
+  # ROE Reservoir Hydro (Phase 37) - 69,904.05 MW. The conventional (non-pumped) 70% of
+  # ROE's real hydro total, split into reservoir vs. run-of-river using Switzerland's real
+  # ENTSO-E capacity-by-type ratio (90.2% reservoir : 9.8% run-of-river, Phase 35) - the only
+  # real per-technology reference point available for this aggregate. Duration (111.22h),
+  # efficiency (0.91/0.91), and the charge/discharge power ratio reused from Germany's own
+  # real reservoir-hydro figures, same rationale as pumped storage above.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 7774883.23
+        GrossChargingPowerInMW: 69904.05
+        InitialEnergyContentInMWH: 3887441.62
+        NetDischargingPowerInMW: 81787.73
+      StateDiscretisation:
+        EnergyResolutionInMWH: 6362.42
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 9602
+    Type: GenericFlexibilityTrader

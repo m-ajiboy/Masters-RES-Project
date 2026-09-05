@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_ImportBlended"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, built on top of Germany2027_HeatPump2009_WithImport. BLENDED IMPORT PRICE EXPERIMENT: verified directly (Montel/Energy Brainpool's own published description of their Power2Sim model) that Brainpool's real forecast covers the EU27, UK, Norway, and Switzerland, iteratively equalising prices across all of them via cross-border interconnector capacity - not a single neighbouring country. The single-country (France-only) import price proxy used until now was always a known simplification; this replaces it with an equal-weighted average of real 2023 day-ahead prices across all 11 of Germany's real physical neighbouring bidding zones (AT, BE, CH, CZ, DK_1, DK_2, FR, NO_2, NL, PL, SE_4 - see fetch_2023_neighbor_prices.py, build_2027_import_blended.py). Still a documented simplification versus Brainpool's real capacity-weighted iterative coupling (a full replication was judged out of scope, same conclusion as the export-sink experiment) - but a closer approximation than one country. Blended mean 93.13 EUR/MWh vs. the France-only proxy's 96.86. The 30,000 MW import ceiling is unchanged - only the price series changes. All other inputs (weekday-aligned demand, real-2009-temperature heat pumps, renewables, storage, fuel prices) are unchanged from Germany2027_HeatPump2009_WithImport."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

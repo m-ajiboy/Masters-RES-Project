@@ -1,0 +1,32 @@
+Agents:
+  # Price-responsive e-mobility (smart charging) - OUT-OF-SAMPLE VALIDATION for 2028: exact
+  # same design as Phase 21 (Germany2027_FlexEMobility), no re-tuning - only rescaled to
+  # 2028's own Brainpool target, using the SAME ratios: GrossChargingPowerInMW/avg = 2.9516
+  # (was 6000/2032.78 in 2027), buffer = 19.68 hours of average draw (was 40,000/2032.78 in
+  # 2027). HOURS = 8760 for every year in this project, including 2028 - FAME's own
+  # convention (every year is 365 days, even leap years - see build_2028_timeseries.py).
+  #
+  # Target average draw: 21.393 TWh / 8760 h = 2442.14 MW (2028's own Brainpool e-mobility
+  # target - up from 17.807 TWh in 2027).
+  - Type: GenericFlexibilityTrader
+    Id: 705
+    Attributes:
+      Device:
+        ChargingEfficiency: 1.0
+        DischargingEfficiency: 1.0
+        GrossChargingPowerInMW: 7208.26
+        NetDischargingPowerInMW: 0.0
+        EnergyContentLowerLimitInMWH: 0.0
+        EnergyContentUpperLimitInMWH: 48055.05
+        InitialEnergyContentInMWH: 24027.52
+        NetInflowPowerInMW: -2442.14
+        VariableCostInEURperMWH: 0.0
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 240.28
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24

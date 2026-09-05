@@ -1,0 +1,53 @@
+AgentGroups:
+  - &exchange 1
+  - &marketer 12
+  - &renewables [ 10, 20 ]
+
+Contracts:
+  - SenderId: *renewables
+    ReceiverId: *marketer
+    ProductName: SetRegistration
+    FirstDeliveryTime: -37
+    Every: 1 year
+    
+  - SenderId: *exchange
+    ReceiverId: *marketer
+    ProductName: GateClosureInfo
+    FirstDeliveryTime: -30
+    Every: 1 hour
+
+  - SenderId: *marketer
+    ReceiverId: *renewables
+    ProductName: GateClosureForward
+    FirstDeliveryTime: -9
+    Every: 1 hour
+    
+  - SenderId: *renewables
+    ReceiverId: *marketer
+    ProductName: MarginalCost
+    FirstDeliveryTime: -1
+    Every: 1 hour 
+ 
+  - SenderId: *marketer
+    ReceiverId: *exchange
+    ProductName: Bids
+    FirstDeliveryTime: 0
+    Every: 1 hour
+    
+  - SenderId: *exchange
+    ReceiverId: *marketer
+    ProductName: Awards
+    FirstDeliveryTime: 4
+    Every: 1 hour
+
+  - SenderId: *marketer
+    ReceiverId: *renewables
+    ProductName: DispatchAssignment
+    FirstDeliveryTime: 5
+    Every: 1 hour
+  
+  - SenderId: *marketer
+    ReceiverId: *renewables
+    ProductName: Payout
+    FirstDeliveryTime: 2626204
+    Every: 1 month

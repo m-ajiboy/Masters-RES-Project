@@ -1,0 +1,62 @@
+Metadata:
+  runId: "Germany2027_DemandV2Weekday_WithImport"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027, built on top of the V2/30,000 MW-import baseline (Germany2027_WithImport_Fix), replacing only the inflexible-base demand component's redating method. WEEKDAY-ALIGNMENT EXPERIMENT: the original V2 build mapped real 2023 load data onto the 2027 calendar POSITIONALLY (hour 1 of 2023 -> hour 1 of 2027), ignoring that 2023 and 2027 start on different weekdays (Sunday vs. Friday). A correlation breakdown against Brainpool's real 2027 price found this produced a ~39 EUR/MWh systematic gap between weekday bias (-22.78) and weekend bias (+16.18), even though correlation WITHIN each group was strong (0.64+) - well above the pooled 0.42-0.56. This build shifts the 2023 source data by 5 days (120 hours) so weekdays align exactly with the 2027 calendar (see build_2027_demand_v2_weekday.py) - testing whether closing that gap raises the pooled correlation toward the ~0.64 in-group level. The last ~5 days of the year have a known, tiny residual misalignment (1 weekday off) from the circular wraparound - negligible (<0.1% of the year). Heat pumps, electrolysis, and e-mobility components are unchanged from build_2027_demand_v2_split.py. All other inputs (renewables, storage, fuel prices, the 30,000 MW import ceiling) are identical to Germany2027_WithImport_Fix."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar']

@@ -1,0 +1,10 @@
+AgentGroups:
+  - &policy 9011
+  - &allMarketers 1211
+
+Contracts:
+  - SenderId: *allMarketers
+    ReceiverId: *policy
+    ProductName: YieldPotential
+    FirstDeliveryTime: 1
+    Every: 1 hour
