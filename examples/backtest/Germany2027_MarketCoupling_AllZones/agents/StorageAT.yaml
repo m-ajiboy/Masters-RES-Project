@@ -1,0 +1,43 @@
+Agents:
+  # Austria Pumped Storage - 4,485.6 MW (30% EU-wide IHA method, Phase 33).
+  # Duration/efficiency/power-ratio reused from Germany's own real pumped-hydro figures.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 28703.18
+        GrossChargingPowerInMW: 4485.63
+        InitialEnergyContentInMWH: 14351.59
+        NetDischargingPowerInMW: 4261.35
+      StateDiscretisation:
+        EnergyResolutionInMWH: 844.21
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 3601
+    Type: GenericFlexibilityTrader
+
+  # Austria Reservoir Hydro - 9,440.8 MW (90.2% of conventional hydro, Swiss ratio).
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 1050022.41
+        GrossChargingPowerInMW: 9440.76
+        InitialEnergyContentInMWH: 525011.21
+        NetDischargingPowerInMW: 11045.69
+      StateDiscretisation:
+        EnergyResolutionInMWH: 859.26
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 3602
+    Type: GenericFlexibilityTrader

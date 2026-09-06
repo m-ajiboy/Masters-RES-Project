@@ -16,6 +16,9 @@ Token.txt
 ~$*
 ~WRL*.tmp
 
+# Local tool config/state - not project source
+.claude/
+
 # OS/editor
 .DS_Store
 Thumbs.db

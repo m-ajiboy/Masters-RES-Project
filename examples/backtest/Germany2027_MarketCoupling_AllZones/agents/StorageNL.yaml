@@ -1,0 +1,46 @@
+Agents:
+  # The Netherlands' real hydro total (37.7 MW) is the same order of magnitude as Denmark's
+  # (7.1 MW) - too small for AMIRIS to dispatch reliably (see StorageDK.yaml for the full
+  # confirmed evidence: pristine tiny values crash reproducibly, scaled-up values run
+  # cleanly, and omitting the agents entirely does NOT fix it). Same documented, artificial
+  # 1,000 MW hydro-total FLOOR applied here as a necessary technical workaround, openly NOT
+  # the Netherlands' real hydro scale.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 1919.67
+        GrossChargingPowerInMW: 300.00
+        InitialEnergyContentInMWH: 959.84
+        NetDischargingPowerInMW: 285.00
+      StateDiscretisation:
+        EnergyResolutionInMWH: 56.46
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 9601
+    Type: GenericFlexibilityTrader
+
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 70225.71
+        GrossChargingPowerInMW: 631.40
+        InitialEnergyContentInMWH: 35112.85
+        NetDischargingPowerInMW: 738.74
+      StateDiscretisation:
+        EnergyResolutionInMWH: 57.47
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 9602
+    Type: GenericFlexibilityTrader

@@ -1,0 +1,10 @@
+Agents:
+  # Poland's own real annual demand total (147,581,557 MWh, Eurostat 2023),
+  # shaped using Germany's own real 2027 demand pattern (same borrowed-shape precedent as
+  # every other zone in this build).
+  - Type: DemandTrader
+    Id: 10500
+    Attributes:
+      Loads:
+        - ValueOfLostLoad: 3000.0
+          DemandSeries: "./timeseries/load_pl_2027_shapeFromDE.csv"

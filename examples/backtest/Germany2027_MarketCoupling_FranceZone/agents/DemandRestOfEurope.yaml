@@ -1,0 +1,12 @@
+Agents:
+  # Rest-of-Europe aggregate demand (Phase 42: REDUCED to 9 countries, France pulled into
+  # its own zone) - real annual total 793,007,105 MWh (Eurostat 2023, 9 countries), was
+  # 1,200,341,335 MWh for all 10. Same documented shape-borrowing simplification as Phase 33
+  # (Eurostat has no hourly resolution; the SHAPE is Germany's own real 2027 pattern, the
+  # TOTAL is real Rest-of-Europe data).
+  - Type: DemandTrader
+    Id: 9500
+    Attributes:
+      Loads:
+        - ValueOfLostLoad: 3000.0
+          DemandSeries: "./timeseries/load_restofeurope9_2027_shapeFromDE.csv"

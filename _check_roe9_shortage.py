@@ -1,0 +1,21 @@
+import pandas as pd
+df = pd.read_csv(r"C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\Germany2027_MarketCoupling_FranceZone\result_Germany2027_MarketCoupling_FranceZone\DayAheadMarketMultiZone.csv", sep=";")
+df["ts"] = pd.to_datetime(df["TimeStep"])
+de = df[df["AgentId"] == 1].set_index("ts")
+roe9 = df[df["AgentId"] == 9001].set_index("ts")
+fr = df[df["AgentId"] == 8001].set_index("ts")
+print("DE shortage hours:", (de["ElectricityPriceInEURperMWH"] >= 2999.9).sum())
+print("ROE9 shortage hours:", (roe9["ElectricityPriceInEURperMWH"] >= 2999.9).sum())
+print("FR shortage hours:", (fr["ElectricityPriceInEURperMWH"] >= 2999.9).sum())
+overlap = ((de["ElectricityPriceInEURperMWH"] >= 2999.9) & (roe9["ElectricityPriceInEURperMWH"] >= 2999.9)).sum()
+print("Hours where BOTH DE and ROE9 are simultaneously in shortage:", overlap)
+print("DE hours at/near the DE<->ROE9 import ceiling (>=95% of 18,333 MW):",
+      (de["AwardedNetEnergyFromImportInMWH"] >= 0.95 * 18333.2).sum())
+print("FR zone export to DE - checking DE's transmission usage isn't directly split by partner in this file; "
+      "FR mean price:", fr["ElectricityPriceInEURperMWH"].mean(), "FR max price:", fr["ElectricityPriceInEURperMWH"].max())
+print("ROE9 mean price:", roe9["ElectricityPriceInEURperMWH"].mean())
+baseline = pd.read_csv(r"C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\Germany2027_MarketCoupling_ROEFlex\result_Germany2027_MarketCoupling_ROEFlex\DayAheadMarketMultiZone.csv", sep=";")
+baseline["ts"] = pd.to_datetime(baseline["TimeStep"])
+roe10 = baseline[baseline["AgentId"] == 9001].set_index("ts")
+print("\nOriginal ROE-10 (Phase 37) shortage hours:", (roe10["ElectricityPriceInEURperMWH"] >= 2999.9).sum())
+print("Original ROE-10 mean price:", roe10["ElectricityPriceInEURperMWH"].mean())

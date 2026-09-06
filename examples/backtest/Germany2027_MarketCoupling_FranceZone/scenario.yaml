@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2027_MarketCoupling_FranceZone"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - Phase 42, a PILOT escalating from the single aggregate Rest-of-Europe (ROE) zone (Phase 37, this project's best-ever result) to a real named neighbour country. France was chosen as the pilot: the largest single economy in the aggregate (407,334 GWh demand, 146,461 MW capacity, both real Eurostat 2023) and the one country with independently real, separately-fetched raw data for every input already on disk (Eurostat demand/capacity, renewables.ninja per-country 2009 weather, ENTSO-E DE<->FR flow) - no new fetching needed except one real, country-specific figure sourced specifically for this pilot: France's own pumped-hydro capacity (RTE, ~5.8 GW, the most recent published figure found - a genuine upgrade over the general 30% EU-wide IHA ratio used for the rest of the aggregate). Built as a genuine 3-zone DE/FR/ROE-9 MarketCoupling: France's own real generation fleet (61,400 MW nuclear, 10,878 MW gas, 3,780 MW oil, 19 MW coal, 21,610/1,487 MW wind on/offshore, 19,749 MW solar, 5,800 MW pumped + 18,273 MW reservoir + 1,985 MW run-of-river hydro) and real demand (407,334,230 MWh/yr, DE's own shape rescaled) now sit in their own dedicated zone (Id 8001), with the ROE aggregate correspondingly REDUCED to the remaining 9 countries (demand, capacity, and renewable profiles all recomputed on the 9-country subtotal, re-blended rather than just left including France - see build_france_zone_data.py). Real flow-derived DE<->FR transmission (Phase 36's exact 98th-percentile methodology, applied to this one border: 3,015/3,679 MW) replaces that portion of the old aggregate DE<->ROE capacity. One documented topology simplification: FR trades only with DE, not directly with ROE-9 (a star topology, since no FR<->ROE-9-country flow data was fetched) - in reality France also borders several ROE-9 countries directly. Germany2027_MarketCoupling_ROEFlex (Phase 37, the single-aggregate-zone best result) is kept fully unmodified for comparison."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE', 'FR']

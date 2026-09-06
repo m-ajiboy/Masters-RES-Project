@@ -1,0 +1,58 @@
+Agents:
+  # Poland's own dedicated SupportPolicy - NOT shared with any other zone
+  # (confirmed required directly in Phase 42: a shared SupportPolicy crashes once more than
+  # one zone's exchange sends it Awards).
+  - Type: SupportPolicy
+    Id: 10090
+    Attributes:
+      SetSupportData:
+        - PolicySet: ROE_WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_WindOffMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_SolarMpvar
+          MPVAR:
+            Lcoe: 49.0
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.0
+
+  - Type: VariableRenewableOperator
+    Id: 10401
+    Attributes:
+      PolicySet: ROE_WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 9343.321
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile_pl_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 10403
+    Attributes:
+      PolicySet: ROE_SolarMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 15078.2
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile_pl_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 10404
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 165.35
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_profile_restofeurope_FLAT.csv" 
+
+  - Type: RenewableTrader
+    Id: 10011
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 10013

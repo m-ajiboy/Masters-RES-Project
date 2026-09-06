@@ -1,0 +1,109 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  # Phase 42: REDUCED to 9 countries (AT, BE, CZ, DK, NO, NL, PL, SE, CH) - France (Id 8xxx
+  # block) has been pulled out into its own real, separately-modelled zone. Every capacity
+  # figure below is the original 10-country Eurostat total MINUS France's own real share -
+  # see build_france_zone_data.py. Methodology (efficiency/markup/CO2 assumptions) unchanged
+  # from the original Phase 33 aggregate.
+
+  # Coal (Eurostat 'Coal_and_manufactured_gases', 29,836 MW, was 29,855 MW for all 10 -
+  # France's own share was only 19 MW).
+  - Type: PredefinedPlantBuilder
+    Id: 9101
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: HARD_COAL
+        SpecificCo2EmissionsInTperMWH: 0.338
+        OutageFactor: 0.05
+        OpexVarInEURperMWH: 2.5
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.339
+        Maximal: 0.492
+      BlockSizeInMW: 300.0
+      InstalledPowerInMW: 29835.860
+
+  # Natural Gas (Eurostat, 32,631 MW, was 43,509 MW for all 10).
+  - Type: PredefinedPlantBuilder
+    Id: 9102
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS
+        SpecificCo2EmissionsInTperMWH: 0.202
+        OutageFactor: 0.05
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.516
+        Maximal: 0.617
+      BlockSizeInMW: 200.0
+      InstalledPowerInMW: 32631.200
+
+  # Oil (Eurostat, 5,228 MW, was 9,008 MW for all 10).
+  - Type: PredefinedPlantBuilder
+    Id: 9103
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: OIL
+        SpecificCo2EmissionsInTperMWH: 0.266
+        OutageFactor: 0.07
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.311
+        Maximal: 0.397
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 5228.411
+
+  # Nuclear (Eurostat, 18,701 MW, was 77,131 MW for all 10 - France's own 61,400 MW is now
+  # its own separate zone; the remaining 18,701 MW is mostly Sweden and Czechia).
+  - Type: PredefinedPlantBuilder
+    Id: 9104
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NUCLEAR
+        SpecificCo2EmissionsInTperMWH: 0.0
+        OutageFactor: 0.10
+        OpexVarInEURperMWH: 3.0
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.33
+        Maximal: 0.33
+      BlockSizeInMW: 1000.0
+      InstalledPowerInMW: 18701.0
+
+  - Type: ConventionalTrader # HARD_COAL (ROE)
+    Id: 9201
+    Attributes:
+      minMarkup: -15
+      maxMarkup: 5
+  - Type: ConventionalTrader # NATURAL_GAS (ROE)
+    Id: 9202
+    Attributes:
+      minMarkup: -10
+      maxMarkup: 10
+  - Type: ConventionalTrader # OIL (ROE)
+    Id: 9203
+    Attributes:
+      minMarkup: 0
+      maxMarkup: 0
+  - Type: ConventionalTrader # NUCLEAR (ROE)
+    Id: 9204
+    Attributes:
+      minMarkup: -5
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator # HARD_COAL (ROE)
+    Id: 9301
+  - Type: ConventionalPlantOperator # NATURAL_GAS (ROE)
+    Id: 9302
+  - Type: ConventionalPlantOperator # OIL (ROE)
+    Id: 9303
+  - Type: ConventionalPlantOperator # NUCLEAR (ROE)
+    Id: 9304

@@ -1,0 +1,30 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  # Czech Republic - real Eurostat 2023 capacity, same efficiency/markup/CO2 assumptions reused from DE's own fleet (Phase 33/42 precedent). Technologies with zero real capacity are simply absent, not zeroed out.
+
+  - Type: PredefinedPlantBuilder
+    Id: 5104
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NUCLEAR
+        SpecificCo2EmissionsInTperMWH: 0.0
+        OutageFactor: 0.1
+        OpexVarInEURperMWH: 3.0
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.33
+        Maximal: 0.33
+      BlockSizeInMW: 1000.0
+      InstalledPowerInMW: 4290.0
+
+  - Type: ConventionalTrader # NUCLEAR (CZ)
+    Id: 5204
+    Attributes:
+      minMarkup: -5
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator # NUCLEAR (CZ)
+    Id: 5304

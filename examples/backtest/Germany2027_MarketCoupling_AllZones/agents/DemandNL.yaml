@@ -1,0 +1,10 @@
+Agents:
+  # Netherlands's own real annual demand total (106,247,968 MWh, Eurostat 2023),
+  # shaped using Germany's own real 2027 demand pattern (same borrowed-shape precedent as
+  # every other zone in this build).
+  - Type: DemandTrader
+    Id: 9500
+    Attributes:
+      Loads:
+        - ValueOfLostLoad: 3000.0
+          DemandSeries: "./timeseries/load_nl_2027_shapeFromDE.csv"

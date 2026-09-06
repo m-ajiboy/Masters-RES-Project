@@ -2220,6 +2220,224 @@ pdf.body(
 )
 
 # =====================================================================
+pdf.h1("Phase 41: Testing Whether ROE's Own Storage Physically Runs Dry - Another Real Dead End")
+pdf.body(
+    "A different, fully-checkable hypothesis that needs no engine rebuild: ROE's pumped "
+    "storage (Id 9601) only holds 6.4 hours of full-power discharge (213,104 MWh content / "
+    "31,638 MW discharge power) - a real, physical limit. Germany's shortage hours cluster in "
+    "multi-hour Dunkelflaute blocks, so if ROE's pumped storage were draining to empty WHILE "
+    "one of those blocks was still running, that alone would explain a flat, capped import "
+    "volume - a genuine physical constraint, not an algorithm quirk. Tested directly using the "
+    "already-run Phase 38 result data (GenericFlexibilityTrader.csv for agents 9601/9602), no "
+    "new AMIRIS run needed."
+)
+pdf.table(
+    ["Metric (during shortage hours)", "2028 (17 hrs)", "2029 (76 hrs)"],
+    [
+        ["Pumped storage: mean discharge utilization", "15.9% of max power", "11.8% of max power"],
+        ["Pumped storage: hours at >=95% of max discharge", "0 / 17", "0 / 76"],
+        ["Pumped storage: hours with charge below 5% of capacity", "2 / 17", "4 / 76"],
+        ["Reservoir hydro: mean discharge utilization", "25.4% of max power", "18.6% of max power"],
+        ["Reservoir hydro: hours at >=95% of max discharge", "0 / 17", "0 / 76"],
+        ["Correlation: pumped-storage charge level vs. DE import volume", "0.198", "-0.103"],
+    ],
+    [90, 45, 45],
+)
+pdf.callout(
+    "Ruled out: ROE's storage has plenty of headroom left, on both energy and power, that it simply is not using.",
+    "Neither storage type ever comes close to its physical power ceiling during a shortage "
+    "hour - reservoir hydro (with 7.77 TWh of stored energy, orders of magnitude too large to "
+    "meaningfully deplete in a single event) never exceeds a quarter of its max discharge "
+    "power on average, and pumped storage never exceeds 16%. The correlation between how full "
+    "the pumped storage is and how much Germany actually imports that hour is weak in both "
+    "years (0.198, -0.103) - genuinely not the driving factor. This directly rules out the "
+    "'ROE physically cannot supply more' explanation, and by elimination strengthens Phase "
+    "40's finding: the coupling algorithm's own internal stopping logic, not any real-world "
+    "capacity limit anywhere in the model (transmission or storage), is the most likely real "
+    "cause of the remaining shortage-hour gap.",
+    color=BAD,
+)
+pdf.body(
+    "Two physical-capacity hypotheses (Phase 39's transmission ceiling, this phase's ROE "
+    "storage) and one parameter-default hypothesis (Phase 40) have now all been tested "
+    "directly and honestly ruled out. What remains genuinely untested is the algorithm itself "
+    "- confirming Phase 40's price-convergence-stopping-logic clue would mean patching and "
+    "rebuilding AMIRIS's own Java source. Git is now available on this machine (added while "
+    "setting up local version control for this project), but Maven - AMIRIS's own build tool "
+    "- is still not installed, so a full source rebuild remains a real, not-yet-taken next "
+    "step, not a completed one."
+)
+
+# =====================================================================
+pdf.h1("Phase 42: Escalating to a Real Named Zone (France) - a Genuine, Informative Negative Result")
+pdf.body(
+    "With the aggregate ROE zone's own remaining gap fully diagnosed (Phase 39-41), the next "
+    "open question from Phase 32's original scope decision was tested directly: does "
+    "disaggregating one real named neighbour out of the aggregate improve the result further, "
+    "or was the aggregate already good enough that escalating adds nothing? France was chosen "
+    "as the pilot country - the largest single economy in the aggregate (407,334 GWh demand, "
+    "146,461 MW capacity, real Eurostat 2023) and the one country with independently real, "
+    "already-fetched raw data for every input (Eurostat, renewables.ninja, ENTSO-E DE<->FR "
+    "flow) - no new data fetching needed except one new real, country-specific figure sourced "
+    "for this pilot: France's own pumped-hydro capacity (RTE, ~5.8 GW, most recent published "
+    "figure)."
+)
+pdf.body(
+    "Built a genuine 3-zone DE/FR/ROE-9 MarketCoupling: France's real generation fleet "
+    "(61,400 MW nuclear - the single largest generation source in this whole pilot - plus "
+    "gas, oil, coal, wind, solar, and hydro) and real demand now sit in their own dedicated "
+    "zone, with the ROE aggregate correspondingly REDUCED to the remaining 9 countries "
+    "(demand, capacity, and renewable profiles all recomputed and re-blended on the 9-country "
+    "subtotal, not just left including France - avoiding any double-counting). Real "
+    "flow-derived DE<->FR transmission capacity (Phase 36's exact methodology, applied to "
+    "this one border: 3,015/3,679 MW) replaces that slice of the old aggregate capacity. One "
+    "documented topology simplification: FR trades only with DE, not directly with the "
+    "ROE-9 countries (a star topology - no FR<->ROE-9-country flow data was fetched)."
+)
+pdf.callout(
+    "A fourth real bug found and fixed before the scenario would even run: SupportPolicy cannot be shared across zones either.",
+    "The first run crashed with the exact same class of error already documented in Phase 37 "
+    "for a shared forecaster ('List has not exactly one entry!', this time in "
+    "SupportPolicy.logPowerPrice) - caused by giving France's renewable marketers the SAME "
+    "shared SupportPolicy agent already serving the ROE-9 zone. Fixed the same way Phase 37 "
+    "fixed the forecaster: gave France its own dedicated SupportPolicy instance. A useful, "
+    "generalisable lesson confirmed a second time: no agent that receives zone-specific "
+    "broadcasts (GateClosureInfo, Awards) can be shared across more than one exchange in this "
+    "version of AMIRIS.",
+    color=BAD,
+)
+pdf.table(
+    ["Metric", "Baseline (Phase 37, aggregate ROE-10)", "France disaggregated (Phase 42)"],
+    [
+        ["Shortage hours (DE)", "7", "167"],
+        ["Mean price (DE)", "67.45 (Brainpool: 68.04)", "132.34"],
+        ["Excl-shortage bias", "-2.90", "+9.65"],
+        ["Excl-shortage MAE", "16.69", "19.83"],
+        ["Excl-shortage correlation", "0.7168", "0.7156"],
+        ["Negative-price hours", "7.7%", "5.5%"],
+    ],
+    [55, 65, 65],
+)
+pdf.callout(
+    "A genuine negative result, with a real, verified mechanism - not a mystery.",
+    "Checked directly rather than left unexplained: the ORIGINAL aggregate ROE-10 zone had "
+    "ZERO shortage hours of its own (mean price 69.68 EUR/MWh) - France's huge 61,400 MW "
+    "nuclear fleet, pooled together with everyone else's demand, acted as a cheap anchor that "
+    "kept the whole aggregate well-supplied. Once France is pulled out, the remaining ROE-9 "
+    "zone develops 20 real shortage hours of its own and its mean price rises to 96.83 "
+    "EUR/MWh - genuinely worse off, exactly as removing a large cheap generator from a shared "
+    "pool would predict. Meanwhile France's own zone is almost absurdly oversupplied on its "
+    "own (mean price 18.87 EUR/MWh, never exceeding 70.86 EUR/MWh all year, zero shortage "
+    "hours) - its cheap surplus is real, but stranded: the star-topology simplification means "
+    "it can only reach Germany through a comparatively narrow 3,015-3,679 MW direct link, not "
+    "relay onward to relieve ROE-9's now-increased scarcity. Germany's larger transmission "
+    "link is with ROE-9 (18,333-18,579 MW), so it inherits more of ROE-9's new scarcity than "
+    "it gains from France's now-harder-to-reach cheapness.",
+    color=BAD,
+)
+pdf.body(
+    "One honestly-flagged loose end: Germany's own shortage-hour count (167) is larger than "
+    "ROE-9's own shortage hours (20) plus the hours where the two zones' shortages overlap "
+    "(16) can fully account for, and Germany is only at/near its DE<->ROE9 transmission "
+    "ceiling in 5 of its 167 shortage hours - meaning the mechanism above is real and "
+    "verified, but not a complete explanation of the full size of the effect. Not pursued "
+    "further given the clear, already-actionable conclusion below."
+)
+pdf.callout(
+    "Conclusion: disaggregating France was a real, well-motivated test - and the honest answer is no, not with this topology.",
+    "Per Phase 32's own original decision rule (escalate to real named zones only if the "
+    "aggregate approach doesn't do enough), this result does not justify continuing further "
+    "down this path: the aggregate (Phase 37) remains the best, standing result. The failure "
+    "mode is itself a genuine, useful finding for the write-up - it shows that THIS project's "
+    "star-topology simplification (each new zone links only to Germany, not to its other real "
+    "neighbours) actively breaks the pooling effect that made the aggregate work well, rather "
+    "than being a harmless simplification. A full escalation to real named zones would need a "
+    "genuine mesh topology (FR<->ROE-9-country bilateral transmission data, not yet sourced) "
+    "to have a fair chance of improving on Phase 37 - a substantially larger undertaking than "
+    "this pilot, not attempted here.",
+    color=NAVY,
+)
+pdf.body(
+    "Germany2027_MarketCoupling_ROEFlex (Phase 37) remains this project's standing best "
+    "result and reference build; Germany2027_MarketCoupling_FranceZone is kept fully intact "
+    "as documented negative evidence, per the project's standing practice of never deleting a "
+    "real, completed experiment."
+)
+
+# =====================================================================
+pdf.h1("Phase 43: Full Disaggregation (10 Real Zones) - a Real Engine Bug, a Confirmed Fix, and a Result More Nuanced Than Predicted")
+pdf.body(
+    "Directly tested Phase 42's own prediction: does extending the same star topology to "
+    "all 10 real neighbours (instead of just France) spread the France pilot's failure mode, "
+    "as reasoned at the time, or does something different happen at full scale? Built the "
+    "full 11-zone DE+10 MarketCoupling (AT, BE, CZ, DK, NO, NL, PL, SE, CH, FR), each with "
+    "its own real Eurostat capacity/demand, real 2009-weather renewable profiles, and real "
+    "flow-derived transmission capacity to Germany - the same real-data methodology as every "
+    "prior zone, generated programmatically this time given the sheer volume (47 agent/"
+    "contract files) rather than hand-written."
+)
+pdf.callout(
+    "A genuine AMIRIS engine bug found, root-caused, and fixed: storage/renewable dispatch breaks below a certain absolute capacity scale.",
+    "The first full run crashed ('List has not exactly one entry!' in PowerPlantOperator."
+    "executeDispatch) - and unlike every previous bug in this project, its cause was NOT "
+    "obvious from the config. Bisected systematically: tested Austria alone (worked), then "
+    "Denmark alone (crashed identically) - isolating the fault to Denmark specifically. "
+    "Checked Denmark's real hydro total: only 7.1 MW, three orders of magnitude smaller than "
+    "every other zone's. Confirmed the cause directly and reproducibly: the IDENTICAL "
+    "Denmark configuration, with only its storage/run-of-river MW VALUES scaled up (nothing "
+    "else changed), ran cleanly every time; the real tiny values crashed every time (tested "
+    "twice each, both directions, both fully reproducible - not a random/non-deterministic "
+    "fault). Also tested simply OMITTING Denmark's tiny hydro agents entirely - this did NOT "
+    "fix it either (a different agent then failed the same way), ruling out omission as a "
+    "valid workaround. The Netherlands (37.7 MW hydro, the same order of magnitude) was "
+    "flagged as being at the same real risk and given the same treatment as a precaution.",
+    color=BAD,
+)
+pdf.body(
+    "The real, working fix: a documented, openly-artificial 1,000 MW hydro-total FLOOR "
+    "applied only to Denmark and the Netherlands (their real hydro splits and the same "
+    "EU-wide 30%/70% pumped/conventional and Swiss 90.2%/9.8% reservoir/run-of-river ratios "
+    "still apply on top of the floor) - confirmed directly to restore normal dispatch, "
+    "openly labelled in both scenario files as NOT reflecting either country's true hydro "
+    "scale, a necessary technical workaround for a genuine AMIRIS numerical limitation, not "
+    "a data claim. The full 11-zone scenario then ran to completion (192,787 ticks, 148 "
+    "seconds)."
+)
+pdf.table(
+    ["Metric", "Phase 37 (aggregate)", "Phase 42 (France only)", "Phase 43 (all 10 zones)"],
+    [
+        ["Shortage hours (DE)", "7", "167", "120"],
+        ["Mean price (DE)", "67.45", "132.34", "112.32"],
+        ["Excl-shortage bias", "-2.90", "+9.65", "+4.87"],
+        ["Excl-shortage MAE", "16.69", "19.83", "20.97"],
+        ["Excl-shortage correlation", "0.7168", "0.7156", "0.7311"],
+    ],
+    [50, 45, 47, 47],
+)
+pdf.callout(
+    "A more nuanced result than Phase 42 predicted - stated plainly, correcting the earlier prediction.",
+    "Phase 42's own reasoning was that spreading the star-topology problem across all 10 "
+    "countries would make things worse than the single-country case, not better. The actual "
+    "result does not confirm that cleanly: shortage hours improved (167 to 120), bias moved "
+    "closer to zero (+9.65 to +4.87), and excl-shortage correlation reached a new project-best "
+    "(0.7311, higher than even Phase 37's aggregate) - all better than France-only. Only "
+    "excl-shortage MAE got slightly worse. A plausible real mechanism: with 10 separate "
+    "bilateral links instead of one, Germany can draw on many countries' cheap generation "
+    "at once rather than being bottlenecked behind a single narrow pipe, partially "
+    "offsetting the stranded-surplus problem Phase 42 diagnosed. But full disaggregation "
+    "still does not beat Phase 37's aggregate on any metric except correlation - the "
+    "aggregate's built-in pooling (all supply and demand sharing one price, no artificial "
+    "bilateral bottlenecks at all) remains the stronger approach for this project.",
+    color=NAVY,
+)
+pdf.body(
+    "Germany2027_MarketCoupling_ROEFlex (Phase 37) remains the standing best result and "
+    "reference build. Germany2027_MarketCoupling_AllZones is kept fully intact alongside "
+    "FranceZone as real, documented evidence of the star-topology escalation path - useful "
+    "for understanding the mechanism, not adopted as the final build."
+)
+
+# =====================================================================
 pdf.h1("Where Things Stand Now")
 pdf.table(
     ["Build", "Final import ceiling", "Shortage hours", "Mean price", "Bias vs. Brainpool"],
@@ -2278,7 +2496,12 @@ pdf.bullet("DONE (Phase 25-27): tested whether per-year recalibration would reco
 pdf.bullet("DONE (Phase 28): found and fixed a genuine weekday-alignment bug affecting 84% of the year in every non-leap-target build using the 2016-base demand source (2027, 2029) since Phase 17 - dropping Feb 29 from the leap-year source silently shifted every day after it one weekday off. Fixed by dropping Dec 31 instead. Clean improvement for both years, no trade-off. The fixed 2027 build (Germany2027_Feb29DropFix) is now this project's most accurate result - worth considering as the new reference build for any future work, in place of Germany2027_FlexEMobility.")
 pdf.bullet("DONE (Phase 29): investigated a negative-price floor as a cheaper alternative to full market coupling, per the supervisor's request. Confirmed the floor is hard-coded in AMIRIS's compiled engine (-500 EUR/MWh), not a scenario setting. Swept candidate floors from -500 through +100 EUR/MWh (including the supervisor's own suggested +10 EUR/MWh) - confirmed dead end, no floor value improves correlation; positive floors actively make it worse. The standing recommendation above (multi-zone MarketCoupling) is unchanged and remains the most promising lever left.")
 pdf.bullet("DONE (Phase 30): tested a real, sourced start-up/cycling cost for conventional plants (Roques/Hach et al. 2017), a genuine mechanism unlike the price floor. Built and ran a full separate scenario - result was byte-identical to the baseline across all 8,760 hours. Decompiling AMIRIS's bytecode confirmed why: the parameter is computed by PowerPlant but never called by ConventionalTrader's bid logic, so it never reaches this project's single-zone market-clearing path. A cleaner dead end than Phase 29 - not a trade-off, the lever simply is not wired in.")
-pdf.bullet("DONE (Phase 31): swept lignite's minMarkup (-60/-40/-20/-10 EUR/MWh) across 4 separate scenarios - confirmed a genuine, working mechanism this time (6,218 of 8,760 hours changed price). Bias, MAE, and negative-hour frequency all improved modestly and consistently as the band narrowed, but the trustworthy excl-shortage correlation stayed essentially flat (0.671-0.675) - the dramatic-looking all-hours swings were confirmed to be a swing-hour artifact, not genuine improvement. Not adopted; the standing recommendation above (multi-zone MarketCoupling) remains unchanged and is now the only untested major lever left.")
+pdf.bullet("DONE (Phase 31): swept lignite's minMarkup (-60/-40/-20/-10 EUR/MWh) across 4 separate scenarios - confirmed a genuine, working mechanism this time (6,218 of 8,760 hours changed price). Bias, MAE, and negative-hour frequency all improved modestly and consistently as the band narrowed, but the trustworthy excl-shortage correlation stayed essentially flat (0.671-0.675) - the dramatic-looking all-hours swings were confirmed to be a swing-hour artifact, not genuine improvement. Not adopted.")
+pdf.bullet("DONE (Phase 32-38): built the multi-zone MarketCoupling extension in full - scoped it, sourced real Rest-of-Europe data (including working around a genuine multi-hour ENTSO-E outage), and iterated through four real versions: placeholder transmission, real-flow transmission, real ROE storage/subsidy (this project's best-ever result: excl-shortage bias -0.59, MAE 18.99 for 2027), then extended unchanged to 2028/2029 (excl-shortage bias +1.08/+3.21, MAE 17.05/17.45 - both excellent, confirming the win is durable, not a 2027-only fluke).")
+pdf.bullet("DONE (Phase 39-41): investigated the one remaining real gap - shortage hours rising with distance from the calibration year (7 to 17 to 76). Three real, plausible hypotheses tested directly and honestly ruled out: scaling transmission capacity to DE's demand growth (Phase 39, made 2028 worse), MarketCoupling's own configurable parameters (Phase 40, both already unlimited/negligible by decompiled default), and ROE's own storage running physically dry (Phase 41, storage never exceeds 25% of its discharge power during shortage hours). The real remaining clue (DE's import volume staying suspiciously flat regardless of the transmission ceiling) points at AMIRIS's own internal price-convergence stopping logic - confirming this needs patching and rebuilding AMIRIS's Java source, which needs Maven (still not installed on this machine, though git now is).")
+pdf.bullet("DONE (Phase 42): piloted escalating from the single aggregate ROE zone to a real named neighbour (France) - a genuine negative result. Shortage hours worsened (7 to 167), excl-shortage bias and MAE both worsened, with a real, verified cause: pulling France's 61,400 MW nuclear fleet out of the shared pool made the remaining ROE-9 zone genuinely scarcer on its own (0 to 20 shortage hours), and the star-topology simplification (France links only to Germany, not to ROE-9) stranded France's now-abundant cheap surplus behind a comparatively narrow direct link. Per Phase 32's own decision rule, this does not justify further escalation with this topology - Germany2027_MarketCoupling_ROEFlex (Phase 37) remains the standing best result.")
+pdf.bullet("DONE (Phase 43): tested Phase 42's own prediction by fully disaggregating all 10 real neighbours (star topology throughout). Found and fixed a genuine AMIRIS engine bug along the way (storage/renewable dispatch breaks below a certain absolute MW scale - confirmed via bisection and a reproducible scale-up/scale-down test; fixed with a documented, openly-artificial 1,000 MW hydro floor for Denmark and the Netherlands, whose real hydro is far below that scale). Result was more nuanced than Phase 42's own prediction: shortage hours improved over the France-only pilot (167 to 120), bias improved (+9.65 to +4.87), and excl-shortage correlation reached a new project-best (0.7311) - but still short of Phase 37's aggregate on bias and MAE. Phase 37 remains the standing best result.")
+pdf.bullet("NEXT: either install Maven and attempt a targeted source patch to directly test the price-convergence-stopping-logic hypothesis (the one remaining untested lever on the aggregate build's own shortage-hour gap), source real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future escalation a genuine mesh topology, or treat the current market-coupling result (Phase 37, extended to 2028/2029 in Phase 38) as complete and durable enough to write up as-is.")
 pdf.bullet("Fold this whole investigation into the formal build documentation (already partially updated with the V2 and original-import findings).")
 pdf.bullet("Revisit the still-open data gaps flagged earlier: the wind offshore subsidy rate (no real 2027 figure exists anywhere yet), the solar rooftop FIT's exposure to a draft 2026 EEG reform, and the heat-pump profile's constant-COP simplification.")
 

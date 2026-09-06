@@ -1,0 +1,49 @@
+Agents:
+  # ROE Pumped Storage (Phase 42: REDUCED to 9 countries) - 25,413.30 MW, was 33,303.20 MW
+  # for all 10 (France's own 5,800 MW real RTE-sourced figure now sits in its own zone).
+  # Recomputed on the reduced 84,711.0 MW hydro total using the SAME unchanged EU-wide 30%
+  # method (IHA 2023). Duration (6.3989h), efficiency (0.875/0.852), and the charge/discharge
+  # power ratio all still reused from Germany's own real, calibrated pumped-hydro figures,
+  # unchanged methodology from Phase 37. See build_france_zone_data.py.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 162617.55
+        GrossChargingPowerInMW: 25413.30
+        InitialEnergyContentInMWH: 81308.77
+        NetDischargingPowerInMW: 24142.64
+      StateDiscretisation:
+        EnergyResolutionInMWH: 4783.16
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 9601
+    Type: GenericFlexibilityTrader
+
+  # ROE Reservoir Hydro (Phase 42: reduced) - 53,486.53 MW, was 69,904.05 MW for all 10.
+  # Same unchanged 90.2%:9.8% reservoir:run-of-river split (Switzerland's real ratio) applied
+  # to the reduced conventional-hydro total. Duration/efficiency/power-ratio unchanged.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 5948890.30
+        GrossChargingPowerInMW: 53486.53
+        InitialEnergyContentInMWH: 2974445.15
+        NetDischargingPowerInMW: 62579.23
+      StateDiscretisation:
+        EnergyResolutionInMWH: 4868.19
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 9602
+    Type: GenericFlexibilityTrader

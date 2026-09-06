@@ -1,0 +1,43 @@
+Agents:
+  # Belgium Pumped Storage - 428.7 MW (30% EU-wide IHA method, Phase 33).
+  # Duration/efficiency/power-ratio reused from Germany's own real pumped-hydro figures.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 2743.41
+        GrossChargingPowerInMW: 428.73
+        InitialEnergyContentInMWH: 1371.70
+        NetDischargingPowerInMW: 407.29
+      StateDiscretisation:
+        EnergyResolutionInMWH: 80.69
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 4601
+    Type: GenericFlexibilityTrader
+
+  # Belgium Reservoir Hydro - 902.3 MW (90.2% of conventional hydro, Swiss ratio).
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 100359.56
+        GrossChargingPowerInMW: 902.33
+        InitialEnergyContentInMWH: 50179.78
+        NetDischargingPowerInMW: 1055.73
+      StateDiscretisation:
+        EnergyResolutionInMWH: 82.13
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 4602
+    Type: GenericFlexibilityTrader

@@ -1,0 +1,53 @@
+AgentGroups:
+  # France's own dedicated SupportPolicy (Id 8090, defined in RenewablesFrance.yaml) - NOT
+  # shared with ROE's (9090). Sharing one SupportPolicy across two zones' exchanges crashed
+  # ('List has not exactly one entry!' in SupportPolicy.logPowerPrice) - confirmed directly
+  # by running the scenario, the same class of bug already documented for a shared
+  # forecaster in Phase 37.
+  - &exchange 8001
+  - &policy 8090
+  - &allMarketers [8011, 8013]
+  - &supportedMarketers [8011, 8013]
+
+Contracts:
+  - SenderId: *supportedMarketers
+    ReceiverId: *policy
+    ProductName: SupportInfoRequest
+    FirstDeliveryTime: -35
+    Every: 1 year
+
+  - SenderId: *policy
+    ReceiverId: *supportedMarketers
+    ProductName: SupportInfo
+    FirstDeliveryTime: -33
+    Every: 1 year
+
+  - SenderId: *allMarketers
+    ReceiverId: *policy
+    ProductName: YieldPotential
+    FirstDeliveryTime: 1
+    Every: 1 hour
+
+  - SenderId: *exchange
+    ReceiverId: *policy
+    ProductName: Awards
+    FirstDeliveryTime: 4
+    Every: 1 hour
+
+  - SenderId: *supportedMarketers
+    ReceiverId: *policy
+    ProductName: SupportPayoutRequest
+    FirstDeliveryTime: 2626200
+    Every: 1 month
+
+  - SenderId: *policy
+    ReceiverId: *supportedMarketers
+    ProductName: SupportPayout
+    FirstDeliveryTime: 2626202
+    Every: 1 month
+
+  - SenderId: *policy
+    ReceiverId: *policy
+    ProductName: MarketValueCalculation
+    FirstDeliveryTime: 2626204
+    Every: 1 month

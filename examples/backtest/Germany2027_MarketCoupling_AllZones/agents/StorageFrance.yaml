@@ -1,0 +1,49 @@
+Agents:
+  # France Pumped Storage - 5,800 MW, a real, country-specific figure (RTE, ~5.82 GW
+  # operational storage as of 2015, essentially all pumped - the most recent published
+  # figure found; a genuine data-quality upgrade over the general 30% EU-wide IHA ratio used
+  # for the rest of the ROE aggregate). Duration/efficiency/charge-discharge power ratio
+  # reused from Germany's own real, already-calibrated pumped-hydro figures, same technology-
+  # characteristic-reuse precedent as Phase 37.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 37113.71
+        GrossChargingPowerInMW: 5800.00
+        InitialEnergyContentInMWH: 18556.85
+        NetDischargingPowerInMW: 5510.00
+      StateDiscretisation:
+        EnergyResolutionInMWH: 1091.44
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 8601
+    Type: GenericFlexibilityTrader
+
+  # France Reservoir Hydro - 18,273 MW. The conventional (non-pumped) share of France's real
+  # hydro total, split into reservoir vs. run-of-river using Switzerland's real ratio
+  # (90.2%:9.8%), same precedent as Phase 37.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 2032366.86
+        GrossChargingPowerInMW: 18273.03
+        InitialEnergyContentInMWH: 1016183.43
+        NetDischargingPowerInMW: 21379.44
+      StateDiscretisation:
+        EnergyResolutionInMWH: 1663.35
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 8602
+    Type: GenericFlexibilityTrader

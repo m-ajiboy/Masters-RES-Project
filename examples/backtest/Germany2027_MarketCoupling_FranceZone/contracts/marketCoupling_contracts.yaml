@@ -1,0 +1,18 @@
+AgentGroups:
+  # Phase 42: extended to a third zone (FR, Id 8001) alongside DE (1) and the reduced ROE-9
+  # aggregate (9001). MarketCoupling itself is agnostic to how many zones there are - the
+  # same coordinator handles N zones without any change to its own configuration.
+  - &markets  [1, 9001, 8001]
+
+Contracts:
+  - SenderId: *markets
+    ReceiverId: 9099
+    ProductName: TransmissionAndBids
+    FirstDeliveryTime: 2
+    Every: 1 hour
+
+  - SenderId: 9099
+    ReceiverId: *markets
+    ProductName: MarketCouplingResult
+    FirstDeliveryTime: 3
+    Every: 1 hour

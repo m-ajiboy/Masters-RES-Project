@@ -1,0 +1,19 @@
+AgentGroups:
+  # Phase 43: extended to all 11 zones (DE + 10 real named neighbours) - the aggregate ROE
+  # zone no longer exists, fully replaced by separate real country zones. MarketCoupling
+  # itself is agnostic to how many zones there are - the same coordinator handles N zones
+  # without any change to its own configuration.
+  - &markets  [1, 8001, 3001, 4001, 5001, 6001, 7001, 9001, 10001, 11001, 12001]
+
+Contracts:
+  - SenderId: *markets
+    ReceiverId: 9099
+    ProductName: TransmissionAndBids
+    FirstDeliveryTime: 2
+    Every: 1 hour
+
+  - SenderId: 9099
+    ReceiverId: *markets
+    ProductName: MarketCouplingResult
+    FirstDeliveryTime: 3
+    Every: 1 hour
