@@ -15,6 +15,7 @@ Token.txt
 # Office lock/temp files
 ~$*
 ~WRL*.tmp
+*\[Autosaved\]*
 
 # Local tool config/state - not project source
 .claude/
