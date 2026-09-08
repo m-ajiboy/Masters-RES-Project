@@ -45,3 +45,58 @@ What is the mark up band, how is it determined? Clarify must run and outage as u
 In the scenario file, what does random seed and  OEONearestConcept mean? what does lost load mean in the demand yaml, explain in detail the storage yaml content and terms, explain clearly each yaml file in the contract folder.
 
 
+
+Where did you get the info that Brainpool stated its annual peak load as 119GW. MPVAR, FIT,LCOE, use numerical examples to explain properly.
+
+I have gone through the pdf but I think I will need more than that. for example, for the initial build, how do I show that the shortage pricing hit 15.9 percent, infact, I think it will be best we have a power point presentation for this 
+
+
+
+I have quite some questions to ask, How does amiris import work? I remember you setting different import quantity like 20,000MW to 40000MW, how does it work? does every MW of import has its on price per mwh depending on neigbouring countries it is being imported from? Also, does it work like this? say there is 1000mw demand for an hour, and all the plants cleared 900mw, will the remaining 100mw be taken from import instead of using the 3000 Euro/mwh price. explain in detail in layman language how import works
+
+
+How does Amiris load profile compare with the V1, V2 we have, draw up a chart and load duration curve representing amiris versus v1 and v2. Also, the Brainpool profiles for weather related energy are built from 2009 weather, is it possible for us to build all weather related profiles like PV, wind, river run off with 2009 weather data, also, is it possible to be able to get 2009 load profile and adapt it to the load demand total. We are trying to tinker the profiles to see if it can get us better correlation to the brainpool price
+
+
+In one of the model the available import file, why is the 37k mw constant all through, I felt that it should be reducing if part f it is being used up, say 1000mw was used from import in a particular hour, in the next hour, I expect it to be reduced to 36k.
+I am thinking that if there is enough capacity locally and the imports are not used then the average price and bias might be near the brainpool data since the import pric which is price of another country might affect the bias, also, maybe if we know where brainpool import comes from, maybe it will be better
+redaw the amiris, v1,v2 load comparison and use distinct colours for each so that it can be easily rcognizable in the chart.
+
+
+Yes. I have a meeting with my supervisor tomorrow on the project update, prepare a presentation ppt file about things we have done after the last ppt till date. I want you to structure the ppt as follows: 
+Tasks from the last meeting:
+1. Submit the filled thesis form for endorsement.
+2. Load profile comparisons of Amiris, our different model versions, use charts and pictorial data to illustrate.
+3. The 2009 renewable profiles
+
+What we have done so far:
+State all the steps we have done, the results we have, the tweaks we have done
+
+Use charts as much as possible and make the slides as simple as possible.
+
+
+
+You said "Offshore wind: no real correlation (r = 0.01) - a genuine, separate gap" were we able to get offshore wind from 2009? What steps did we take to get those 2009 profiles?
+"Each component shaped using the real data suited to it" for V2, what do you mean by this?
+The Making Demand smart slide: Explain further how we achieved it and what benefit it added
+Explain the calendar bug fix, what the bug is and how we fixed it
+"Our demand shape borrows a real year's usage pattern (2016) and trims it to fit the target year" remind me again why we chose the 2016 demand profile, I think it as the closest we could get due to similar temperature with 2009 right? explain clearly
+Explain all hour correlation, weekday and weekend correlation.
+fold the answers in today's AMIRIS session update
+
+I have edited the ppt a little bit, however, you didn't dwell further on the 2028 and 2029 test, I think we were able to improve its correlation yesterday, include that and how we were able to achieve it, use the currently edited ppt, and add those additional slides as update to that ppt
+
+
+The holiday part, how did you achieve that, like did you isolate the 5 holiday days or did you tweak the load demand for those days since it will be lower, how did you tweak it?
+Also, it seems brainpool didn't have any shortage hours where its price went to 5000 or 3000 right?
+How did you set up the agent for the electrolysis, electic vehicle charging to make it different from the flat numbers we were using?
+
+create price charts for our model and each of 2027-2029. you can overlap our model price with each of the year to show comparison and study where the spikes are, how the correlation differs e.t.c and any other reasonable charts for the price comparison
+
+
+I still need a comprehensive detailed easy to understand breakdown of what the inputs are, how Amiris processes them to give its output, all he Amiris components, agents, their roles, what they are? Also, at different time series (load demand), breakdown what happened with example from the file figures, what the demand is, how the agents reacted, what the price is, give different example scenario where import was used, where import was not used, where Amiris went negative like in summer, e.t.c. I need a better holistic understanding to e able to answer almost any question.
+
+
+For the mid-day gap price whereby Amiris is reporting hard negative, before building the export module, my supervisor wants me to  tweak Amiris in such a way that  we can set a limit for how negative it can go. In such a situation, maybe we can set 0 Eur/mwh or something else, is it possible? if yes, let us try a build separately for that purpose and let us find a particular limit we can set it to for such scenrios whereby it will make our correlation improve
+
+

@@ -46,7 +46,7 @@ for col, style in styles.items():
     sorted_vals = joined[col].sort_values(ascending=False).values
     ax.plot(range(1, n + 1), sorted_vals, label=col, **style)
 
-ax.set_xlabel("Hour rank (1 = highest price of the year)", fontsize=11)
+ax.set_xlabel("Hour rank - all 8,760 hours of the year, sorted from highest price (rank 1) to lowest (rank 8,760)", fontsize=11)
 ax.set_ylabel("Price (EUR/MWh)", fontsize=11)
 ax.set_title("Price Duration Curve: Before vs. After the Cross-Border Coupling Build (2027)",
              fontsize=14.5, weight="bold", pad=12)
@@ -63,7 +63,8 @@ for col, style in styles.items():
     axins.plot(range(1, n + 1), sorted_vals, **style)
 axins.set_xlim(0, 200)
 axins.set_ylim(0, 3100)
-axins.set_title("Zoomed: the top 200 hours", fontsize=9.5)
+axins.set_title("Zoomed: the 200 highest-priced hours of the year\n(same sorted curve as the main chart, NOT the first 200 hours of 2027 - just re-plotted\nzoomed into hour-ranks 1-200, so the shortage-price spikes are actually visible)",
+                fontsize=8.3, linespacing=1.5)
 axins.grid(alpha=0.3)
 axins.tick_params(labelsize=8)
 
