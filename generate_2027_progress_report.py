@@ -2734,6 +2734,93 @@ pdf.callout(
     "better spent elsewhere; flagged for anyone revisiting this specific lever later.",
     color=BAD,
 )
+pdf.body(
+    "A third round tested per-fuel ConventionalTrader markup bands for the three fuels Phase "
+    "31 did not cover (gas, coal, oil - only lignite was swept there), each widened in "
+    "isolation from the Phase 37 baseline: gas -10/10 to -25/25, coal -15/5 to -30/10, oil "
+    "0/0 (bidding at exactly marginal cost in every prior build, with no real justification "
+    "recorded for that being a fixed zero band) to -10/15."
+)
+pdf.table(
+    ["Build", "Excl-shortage correlation", "Excl-shortage bias", "Excl-shortage MAE"],
+    [
+        ["Baseline (Phase 37)", "0.7168", "-2.90", "16.69"],
+        ["Gas (-25/25)", "0.3489", "-1.50", "18.14"],
+        ["Coal (-30/10)", "0.2723", "-0.18", "19.69"],
+        ["Oil (-10/15)", "0.2897", "-0.34", "19.42"],
+    ],
+    [55, 60, 52, 52],
+)
+pdf.callout(
+    "A decisive negative finding across all three fuels - clearer and stronger than Phase 31's lignite result.",
+    "Every widened band crashed excl-shortage correlation (0.72 down to 0.27-0.35), far worse "
+    "than lignite's 'essentially flat' result in Phase 31. Bias improved slightly toward zero "
+    "for all three, which is the misleading part: bias measures average level, correlation "
+    "measures whether the hour-to-hour PATTERN tracks Brainpool's - and it clearly stopped "
+    "doing so. A wider markup band lets each fuel's bid swing further from its real marginal "
+    "cost hour to hour, injecting price volatility that does not correspond to Brainpool's "
+    "own real price shape, even where the resulting average happens to land closer to it. "
+    "Reinforces, more strongly than Phase 31 alone did, that this project's existing markup "
+    "bands are not an under-tuned parameter with headroom to exploit - they are already in a "
+    "reasonable real range, and widening them in any direction actively hurts the metric that "
+    "matters most.",
+    color=BAD,
+)
+pdf.body(
+    "A direct request followed: since Brainpool's own real 2027 forecast never exceeds 330 "
+    "EUR/MWh - implying their underlying model never experiences genuine physical shortage - "
+    "specifically investigate whether any real, defensible AMIRIS mechanism can reduce or "
+    "remove the physical shortage-hour COUNT itself (not just change how a shortage hour's "
+    "price is displayed, as ShortagePriceMethod does)."
+)
+pdf.callout(
+    "Diagnosed the real, specific cause of each of the 7 baseline shortage hours before proposing any fix.",
+    "4 of the 7 hours (11/9, 12/16, both 12/24 hours) are genuinely TRANSMISSION-CEILING-"
+    "BOUND: DE's import sits at 22,011.8 of a real 22,012 MW ceiling (Phase 35/36's flow-"
+    "derived figure), while ROE storage is actively discharging with ample reserves - a real, "
+    "hard physical constraint from observed 2023 flow data, not fixable without artificially "
+    "inflating transmission capacity beyond what was ever actually observed (which this "
+    "project has already rejected as the kind of unjustified tweak that undermines "
+    "defensibility). The other 3 hours (2027-12-17, 06:00-08:00) are different and more "
+    "promising: import sits BELOW the ceiling (19,669-21,224 of 22,012 MW, real spare "
+    "capacity going unused), Pumped Storage is fully depleted, and Reservoir Hydro - despite "
+    "holding 655,000-668,000 MWh of real stored energy and facing an enormous price gap (DE "
+    "heading to 3,000 EUR/MWh vs. ROE at ~163) - discharges ZERO MWh at 06:00. Not a hard "
+    "physical limit; a real, specific, investigable dispatch-timing question.",
+)
+pdf.body(
+    "Hypothesis tested: Reservoir Hydro bids using a 168-hour (1-week) scheduling horizon - "
+    "long enough that it may be smoothing dispatch across the whole week rather than reacting "
+    "to this specific short, sharp spike. Tested shortening it to 48 hours (2 days), isolated "
+    "from every other parameter."
+)
+pdf.table(
+    ["", "Baseline (168h)", "Test (48h)"],
+    [
+        ["Shortage hours", "7", "12 (worse)"],
+        ["The 3 targeted hours (12/17 06:00-08:00)", "3,000 (unresolved)", "3,000 (still unresolved)"],
+        ["Excl-shortage correlation", "0.7168", "0.3077"],
+    ],
+    [70, 55, 55],
+)
+pdf.callout(
+    "A clear, decisive dead end - honestly reported.",
+    "Shortening the horizon did not fix the 3 targeted hours at all (still exactly 3,000 "
+    "EUR/MWh, unchanged) - the hypothesis that a shorter horizon would let Reservoir Hydro "
+    "react to this specific spike was directly tested and disproven. Worse, it resolved one "
+    "unrelated hour (12/16) while creating 6 NEW shortage hours elsewhere (12/17 17:00-20:00, "
+    "12/23 08:00) - a net increase from 7 to 12 - and excl-shortage correlation collapsed to "
+    "0.31. A shorter horizon makes Reservoir Hydro more reactive everywhere, not more reactive "
+    "specifically where it would help; it appears to destabilise dispatch timing broadly "
+    "rather than solve the targeted problem. Consistent with the project's overall finding "
+    "this session: of every real, defensible AMIRIS mechanism tested (ShortagePriceMethod, "
+    "DecayInterval, three fuels' markup bands, Reservoir's scheduling horizon), only "
+    "ShortagePriceMethod produced a genuine improvement - and even that one does not change "
+    "the physical shortage-hour count, only how those hours' price is represented. The 4 "
+    "transmission-bound hours are a real, hard, currently-irreducible constraint; the 3 "
+    "storage-timing hours resisted the one real, well-motivated fix attempted.",
+    color=BAD,
+)
 
 # =====================================================================
 pdf.h1("Where Things Stand Now")

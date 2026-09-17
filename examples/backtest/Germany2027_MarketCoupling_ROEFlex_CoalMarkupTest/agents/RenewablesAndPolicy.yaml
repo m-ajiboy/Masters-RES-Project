@@ -1,0 +1,122 @@
+Agents:
+  - Type: RenewableTrader
+    Id: 11
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 13
+
+  # Reference values below: EEG-derived where a real 2026 auction/rate exists (Solar
+  # Openfield, Wind Onshore, Biomass); AMIRIS's own placeholder LCOE where no real figure is
+  # obtainable yet (Wind Offshore - BNetzA's 2025 offshore auctions received zero bids and the
+  # next round is postponed to 2027 itself, so no genuine 2027 reference exists anywhere).
+  - Type: SupportPolicy
+    Id: 90
+    Attributes:
+      SetSupportData:
+        - PolicySet: SolarRooftopFit
+          FIT:
+            TsFit: 75.0   # EUR/MWh - EEG Section 49 degression schedule extrapolated to 2027.
+                          # FLAG: draft EEG-Novelle 2026 (cabinet-approved 29 Jul 2026, not yet
+                          # law) proposes ending permanent FIT support for new PV <25kW from
+                          # 2027 - this figure assumes current law continues unchanged.
+        - PolicySet: RunOfRiverFit
+          FIT:
+            TsFit: 100.0  # EUR/MWh - AMIRIS's own value (Germany2019); Brainpool gives no
+                          # hydro subsidy rate and no EEG hydro-specific rate was researched.
+        - PolicySet: SolarOpenfieldMpvar
+          MPVAR:
+            Lcoe: 49.0    # EUR/MWh - BNetzA solar auction, volume-weighted award value,
+                          # March 2026 round (4.94 ct/kWh).
+        - PolicySet: WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0    # EUR/MWh - BNetzA wind-onshore auction trend, Feb-Aug 2026 rounds
+                          # (5.06-5.54 ct/kWh), midpoint used as 2027 projection.
+        - PolicySet: WindOffMpvar
+          MPVAR:
+            Lcoe: 187.0   # EUR/MWh - GAP FILL: no real 2027 offshore reference exists (see
+                          # note above). AMIRIS's own Germany2019 offshore clusters'
+                          # capacity-weighted LCOE used as placeholder.
+        - PolicySet: BiomassMpvar
+          MPVAR:
+            Lcoe: 197.0   # EUR/MWh - BNetzA biomass tender, April 2026 round, cleared near
+                          # the published Hoechstwert ceiling (19.43-19.83 ct/kWh) since
+                          # undersubscribed. Deliberate departure from AMIRIS's own example,
+                          # which leaves biomass unsupported - this is a more realistic figure.
+
+  # Solar Grid Feed-in (utility-scale, ground-mounted) - 119.179 GW (Brainpool 2027).
+  # MPVAR per EEG Section 22 (>1MW ground-mounted PV is auction/market-premium, not fixed FIT).
+  - Type: VariableRenewableOperator
+    Id: 60
+    Attributes:
+      PolicySet: SolarOpenfieldMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 119178.868276127
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_openfield_profile.csv"
+
+  # Solar Prosuming (rooftop) - 33.706 GW (Brainpool 2027). FIT per EEG Section 49
+  # (small-scale rooftop remains fixed-tariff eligible under current law).
+  - Type: VariableRenewableOperator
+    Id: 61
+    Attributes:
+      PolicySet: SolarRooftopFit
+      SupportInstrument: FIT
+      EnergyCarrier: PV
+      InstalledPowerInMW: 33706.08139088115
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_rooftop_profile.csv"
+
+  # Wind Onshore - 90.232 GW (Brainpool 2027). MPVAR per EEG Section 22/28 (auction-based
+  # since 2017).
+  - Type: VariableRenewableOperator
+    Id: 70
+    Attributes:
+      PolicySet: WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 90231.75406367402
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile.csv"
+
+  # Wind Offshore - 12.573 GW (Brainpool 2027). Profile: AMIRIS's own, validated against a
+  # real independent benchmark (implied 37.1% annual capacity factor sits inside the real
+  # German offshore fleet's 37-45% range, per EnergyNumbers.info / Fraunhofer research).
+  - Type: VariableRenewableOperator
+    Id: 80
+    Attributes:
+      PolicySet: WindOffMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 12572.84611136014
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_offshore_profile.csv"
+
+  # Run-of-River - 4.161 GW (Brainpool 2027). Weather/flow-driven, so modelled as a
+  # VariableRenewableOperator like AMIRIS's own convention (not as dispatchable storage,
+  # unlike the separate Reservoir Hydro entry in Storage.yaml).
+  - Type: VariableRenewableOperator
+    Id: 50
+    Attributes:
+      PolicySet: RunOfRiverFit
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 4160.632493649675
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/run_of_river_profile.csv"
+
+  # Other Renewables (mapped to Biomass/biogas, the dominant real component of this category)
+  # - 8.25 GW (Brainpool 2027). Dispatch: FROM_FILE, using AMIRIS's own biomass dispatch
+  # shape, since Brainpool gives no biomass-specific hourly profile.
+  - Type: Biogas
+    Id: 52
+    Attributes:
+      PolicySet: BiomassMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: Biogas
+      InstalledPowerInMW: 8250.0
+      OpexVarInEURperMWH: 0.0
+      DispatchTimeSeries: "./timeseries/biomass_profile.csv"
+      OperationMode: FROM_FILE
