@@ -2812,13 +2812,47 @@ pdf.callout(
     "12/23 08:00) - a net increase from 7 to 12 - and excl-shortage correlation collapsed to "
     "0.31. A shorter horizon makes Reservoir Hydro more reactive everywhere, not more reactive "
     "specifically where it would help; it appears to destabilise dispatch timing broadly "
-    "rather than solve the targeted problem. Consistent with the project's overall finding "
-    "this session: of every real, defensible AMIRIS mechanism tested (ShortagePriceMethod, "
-    "DecayInterval, three fuels' markup bands, Reservoir's scheduling horizon), only "
-    "ShortagePriceMethod produced a genuine improvement - and even that one does not change "
-    "the physical shortage-hour count, only how those hours' price is represented. The 4 "
-    "transmission-bound hours are a real, hard, currently-irreducible constraint; the 3 "
-    "storage-timing hours resisted the one real, well-motivated fix attempted.",
+    "rather than solve the targeted problem.",
+    color=BAD,
+)
+pdf.body(
+    "Followed up with the complementary hypothesis on the OTHER storage agent: Pumped "
+    "Storage already has the shortest horizon of the two (24 hours) and was the one found "
+    "completely depleted during the 3 targeted hours - the opposite problem from Reservoir's "
+    "test (an inventory-management question usually helped by MORE foresight, not less), so "
+    "widened it to 168 hours (1 week), matching this same agent's own "
+    "StateDiscretisation.PlanningHorizonInHours (already 168) and Reservoir's original value, "
+    "isolated from every other parameter."
+)
+pdf.table(
+    ["", "Baseline (24h)", "Test (168h)"],
+    [
+        ["Shortage hours", "7", "11 (worse)"],
+        ["The 3 targeted hours (12/17 06:00-08:00)", "3,000 (unresolved)", "3,000 (still unresolved)"],
+        ["Pumped Storage state at those 3 hours", "stored/discharge/charge = 0", "byte-identical: 0/0/0"],
+        ["Excl-shortage correlation", "0.7168", "0.3192"],
+    ],
+    [65, 55, 60],
+)
+pdf.callout(
+    "A clean negative result with a definitive mechanistic explanation, not just another dead end.",
+    "Pumped Storage's state at the 3 targeted hours is BYTE-IDENTICAL between the 24-hour and "
+    "168-hour horizon - the parameter had literally zero effect there. This is itself the "
+    "real answer: Pumped Storage's physical energy capacity (213,104 MWh at a real 6.4-hour "
+    "duration - a genuine technology characteristic of pumped hydro, not a tunable "
+    "parameter) simply cannot hold a multi-day reserve, however far ahead it plans. If it is "
+    "genuinely dispatched earlier in the week for other real price differentials, it has "
+    "nothing left by 12/17 regardless of foresight - the limit is physical capacity, not "
+    "planning horizon. Elsewhere the test behaved like the Reservoir one: resolved 2 of the "
+    "4 transmission-bound hours but created 6 new ones (net 7 to 11), correlation collapsed "
+    "to 0.32. Consistent with the project's overall finding this session: of every real, "
+    "defensible AMIRIS mechanism tested (ShortagePriceMethod, DecayInterval, three fuels' "
+    "markup bands, both storage agents' scheduling horizons), only ShortagePriceMethod "
+    "produced a genuine improvement - and even that changes price representation only, not "
+    "the physical shortage-hour count. The 4 transmission-bound hours are a real, hard, "
+    "currently-irreducible constraint; the 3 storage-timing hours resisted every real, "
+    "well-motivated fix attempted, and Pumped Storage's own physical capacity now explains "
+    "why scheduling-horizon changes specifically could never have worked for it.",
     color=BAD,
 )
 

@@ -1,0 +1,43 @@
+Agents:
+  # Price-responsive electrolysis - see Germany2027_FlexElectrolysis/scenario.yaml metadata
+  # for the full rationale. Modeled the same way AMIRIS's own SectorCoupling demo models a
+  # one-way flexible consumer (EV unidirectional / Heat Pump, Id 701-702 in that demo): a
+  # GenericFlexibilityTrader with NetDischargingPowerInMW=0 (never sells back), a constant
+  # NetInflowPowerInMW that continuously drains an internal energy-content buffer
+  # (representing the mandatory ~14.97 TWh/year of hydrogen production this plant must
+  # deliver), forcing it to periodically recharge (buy electricity) - but MAX_PROFIT lets it
+  # choose WHEN to recharge within its buffer's slack, preferring cheap or negative-price
+  # hours over the flat, every-hour draw used until now.
+  #
+  # Target average draw: 14.966 TWh / 8760 h = 1708.45 MW (matches the flat electrolysis
+  # component's annual total exactly - this only changes WHEN the electricity is drawn, not
+  # how much is drawn over the year).
+  # GrossChargingPowerInMW = 2500 MW gives a ~68% average capacity factor at the target
+  # draw, i.e. genuine headroom to shift toward cheap hours - a documented, round-number
+  # assumption (no real-world electrolyzer flexibility figure for this specific plant exists
+  # to source from).
+  # Buffer size (100,000 MWh, ~58 hours/2.4 days of average draw at full) gives roughly
+  # day-to-day price-shifting flexibility without allowing the plant to sit idle for weeks -
+  # also a documented, round-number assumption.
+  - Type: GenericFlexibilityTrader
+    Id: 704
+    Attributes:
+      Device:
+        ChargingEfficiency: 1.0
+        DischargingEfficiency: 1.0
+        GrossChargingPowerInMW: 2500.0
+        NetDischargingPowerInMW: 0.0
+        EnergyContentLowerLimitInMWH: 0.0
+        EnergyContentUpperLimitInMWH: 100000.0
+        InitialEnergyContentInMWH: 50000.0
+        NetInflowPowerInMW: -1708.45
+        VariableCostInEURperMWH: 0.0
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 500.0
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24

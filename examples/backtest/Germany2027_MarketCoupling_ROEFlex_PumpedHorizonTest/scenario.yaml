@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2027_MarketCoupling_ROEFlex_PumpedHorizonTest"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - an EXPLORATORY SENSITIVITY TEST on top of the standing-best Germany2027_MarketCoupling_ROEFlex (Phase 37), changing exactly ONE thing: ROE Pumped Storage's Bidding.SchedulingHorizonInHours widened from 24 (every prior build) to 168 (1 week), matching this same agent's own StateDiscretisation.PlanningHorizonInHours (already 168) and Reservoir Hydro's original scheduling horizon. Motivated by the same real investigation behind the Reservoir horizon test: Pumped Storage was found completely depleted (~0 MWh) during 2027-12-17 06:00-08:00 (3 of the baseline's 7 shortage hours), with real spare transmission capacity unused that hour - suggesting it may spend its real, physically small (6.4-hour duration) reserve too eagerly without enough foresight to hold some back. Opposite direction from the Reservoir test (which shortened an already-long horizon and made things worse) - this widens an unusually short one, testing whether more foresight helps this inventory-management problem. Explicitly exploratory, aimed at reducing the physical shortage-hour count - not adopted. Germany2027_MarketCoupling_ROEFlex (Phase 37, SchedulingHorizonInHours=24) is kept fully unmodified as the comparison baseline."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE']
