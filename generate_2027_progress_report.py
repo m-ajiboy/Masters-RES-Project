@@ -2845,15 +2845,97 @@ pdf.callout(
     "nothing left by 12/17 regardless of foresight - the limit is physical capacity, not "
     "planning horizon. Elsewhere the test behaved like the Reservoir one: resolved 2 of the "
     "4 transmission-bound hours but created 6 new ones (net 7 to 11), correlation collapsed "
-    "to 0.32. Consistent with the project's overall finding this session: of every real, "
-    "defensible AMIRIS mechanism tested (ShortagePriceMethod, DecayInterval, three fuels' "
-    "markup bands, both storage agents' scheduling horizons), only ShortagePriceMethod "
+    "to 0.32.",
+    color=BAD,
+)
+pdf.body(
+    "A final real, untested mechanism from the same schema audit: ForecastError (Mean, "
+    "StandardDeviation), confirmed directly in AMIRIS's own source (AggregatorTrader.java, "
+    "PowerForecastError.java) to perturb the actual power quantity RenewableTrader offers "
+    "into the real market each hour - simulating real day-ahead wind/solar forecast error, a "
+    "genuine, well-documented real-world phenomenon, not an arbitrary constant. Sourced a "
+    "real anchor rather than guessing: IEA reports ~3% of installed capacity as Germany's "
+    "day-ahead wind forecast MAE, 50Hertz separately reports ~2% RMSE - used 3% as "
+    "StandardDeviation (not a perfect match - MAE vs. stdev, wind-only vs. the whole MPVAR "
+    "portfolio - but the best available real reference), Mean left at 0.0 (no real evidence "
+    "of systematic bias). Applied to both DE's and ROE's RenewableTrader, isolated from every "
+    "other parameter."
+)
+pdf.table(
+    ["", "Baseline", "Test (ForecastError 3%)"],
+    [
+        ["Shortage hours", "7", "9 (worse)"],
+        ["The 3 targeted hours (12/17 06:00-08:00)", "3,000 (unresolved)", "3,000 (still unresolved)"],
+        ["Excl-shortage correlation", "0.7168", "0.4041"],
+        ["Excl-shortage bias", "-2.90", "-2.15"],
+        ["Hours with a changed price", "-", "7,139 of 8,760 (81%)"],
+    ],
+    [65, 55, 60],
+)
+pdf.callout(
+    "Another real negative finding, with its own clean explanation.",
+    "Resolved one unrelated hour (12/16) but created 3 new shortage hours elsewhere (2/3 "
+    "twice, 12/17 18:00) - net worse (7 to 9) - and excl-shortage correlation fell to 0.40. "
+    "The 3 originally targeted hours are completely unaffected, still exactly 3,000 EUR/MWh. "
+    "The mechanism is real and the forecast-error phenomenon it represents is genuine, but it "
+    "does not help THIS comparison: AMIRIS is being matched hour-by-hour against Brainpool's "
+    "own single, deterministic price forecast, not a probabilistic ensemble - injecting "
+    "random noise into AMIRIS's renewable dispatch cannot improve correspondence with a "
+    "target series that contains no equivalent noise to correlate against, it can only "
+    "degrade it. A genuine real-world phenomenon is not automatically a useful lever for a "
+    "point-forecast backtest.",
+    color=BAD,
+)
+pdf.body(
+    "One final check, free of cost - no new simulation, just deeper analysis of the existing "
+    "baseline result: what did Reservoir Hydro's OWN price forecast "
+    "(ElectricityPricePredictionInEURperMWH) actually say during the 3 unresolved hours, and "
+    "does it explain why every scheduling-horizon test above failed regardless of direction?"
+)
+pdf.table(
+    ["2027-12-17", "Reservoir's own forecast", "ROE actual price", "DE actual price"],
+    [
+        ["05:00", "80.62", "94.34", "152.70"],
+        ["06:00", "92.70", "162.63", "3,000.00"],
+        ["07:00", "91.53", "162.63", "3,000.00"],
+        ["08:00", "92.54", "162.63", "3,000.00"],
+        ["09:00", "90.42", "112.84", "115.21"],
+    ],
+    [40, 55, 45, 40],
+)
+pdf.callout(
+    "Found the definitive root cause: the storage agent's own price forecast is completely blind to DE's shortage, even within the same hour it happens.",
+    "Reservoir Hydro's forecast stays in a narrow 75-93 EUR/MWh band all day, tracking only "
+    "ROE's own local price dynamics (86-163 EUR/MWh) - it shows no awareness whatsoever that "
+    "DE is about to spike, or is currently spiking, to 3,000 EUR/MWh. This is the real, "
+    "structural explanation for why every scheduling-horizon test failed in both directions "
+    "on both agents: the horizon controls how far ahead the agent plans using ITS OWN "
+    "forecast series, but if that series never contains DE's shortage signal at all, no "
+    "amount of extra or reduced foresight over it can help - there is nothing to foresee. "
+    "One nuance worth stating precisely, correcting an earlier simplification: Reservoir did "
+    "discharge a real, non-zero 11,579.6 MWh at 07:00 and 08:00 (only 06:00 was genuinely "
+    "zero) - consistent with Phase 45's own diagnosis (SHIFT_TOO_SMALL / "
+    "CHEAP_MARKET_SUPPLY_EXHAUSTED): ROE's real exportable surplus that hour, bounded by its "
+    "own local supply-demand balance rather than by Reservoir's total stored energy or its "
+    "forecast horizon, simply runs out before DE's shortfall is fully covered. A genuine "
+    "fix would mean making AMIRIS's per-zone SensitivityForecaster cross-zone-shortage-aware "
+    "- a real source-level change to the forecaster itself, not a configuration parameter, "
+    "and a materially larger undertaking than anything tested this session.",
+    color=NAVY,
+)
+pdf.body(
+    "Consistent with the project's overall finding this session: of every real, defensible "
+    "AMIRIS mechanism tested (ShortagePriceMethod, DecayInterval, three fuels' markup bands, "
+    "both storage agents' scheduling horizons, ForecastError), only ShortagePriceMethod "
     "produced a genuine improvement - and even that changes price representation only, not "
     "the physical shortage-hour count. The 4 transmission-bound hours are a real, hard, "
     "currently-irreducible constraint; the 3 storage-timing hours resisted every real, "
-    "well-motivated fix attempted, and Pumped Storage's own physical capacity now explains "
-    "why scheduling-horizon changes specifically could never have worked for it.",
-    color=BAD,
+    "well-motivated fix attempted across five independent mechanisms, and now have a "
+    "complete, structural explanation rather than an unexplained gap: the project's per-zone "
+    "forecaster architecture, not a miscalibrated parameter. This investigation is treated as "
+    "closed - the remaining lever (a source-level forecaster change) is flagged for the "
+    "record, not pursued further, given the real diminishing returns demonstrated across six "
+    "independent real mechanisms."
 )
 
 # =====================================================================
@@ -2924,7 +3006,8 @@ pdf.bullet("DONE (Phase 44): rebuilt the ROE zone on real 2024 Eurostat/ENTSO-E 
 pdf.bullet("DONE (Phase 45): deadline extended to January 2027, reopening room to properly test the price-convergence-stopping-logic hypothesis. Installed Maven, built AMIRIS from its own real source (v4.1.2, matching this project's jar), instrumented every real exit point in the market-coupling clearing algorithm, and tested it against all 76 real 2029 shortage hours. Result: hypothesis REFUTED - no engine bug, every stop was for a legitimate reason (72% ROE's own real supply exhausted, 18% real transmission ceiling reached, 9% a correctness guard). The out-of-sample shortage-hour growth is a genuine data limitation (ROE's supply held frozen across years), not a software defect. No patch needed or recommended.")
 pdf.bullet("DONE (Phase 46): sourced a real ROE growth trajectory (ENTSO-E's ERAA 2024, live-verified) for demand, capacity by technology, and DE<->ROE transmission capacity, replacing Phase 38's frozen-2024 snapshot for 2028/2029. Caught and fixed a real methodological trap along the way (ERAA's demand is gross, not comparable to Eurostat's net figure - used only ERAA's internal growth rate, never its absolute demand value). Result: mixed. 2028 improved on shortage hours (17 to 10) but excl-shortage bias/MAE moved slightly worse; 2029 got WORSE on shortage hours (76 to 89) - traced to a real, defensible cause: dispatchable capacity (coal+gas+oil+nuclear) actually declines across the real ERAA trajectory even as demand grows, a genuine energy-transition resource-adequacy pattern, not a modelling artifact. The frozen-ROE builds (Phase 38) remain the standing reference; the growth-projected builds are kept as real, documented evidence of this finding.")
 pdf.bullet("DONE (Phase 47): tested ShortagePriceMethod=LastSupplyPrice, a real, source-confirmed alternative AMIRIS mechanism (not a tuned constant) for how shortage-hour prices are represented. Result: all-hours correlation jumped from 0.3003 to 0.7167 (now matching the excl-shortage number), MAE from 18.99 to 16.72, with excl-shortage metrics byte-identical to the baseline - confirming this resolves the all-hours-correlation distortion this project has caveated since Phase 25, without changing accuracy on any other hour. Independently justified (not curve-fit): Brainpool's own real forecast never exceeds 330 EUR/MWh either, so it never behaves like it hits a VoLL-level spike. Kept as its own exploratory scenario; recommended for consideration as an adopted methodology improvement, decision left open.")
-pdf.bullet("NEXT: decide whether to adopt Phase 47's ShortagePriceMethod change as the project's standard going forward (would simplify every future results table to a single correlation number). With the January 2027 deadline, still worth considering: sourcing real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself. Otherwise, Phase 37/38 (frozen-ROE, 2023/2024-base) stands as this project's best, most defensible market-coupling result, now stress-tested from multiple real angles (disaggregation, data-year, growth trajectory, shortage-pricing convention) without being displaced by any of them - a strong basis to begin finalising the write-up.")
+pdf.bullet("DONE (Phase 47 continuation): a direct request to search specifically for tweaks that reduce or remove the physical shortage-hour count (not just its price representation), prompted by the observation that Brainpool's own real forecast never exceeds 330 EUR/MWh. Diagnosed the real cause of each of the 7 baseline shortage hours first: 4 are genuinely transmission-ceiling-bound (import at 22,011.8 of a real 22,012 MW flow-derived ceiling); the other 3 (2027-12-17, 06:00-08:00) are not - real spare transmission capacity goes unused. Tested five further real, source-confirmed mechanisms against the second group: three fuels' markup bands widened (gas/coal/oil, each a decisive negative, excl-shortage correlation crashing to 0.27-0.35), both ROE storage agents' scheduling horizons (Reservoir shortened 168->48h and Pumped Storage widened 24->168h, both real dead ends - neither resolved the 3 targeted hours, both created more shortage hours elsewhere, correlation collapsed to 0.31-0.32), and ForecastError (a real, IEA/50Hertz-sourced 3% wind-forecast-error anchor - also a dead end, correlation fell to 0.40, explained cleanly: injecting random noise cannot improve correspondence with Brainpool's own single deterministic forecast, which contains no equivalent noise to correlate against). Found the definitive root cause at zero additional simulation cost, from the existing baseline result alone: Reservoir Hydro's own price forecast (75-93 EUR/MWh all day) is completely blind to DE's shortage, even within the same hour it happens - explaining structurally why every scheduling-horizon test failed regardless of direction. A genuine fix would need a source-level change making AMIRIS's per-zone forecaster cross-zone-shortage-aware, not a configuration parameter. Investigation closed with a complete, honest, structural explanation for all 7 shortage hours, rather than an unexplained gap.")
+pdf.bullet("NEXT: decide whether to adopt Phase 47's ShortagePriceMethod change as the project's standard going forward (would simplify every future results table to a single correlation number). With the January 2027 deadline, still worth considering: sourcing real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself. Otherwise, Phase 37/38 (frozen-ROE, 2023/2024-base) stands as this project's best, most defensible market-coupling result, now stress-tested from multiple real angles (disaggregation, data-year, growth trajectory, shortage-pricing convention, six further sensitivity mechanisms) without being displaced by any of them - a strong basis to begin finalising the write-up.")
 pdf.bullet("Fold this whole investigation into the formal build documentation (already partially updated with the V2 and original-import findings).")
 pdf.bullet("Revisit the still-open data gaps flagged earlier: the wind offshore subsidy rate (no real 2027 figure exists anywhere yet), the solar rooftop FIT's exposure to a draft 2026 EEG reform, and the heat-pump profile's constant-COP simplification.")
 

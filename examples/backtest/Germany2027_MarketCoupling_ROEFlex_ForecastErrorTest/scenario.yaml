@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2027_MarketCoupling_ROEFlex_ForecastErrorTest"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - an EXPLORATORY SENSITIVITY TEST on top of the standing-best Germany2027_MarketCoupling_ROEFlex (Phase 37), changing exactly ONE thing: ForecastError added to both DE's and ROE's RenewableTrader (Mean 0.0, StandardDeviation 0.03), never used in any prior build. Confirmed directly in AMIRIS's own source (AggregatorTrader.java, PowerForecastError.java): this perturbs the actual power quantity offered into the real market each hour, simulating real day-ahead wind/solar forecast error - a genuine, well-documented real-world phenomenon. StandardDeviation of 3% is a real, sourced anchor (IEA-reported day-ahead wind forecast MAE of ~3% of installed capacity for Germany; 50Hertz separately reports ~2% RMSE) - not a perfect match (MAE vs. stdev, wind-only vs. the whole MPVAR portfolio) but the best available real reference point; Mean left at 0.0, no real evidence found of systematic directional bias. Explicitly exploratory - not adopted. Germany2027_MarketCoupling_ROEFlex (Phase 37, no ForecastError) is kept fully unmodified as the comparison baseline."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE']

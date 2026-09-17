@@ -1,0 +1,42 @@
+Agents:
+  # Price-responsive e-mobility (smart charging) - see Germany2027_FlexEMobility/scenario.yaml
+  # metadata for the full rationale. Built the same proven way as electrolysis (Phase 20):
+  # a GenericFlexibilityTrader with NetDischargingPowerInMW=0 (one-way, no vehicle-to-grid),
+  # a constant NetInflowPowerInMW draining an internal buffer (representing the mandatory
+  # ~17.81 TWh/year of driving-related charging demand), forcing periodic recharging, but
+  # MAX_PROFIT lets it choose WHEN within the buffer's slack - i.e. "smart charging" instead
+  # of the flat, evening-peaked "unmanaged charging" shape used until now.
+  #
+  # Target average draw: 17.8072 TWh / 8760 h = 2032.78 MW (matches the previous e-mobility
+  # component's annual total exactly - only the timing changes).
+  # GrossChargingPowerInMW = 6000 MW (~34% average capacity factor) is set clearly above the
+  # OLD unmanaged-charging profile's own peak (4,835 MW), so smart charging is never more
+  # constrained than the unmanaged version it replaces - a documented, round-number
+  # assumption (no real fleet-level smart-charging capacity figure for 2027 exists to source
+  # from).
+  # Buffer size (40,000 MWh, ~19.7 hours/0.8 days of average draw) is deliberately smaller
+  # than electrolysis's buffer (2.4 days) - EVs have real drivers who need their cars, so
+  # less multi-day flexibility is assumed than for an industrial electrolyser. Also a
+  # documented, round-number assumption.
+  - Type: GenericFlexibilityTrader
+    Id: 705
+    Attributes:
+      Device:
+        ChargingEfficiency: 1.0
+        DischargingEfficiency: 1.0
+        GrossChargingPowerInMW: 6000.0
+        NetDischargingPowerInMW: 0.0
+        EnergyContentLowerLimitInMWH: 0.0
+        EnergyContentUpperLimitInMWH: 40000.0
+        InitialEnergyContentInMWH: 20000.0
+        NetInflowPowerInMW: -2032.78
+        VariableCostInEURperMWH: 0.0
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 200.0
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24
