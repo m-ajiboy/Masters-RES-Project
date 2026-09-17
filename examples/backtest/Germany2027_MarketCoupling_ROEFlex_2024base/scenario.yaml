@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2027_MarketCoupling_ROEFlex_2024base"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - a 2024-DATA-BASE REBUILD of Phase 37 (Germany2027_MarketCoupling_ROEFlex), prompted by information that Brainpool's own real export/market-coupling scenarios use 2024 as their Rest-of-Europe (ROE) base year, where this project's Phase 33-38 builds used 2023. Isolates that ONE variable: every real 2023 Eurostat/ENTSO-E ROE input (demand total, capacity by technology, cross-border flow-derived transmission capacity, Switzerland's hydro-type split) is refetched for real calendar-year 2024 and live-confirmed available (checked 2026-09-17) - while every other mechanism (the 30% IHA pumped-storage share, DE-sourced storage duration/efficiency technology characteristics, BNetzA-sourced subsidy Lcoe reference values, DE-side demand/generation, the whole subsidy/storage architecture itself) is reused completely unchanged from Phase 37, so any difference in results is attributable to the data-year switch alone, not a methodology change. Bonus: ENTSO-E's SE_4 (Sweden) pair, a documented gap in the 2023 fetch, succeeded this time (ENTSO-E now stable) - so this build's transmission-capacity estimate uses all 11 real neighbouring zones instead of 10. See build_roeflex_2024_agents.py for the full calculation. Germany2027_MarketCoupling_ROEFlex (Phase 37, 2023-base) is kept fully unmodified as the standing comparison baseline."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE']

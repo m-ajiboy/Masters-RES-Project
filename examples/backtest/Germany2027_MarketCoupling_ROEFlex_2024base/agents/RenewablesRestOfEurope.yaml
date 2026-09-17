@@ -1,0 +1,79 @@
+Agents:
+  # Real subsidy realism (unchanged from Phase 37): genuine RenewableTrader + MPVAR
+  # SupportPolicy, Germany's own real BNetzA-auction-sourced 2026 support levels reused as
+  # the best available real EU reference point (unaffected by the ROE data-year change).
+  - Type: RenewableTrader
+    Id: 9011
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 9013
+
+  - Type: SupportPolicy
+    Id: 9090
+    Attributes:
+      SetSupportData:
+        - PolicySet: ROE_WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0   # EUR/MWh - Germany's own real BNetzA wind-onshore auction trend
+        - PolicySet: ROE_WindOffMpvar
+          MPVAR:
+            Lcoe: 52.0   # EUR/MWh - reused from onshore, no separate ROE figure researched
+        - PolicySet: ROE_SolarMpvar
+          MPVAR:
+            Lcoe: 49.0   # EUR/MWh - Germany's own real BNetzA solar-openfield auction
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.0   # unsubsidised - used by run-of-river hydro below (9404).
+
+  # Wind onshore - 74,248.465 MW (real Eurostat 2024, 9 countries). Yield profile: real
+  # 2009 weather (renewables.ninja), capacity-weighted with 2024 capacity weights.
+  - Type: VariableRenewableOperator
+    Id: 9401
+    Attributes:
+      PolicySet: ROE_WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 74248.465
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile_restofeurope_2027.csv"
+
+  # Wind offshore - 11,434.200 MW (real Eurostat 2024, 5 countries with real offshore capacity).
+  - Type: VariableRenewableOperator
+    Id: 9402
+    Attributes:
+      PolicySet: ROE_WindOffMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 11434.200
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_offshore_profile_restofeurope_2027.csv"
+
+  # Solar PV - 102,886.681 MW (real Eurostat 2024, 9 countries; openfield/rooftop not split).
+  - Type: VariableRenewableOperator
+    Id: 9403
+    Attributes:
+      PolicySet: ROE_SolarMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 102886.681
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile_restofeurope_2027.csv"
+
+  # Run-of-river hydro ONLY - 7,700.27 MW. Split out of the real 2024
+  # Eurostat+ENTSO-E Hydro_total (111,173.8 MW) using the same real EU-wide
+  # pumped-storage share (30%, IHA 2023) plus Switzerland's real 2024 ENTSO-E
+  # reservoir:run-of-river ratio (0.9010:0.0990) as the only
+  # real per-technology reference point available for this aggregate. Still a flat 40%
+  # capacity-factor placeholder for the profile itself (Eurostat gives no real weather-driven
+  # run-of-river shape) - unchanged from Phase 34/37.
+  - Type: VariableRenewableOperator
+    Id: 9404
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 7700.27
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_profile_restofeurope_FLAT.csv"

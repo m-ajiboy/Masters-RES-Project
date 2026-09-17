@@ -2438,6 +2438,68 @@ pdf.body(
 )
 
 # =====================================================================
+pdf.h1("Phase 44: 2024-Base Rebuild of the Rest-of-Europe Zone (Robustness Check)")
+pdf.body(
+    "Prompted by information that Brainpool's own real export/market-coupling scenarios use "
+    "2024 as their Rest-of-Europe base year, where Phases 33-38/42/43 all used real 2023 "
+    "Eurostat/ENTSO-E data. Before rebuilding anything, live-checked whether 2024 data was "
+    "actually published yet (not assumed): Eurostat's nrg_cb_e/nrg_inf_epc both returned "
+    "real, non-empty 2024 values, and ENTSO-E confirmed complete 2024 cross-border flow data "
+    "through December (checked 2026-09-17). Rebuilt Phase 37's exact ROE zone (same 9-country "
+    "Eurostat + Switzerland-ENTSO-E-backfill coverage, same 30% IHA pumped-storage share, "
+    "same DE-sourced storage duration/efficiency technology characteristics, same BNetzA-"
+    "sourced subsidy Lcoe values) on real 2024 inputs instead of 2023 - isolating the data-"
+    "year as the only variable, as a genuine robustness check rather than a hoped-for "
+    "improvement."
+)
+pdf.callout(
+    "A real bonus found along the way: the SE_4 (Sweden) gap closed itself.",
+    "SE_4 was the one persistently missing border in every prior fetch (Phase 35's documented "
+    "gap, still missing as of the Phase 43 build) - ENTSO-E is now confirmed stable, and the "
+    "2024 fetch succeeded for SE_4 in both directions on the first attempt. This build's "
+    "transmission-capacity estimate is therefore the first in this project to use all 11 real "
+    "neighbouring zones, not 10.",
+    color=GOOD,
+)
+pdf.body(
+    "Real 2024 vs. 2023 inputs: Rest-of-Europe demand grew from 1,139.3 to 1,158.1 TWh, "
+    "installed capacity from 431,354 to 456,513 MW (mostly solar PV growth), and the real-"
+    "flow-derived transmission ceiling shifted from 21,593/22,012 MW to 20,495/22,954 MW "
+    "(DE-to-ROE/ROE-to-DE). Switzerland's real hydro-type split moved slightly (90.2%:9.8% "
+    "reservoir:run-of-river to 90.1%:9.9%). One minor, genuine script bug hit and fixed along "
+    "the way: the ENTSO-E fetch script's final summary JSON dump crashed on a non-serializable "
+    "pandas Timestamp dict key - the underlying CSVs had already saved correctly before the "
+    "crash, so no data was lost; the summary was reconstructed directly from those CSVs."
+)
+pdf.table(
+    ["Metric", "Phase 37 (2023-base)", "Phase 44 (2024-base)"],
+    [
+        ["Shortage hours (DE)", "7", "5"],
+        ["Mean price (DE)", "67.45", "64.91"],
+        ["Excl-shortage bias", "-2.90", "-4.78"],
+        ["Excl-shortage MAE", "16.69", "17.60"],
+        ["Excl-shortage correlation", "0.7168", "0.7066"],
+    ],
+    [55, 63, 62],
+)
+pdf.callout(
+    "Honest result: the 2024-base rebuild is close to, but not better than, Phase 37 on the metrics that matter most.",
+    "Excl-shortage correlation, bias, and MAE all moved slightly in the wrong direction "
+    "(0.7168 to 0.7066, -2.90 to -4.78, 16.69 to 17.60) - genuinely worse, not noise-level "
+    "identical, though the difference is modest. Shortage hours did improve slightly (7 to "
+    "5). The new ROE storage agents dispatch actively on the 2024 data too (pumped storage: "
+    "1,045 charging / 1,128 discharging hours; reservoir hydro: 2,063 charging / 2,335 "
+    "discharging hours), confirming the storage mechanism itself is not sensitive to the "
+    "data-year choice - it is the underlying demand/capacity/transmission numbers that shift "
+    "the result slightly. Taken together: this is a genuine, informative robustness check, "
+    "not a reason to switch the reference build. Germany2027_MarketCoupling_ROEFlex (Phase "
+    "37, 2023-base) remains the standing best result; Germany2027_MarketCoupling_ROEFlex_"
+    "2024base is kept fully intact as real, documented evidence that the project's result is "
+    "reasonably stable across this particular input choice.",
+    color=NAVY,
+)
+
+# =====================================================================
 pdf.h1("Where Things Stand Now")
 pdf.table(
     ["Build", "Final import ceiling", "Shortage hours", "Mean price", "Bias vs. Brainpool"],
@@ -2501,7 +2563,8 @@ pdf.bullet("DONE (Phase 32-38): built the multi-zone MarketCoupling extension in
 pdf.bullet("DONE (Phase 39-41): investigated the one remaining real gap - shortage hours rising with distance from the calibration year (7 to 17 to 76). Three real, plausible hypotheses tested directly and honestly ruled out: scaling transmission capacity to DE's demand growth (Phase 39, made 2028 worse), MarketCoupling's own configurable parameters (Phase 40, both already unlimited/negligible by decompiled default), and ROE's own storage running physically dry (Phase 41, storage never exceeds 25% of its discharge power during shortage hours). The real remaining clue (DE's import volume staying suspiciously flat regardless of the transmission ceiling) points at AMIRIS's own internal price-convergence stopping logic - confirming this needs patching and rebuilding AMIRIS's Java source, which needs Maven (still not installed on this machine, though git now is).")
 pdf.bullet("DONE (Phase 42): piloted escalating from the single aggregate ROE zone to a real named neighbour (France) - a genuine negative result. Shortage hours worsened (7 to 167), excl-shortage bias and MAE both worsened, with a real, verified cause: pulling France's 61,400 MW nuclear fleet out of the shared pool made the remaining ROE-9 zone genuinely scarcer on its own (0 to 20 shortage hours), and the star-topology simplification (France links only to Germany, not to ROE-9) stranded France's now-abundant cheap surplus behind a comparatively narrow direct link. Per Phase 32's own decision rule, this does not justify further escalation with this topology - Germany2027_MarketCoupling_ROEFlex (Phase 37) remains the standing best result.")
 pdf.bullet("DONE (Phase 43): tested Phase 42's own prediction by fully disaggregating all 10 real neighbours (star topology throughout). Found and fixed a genuine AMIRIS engine bug along the way (storage/renewable dispatch breaks below a certain absolute MW scale - confirmed via bisection and a reproducible scale-up/scale-down test; fixed with a documented, openly-artificial 1,000 MW hydro floor for Denmark and the Netherlands, whose real hydro is far below that scale). Result was more nuanced than Phase 42's own prediction: shortage hours improved over the France-only pilot (167 to 120), bias improved (+9.65 to +4.87), and excl-shortage correlation reached a new project-best (0.7311) - but still short of Phase 37's aggregate on bias and MAE. Phase 37 remains the standing best result.")
-pdf.bullet("NEXT: either install Maven and attempt a targeted source patch to directly test the price-convergence-stopping-logic hypothesis (the one remaining untested lever on the aggregate build's own shortage-hour gap), source real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future escalation a genuine mesh topology, or treat the current market-coupling result (Phase 37, extended to 2028/2029 in Phase 38) as complete and durable enough to write up as-is.")
+pdf.bullet("DONE (Phase 44): rebuilt the ROE zone on real 2024 Eurostat/ENTSO-E data (Brainpool's own reported base year for its export scenarios), isolating the data-year as the only variable against Phase 37's 2023-base build. Live-confirmed 2024 data was actually published before building anything. Result: close to but not better than Phase 37 on every trusted metric (excl-shortage correlation 0.7168 to 0.7066, bias -2.90 to -4.78, MAE 16.69 to 17.60), though shortage hours improved slightly (7 to 5). A genuine, informative robustness check - the project's result is reasonably stable across this input choice - not a reason to switch the reference build. Bonus: SE_4 (Sweden), the one persistently missing border since Phase 35, succeeded on this fetch (ENTSO-E now stable), so this is the first build using all 11 real neighbouring zones.")
+pdf.bullet("NEXT: deadline extended to January 2027, reopening room for the more ambitious remaining lever - install Maven and attempt a targeted source patch to directly test the price-convergence-stopping-logic hypothesis (the one remaining untested lever on the aggregate build's own shortage-hour gap). Also worth pursuing with the extra time: source real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself.")
 pdf.bullet("Fold this whole investigation into the formal build documentation (already partially updated with the V2 and original-import findings).")
 pdf.bullet("Revisit the still-open data gaps flagged earlier: the wind offshore subsidy rate (no real 2027 figure exists anywhere yet), the solar rooftop FIT's exposure to a draft 2026 EEG reform, and the heat-pump profile's constant-COP simplification.")
 

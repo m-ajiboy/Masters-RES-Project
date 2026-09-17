@@ -1,0 +1,102 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  # Coal (2024-base rebuild: real Eurostat 'Coal_and_manufactured_gases', 29,984.053 MW,
+  # 9 countries - same construction as Phase 37, real 2024 data instead of 2023).
+  - Type: PredefinedPlantBuilder
+    Id: 9101
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: HARD_COAL
+        SpecificCo2EmissionsInTperMWH: 0.338
+        OutageFactor: 0.05
+        OpexVarInEURperMWH: 2.5
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.339
+        Maximal: 0.492
+      BlockSizeInMW: 300.0
+      InstalledPowerInMW: 29984.053
+
+  # Natural Gas (real Eurostat 2024, 45,453.248 MW).
+  - Type: PredefinedPlantBuilder
+    Id: 9102
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS
+        SpecificCo2EmissionsInTperMWH: 0.202
+        OutageFactor: 0.05
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.516
+        Maximal: 0.617
+      BlockSizeInMW: 200.0
+      InstalledPowerInMW: 45453.248
+
+  # Oil (real Eurostat 2024, 8,235.026 MW).
+  - Type: PredefinedPlantBuilder
+    Id: 9103
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: OIL
+        SpecificCo2EmissionsInTperMWH: 0.266
+        OutageFactor: 0.07
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.311
+        Maximal: 0.397
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 8235.026
+
+  # Nuclear (real Eurostat 2024, 77,131.000 MW - dominated by France's fleet).
+  - Type: PredefinedPlantBuilder
+    Id: 9104
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NUCLEAR
+        SpecificCo2EmissionsInTperMWH: 0.0
+        OutageFactor: 0.10
+        OpexVarInEURperMWH: 3.0
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.33
+        Maximal: 0.33
+      BlockSizeInMW: 1000.0
+      InstalledPowerInMW: 77131.000
+
+  - Type: ConventionalTrader # HARD_COAL (ROE)
+    Id: 9201
+    Attributes:
+      minMarkup: -15
+      maxMarkup: 5
+  - Type: ConventionalTrader # NATURAL_GAS (ROE)
+    Id: 9202
+    Attributes:
+      minMarkup: -10
+      maxMarkup: 10
+  - Type: ConventionalTrader # OIL (ROE)
+    Id: 9203
+    Attributes:
+      minMarkup: 0
+      maxMarkup: 0
+  - Type: ConventionalTrader # NUCLEAR (ROE)
+    Id: 9204
+    Attributes:
+      minMarkup: -5
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator # HARD_COAL (ROE)
+    Id: 9301
+  - Type: ConventionalPlantOperator # NATURAL_GAS (ROE)
+    Id: 9302
+  - Type: ConventionalPlantOperator # OIL (ROE)
+    Id: 9303
+  - Type: ConventionalPlantOperator # NUCLEAR (ROE)
+    Id: 9304

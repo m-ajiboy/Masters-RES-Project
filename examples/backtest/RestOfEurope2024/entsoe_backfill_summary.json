@@ -1,0 +1,10 @@
+{
+  "ch_annual_demand_GWh": 59466.0,
+  "ch_capacity_MW": {
+    "Hydro Pumped Storage": 6696.7,
+    "Hydro Run-of-river and poundage": 634.5,
+    "Hydro Water Reservoir": 5772.0,
+    "Nuclear": 2970.0
+  },
+  "note": "Manually reconstructed from raw_entsoe/ch_capacity_by_type_2024.csv and the fetch script's own printed log after the automated JSON dump crashed on a non-serializable pandas Timestamp dict key (fetch_entsoe_restofeurope_2024.py, TypeError at the final json.dump - a real, minor bug, not a data problem; the underlying CSVs were saved correctly before the crash)."
+}

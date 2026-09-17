@@ -1,0 +1,88 @@
+﻿======================================================================
+CROSS-BORDER PHYSICAL FLOWS (monthly-chunked): DE/LU <-> 11 neighbouring zones - 2024
+======================================================================
+
+AT:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoAT_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_ATtoDE_2024.csv (8784 hourly rows)
+
+BE:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoBE_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_BEtoDE_2024.csv (8784 hourly rows)
+
+CH:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoCH_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_CHtoDE_2024.csv (8784 hourly rows)
+
+CZ:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoCZ_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_CZtoDE_2024.csv (8784 hourly rows)
+
+DK_1:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoDK_1_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DK_1toDE_2024.csv (8784 hourly rows)
+
+DK_2:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoDK_2_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DK_2toDE_2024.csv (8784 hourly rows)
+
+FR:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoFR_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_FRtoDE_2024.csv (8784 hourly rows)
+
+NO_2:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoNO_2_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_NO_2toDE_2024.csv (8784 hourly rows)
+
+NL:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoNL_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_NLtoDE_2024.csv (8784 hourly rows)
+
+PL:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoPL_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_PLtoDE_2024.csv (8784 hourly rows)
+
+SE_4:
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_DEtoSE_4_2024.csv (8784 hourly rows)
+    saved C:\Users\MuideenOA\Desktop\PyTut\Amiris\examples\backtest\RestOfEurope2024\raw_entsoe\flow_SE_4toDE_2024.csv (8784 hourly rows)
+
+======================================================================
+SWITZERLAND (CH) BACKFILL: annual load and installed capacity (monthly-chunked) - 2024
+======================================================================
+  CH load saved: 8784 rows, mean 6788 MW -> ~59,466 GWh/year
+  CH capacity by production type saved:
+                           Hydro Pumped Storage  ...  Nuclear
+2024-01-02 00:00:00+01:00                6696.7  ...   2970.0
+
+[1 rows x 4 columns]
+python.exe : Traceback (most recent call last):
+At line:1 char:302
++ ... tch {} } }; & "C:\Users\MuideenOA\Desktop\PyTut\Amiris\py313env\Scrip ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  File "C:\Users\MuideenOA\Desktop\PyTut\Amiris\fetch_entsoe_restofeurope_2024.py", line 109, in <module>
+    json.dump({
+    ~~~~~~~~~^^
+        "flows_MWh": flow_results,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "ch_annual_demand_GWh": ch_annual_gwh,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        "ch_capacity_MW": ch_capacity,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    }, f, indent=2, default=str)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\MuideenOA\AppData\Local\Programs\Python\Python313\Lib\json\__init__.py", line 179, in dump
+    for chunk in iterable:
+                 ^^^^^^^^
+  File "C:\Users\MuideenOA\AppData\Local\Programs\Python\Python313\Lib\json\encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "C:\Users\MuideenOA\AppData\Local\Programs\Python\Python313\Lib\json\encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "C:\Users\MuideenOA\AppData\Local\Programs\Python\Python313\Lib\json\encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "C:\Users\MuideenOA\AppData\Local\Programs\Python\Python313\Lib\json\encoder.py", line 377, in _iterencode_dict
+    raise TypeError(f'keys must be str, int, float, bool or None, '
+                    f'not {key.__class__.__name__}')
+TypeError: keys must be str, int, float, bool or None, not Timestamp

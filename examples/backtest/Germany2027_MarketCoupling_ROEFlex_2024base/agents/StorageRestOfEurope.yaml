@@ -1,0 +1,52 @@
+Agents:
+  # ROE Pumped Storage (2024-base rebuild) - 33,424.82 MW. Split out of the real 2024
+  # Eurostat+ENTSO-E Hydro_total (111,173.8 MW) using the real EU-wide
+  # pumped-storage share (30%, 46/153 GW, IHA 2023 - unchanged, not a country/year-specific
+  # figure). Duration/efficiency/charge-discharge ratios reused from Germany's own real,
+  # already-calibrated pumped-hydro figures as technology characteristics (unchanged from
+  # Phase 37). See build_roeflex_2024_agents.py for the full calculation.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 213882.56
+        GrossChargingPowerInMW: 33424.82
+        InitialEnergyContentInMWH: 106941.28
+        NetDischargingPowerInMW: 31753.58
+      StateDiscretisation:
+        EnergyResolutionInMWH: 6290.66
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 9601
+    Type: GenericFlexibilityTrader
+
+  # ROE Reservoir Hydro (2024-base rebuild) - 70,048.76 MW. The conventional
+  # (non-pumped) 70% of ROE's real 2024 hydro total, split into reservoir vs. run-of-river
+  # using Switzerland's real 2024 ENTSO-E capacity-by-type ratio (0.9010 :
+  # 0.0990) - the only real per-technology reference point available for this
+  # aggregate. Duration/efficiency/charge-discharge ratios reused from Germany's own real
+  # reservoir-hydro figures, unchanged from Phase 37.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 7790979.17
+        GrossChargingPowerInMW: 70048.76
+        InitialEnergyContentInMWH: 3895489.58
+        NetDischargingPowerInMW: 81957.05
+      StateDiscretisation:
+        EnergyResolutionInMWH: 6375.60
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 9602
+    Type: GenericFlexibilityTrader

@@ -1,0 +1,11 @@
+Agents:
+  # Rest-of-Europe aggregate demand - real annual total (1,158,143,095 MWh,
+  # Eurostat 2024, 9 countries), shaped using Germany's own real 2027 demand pattern (same
+  # documented simplification as Phase 33/37 - Eurostat has no hourly resolution, so the SHAPE
+  # is borrowed while the TOTAL is real Rest-of-Europe data).
+  - Type: DemandTrader
+    Id: 9500
+    Attributes:
+      Loads:
+        - ValueOfLostLoad: 3000.0
+          DemandSeries: "./timeseries/load_restofeurope_2027_shapeFromDE.csv"
