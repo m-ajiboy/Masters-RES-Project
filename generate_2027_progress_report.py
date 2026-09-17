@@ -2717,6 +2717,23 @@ pdf.body(
     "forward (eliminating the need to report two separate correlation numbers) - a decision "
     "left open pending review, not silently adopted."
 )
+pdf.callout(
+    "A second real candidate tested, honestly reported as a dead end: SensitivityForecaster's MultiplierEstimation.DecayInterval.",
+    "Confirmed directly in AMIRIS's own source (FlexibilityAssessor.java): this real, "
+    "documented parameter controls how fast the forecaster discounts older observations of "
+    "each flexible agent's historical dispatch share when forecasting future prices - every "
+    "prior build uses 168 (1 week). Tested a real, plausible alternative (24, 1 day, matching "
+    "typical storage-cycle timescales) as a pure exploratory test. Result: the simulation "
+    "CRASHED on day 3 (DispatchPlanningError: 'No valid transitions... Merit order might "
+    "provide insufficient (dis-)charging options', Agent 705's dynamic-programming dispatch "
+    "optimiser). Genuinely informative rather than a wasted test: it suggests the project's "
+    "existing 168 value may have been load-bearing for numerical stability (faster decay "
+    "destabilises the flexibility scheduler before enough real observation history "
+    "accumulates), not an arbitrary default inherited without consequence. Not pursued "
+    "further (e.g. intermediate values) given the January 2027 deadline's remaining time is "
+    "better spent elsewhere; flagged for anyone revisiting this specific lever later.",
+    color=BAD,
+)
 
 # =====================================================================
 pdf.h1("Where Things Stand Now")
