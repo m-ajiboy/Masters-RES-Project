@@ -1,0 +1,115 @@
+Agents:
+  - Type: RenewableTrader
+    Id: 11
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 13
+
+  # Subsidy rates UNCHANGED from the calibrated 2027 build - no re-tuning, per this scenario's
+  # purpose as an out-of-sample validation. Brainpool's new multi-year file provides no fresher
+  # 2028-specific EEG/BNetzA rates, so the same real 2026-sourced rates are reused as-is.
+  - Type: SupportPolicy
+    Id: 90
+    Attributes:
+      SetSupportData:
+        - PolicySet: SolarRooftopFit
+          FIT:
+            TsFit: 75.0   # EUR/MWh - EEG Section 49 degression schedule extrapolated to 2027.
+                          # FLAG: draft EEG-Novelle 2026 (cabinet-approved 29 Jul 2026, not yet
+                          # law) proposes ending permanent FIT support for new PV <25kW from
+                          # 2027 - this figure assumes current law continues unchanged.
+        - PolicySet: RunOfRiverFit
+          FIT:
+            TsFit: 100.0  # EUR/MWh - AMIRIS's own value (Germany2019); Brainpool gives no
+                          # hydro subsidy rate and no EEG hydro-specific rate was researched.
+        - PolicySet: SolarOpenfieldMpvar
+          MPVAR:
+            Lcoe: 49.0    # EUR/MWh - BNetzA solar auction, volume-weighted award value,
+                          # March 2026 round (4.94 ct/kWh).
+        - PolicySet: WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0    # EUR/MWh - BNetzA wind-onshore auction trend, Feb-Aug 2026 rounds
+                          # (5.06-5.54 ct/kWh), midpoint used as 2027 projection.
+        - PolicySet: WindOffMpvar
+          MPVAR:
+            Lcoe: 187.0   # EUR/MWh - GAP FILL: no real 2027 offshore reference exists (see
+                          # note above). AMIRIS's own Germany2019 offshore clusters'
+                          # capacity-weighted LCOE used as placeholder.
+        - PolicySet: BiomassMpvar
+          MPVAR:
+            Lcoe: 197.0   # EUR/MWh - BNetzA biomass tender, April 2026 round, cleared near
+                          # the published Hoechstwert ceiling (19.43-19.83 ct/kWh) since
+                          # undersubscribed. Deliberate departure from AMIRIS's own example,
+                          # which leaves biomass unsupported - this is a more realistic figure.
+
+  # Solar Grid Feed-in (utility-scale, ground-mounted) - 132.887 GW (Brainpool 2028).
+  - Type: VariableRenewableOperator
+    Id: 60
+    Attributes:
+      PolicySet: SolarOpenfieldMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 146121.1256849315
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_openfield_profile.csv"
+
+  # Solar Prosuming (rooftop) - 46.736 GW (Brainpool 2029).
+  - Type: VariableRenewableOperator
+    Id: 61
+    Attributes:
+      PolicySet: SolarRooftopFit
+      SupportInstrument: FIT
+      EnergyCarrier: PV
+      InstalledPowerInMW: 46735.86489726028
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_rooftop_profile.csv"
+
+  # Wind Onshore - 106.825 GW (Brainpool 2029).
+  - Type: VariableRenewableOperator
+    Id: 70
+    Attributes:
+      PolicySet: WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 106824.9418744649
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile.csv"
+
+  # Wind Offshore - 17.336 GW (Brainpool 2029). Profile unchanged (AMIRIS's own, validated
+  # against a real independent benchmark - see 2027 build notes).
+  - Type: VariableRenewableOperator
+    Id: 80
+    Attributes:
+      PolicySet: WindOffMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 17336.22484214469
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_offshore_profile.csv"
+
+  # Run-of-River - 4.230 GW (Brainpool 2029). Weather/flow-driven, modelled as a
+  # VariableRenewableOperator, unchanged convention.
+  - Type: VariableRenewableOperator
+    Id: 50
+    Attributes:
+      PolicySet: RunOfRiverFit
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 4229.967778788527
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/run_of_river_profile.csv"
+
+  # Other Renewables (Biomass/biogas) - 8.375 GW (Brainpool 2029, up slightly from 8.25 in
+  # 2027/2028).
+  - Type: Biogas
+    Id: 52
+    Attributes:
+      PolicySet: BiomassMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: Biogas
+      InstalledPowerInMW: 8375.342465753425
+      OpexVarInEURperMWH: 0.0
+      DispatchTimeSeries: "./timeseries/biomass_profile.csv"
+      OperationMode: FROM_FILE

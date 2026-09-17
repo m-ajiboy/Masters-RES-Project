@@ -2572,6 +2572,91 @@ pdf.body(
 )
 
 # =====================================================================
+pdf.h1("Phase 46: Real ERAA-Sourced Growth Trajectory for the Rest-of-Europe Zone")
+pdf.body(
+    "Directly acted on Phase 45's finding by sourcing a real, credible growth trajectory for "
+    "the Rest-of-Europe (ROE) zone's demand, capacity by technology, and DE<->ROE transmission "
+    "capacity for 2028/2029, replacing Phase 38's documented frozen-2024-snapshot "
+    "simplification. Also audited every other DE-side and ROE-side input for whether it "
+    "already varies realistically by year before sourcing anything: confirmed DE's own "
+    "conventional capacity, renewable capacity, CO2 price, fuel prices, and even electrolysis/"
+    "e-mobility flexible-demand targets are ALL already real, year-specific figures sourced "
+    "from Brainpool's own multi-year forecast - the ROE zone was the one genuine gap. "
+    "(Secondary, smaller gap also found and flagged, not chased further: subsidy LCOE "
+    "reference values are static across all years for both DE and ROE.)"
+)
+pdf.callout(
+    "Source: ENTSO-E's real ERAA 2024 (European Resource Adequacy Assessment), live-verified before use.",
+    "Downloaded and confirmed directly (not assumed from a search summary): capacity/demand "
+    "dashboard data (1.28 MB) and NTC transmission data (15 MB), both real, both matching "
+    "expected file sizes on download. Covers target years 2026, 2028, 2030, 2032, 2035 - a "
+    "direct hit on 2028, with 2029 obtained by log-linear interpolation between the real 2028 "
+    "and 2030 figures.",
+)
+pdf.callout(
+    "A real methodological trap found and avoided: ERAA's demand figure is GROSS demand, not comparable to Eurostat's NET figure used everywhere else in this project.",
+    "ERAA's 2026 gross demand for the 9 ROE countries (1,456.3 TWh) is already 25.7% above the "
+    "real 2024 Eurostat net-consumption actual (1,158.1 TWh) - too large a jump for two years, "
+    "prompting a direct check of ENTSO-E's own methodology documentation, which confirmed "
+    "ERAA publishes gross demand (before network losses and self-consumption), a genuinely "
+    "different concept from Eurostat's net final consumption. Using ERAA's absolute demand "
+    "figures directly would have silently introduced a fake ~30% jump. Fix: used only ERAA's "
+    "internal growth RATE (2026->2028->2030, same source both ends, so the definitional issue "
+    "cancels out), applied to the real 2024 Eurostat baseline - the same borrow-a-real-shape/"
+    "rate-anchor-to-a-real-total technique already used throughout this project (e.g. "
+    "Germany's own demand shape rescaled to Eurostat's real ROE total, Phase 33).",
+    color=BAD,
+)
+pdf.body(
+    "Applied the same growth-rate technique to real ERAA capacity data (by technology, 9 "
+    "countries) and real ERAA NTC data (transmission capacity, 98th percentile of real hourly "
+    "values per border, the same percentile technique already used on flow data in Phase "
+    "35/44 - now on real grid-capacity data instead of observed flow). Storage split "
+    "methodology (30% IHA pumped-storage share, Switzerland's real reservoir:run-of-river "
+    "ratio) kept unchanged as a technology-characteristic constant, deliberately isolating "
+    "growth as the one new variable rather than re-deriving the split methodology "
+    "simultaneously."
+)
+pdf.table(
+    ["ROE total", "2024 (real)", "2028 (real-growth-projected)", "2029 (real-growth-projected)"],
+    [
+        ["Installed capacity", "456,513 MW", "499,787 MW (+9.5%)", "517,191 MW (+13.3%)"],
+        ["Demand", "1,158.1 TWh", "1,223.1 TWh (+5.6%)", "1,264.2 TWh (+9.2%)"],
+        ["DE->ROE transmission", "20,495 MW", "22,526 MW (+9.9%)", "24,439 MW (+19.2%)"],
+        ["Dispatchable capacity*", "160,803 MW", "158,321 MW (-1.5%)", "151,815 MW (-5.6%)"],
+    ],
+    [50, 45, 62, 62],
+)
+pdf.body("*Coal + gas + oil + nuclear combined - included separately because it drives the result below.")
+pdf.table(
+    ["Metric", "2028 Frozen", "2028 Growth", "2029 Frozen", "2029 Growth"],
+    [
+        ["Shortage hours", "17", "10", "76", "89"],
+        ["Excl-shortage correlation", "0.7181", "0.7102", "0.7518", "0.7565"],
+        ["Excl-shortage bias", "+1.08", "-5.48", "+3.21", "-2.92"],
+        ["Excl-shortage MAE", "17.05", "18.61", "17.45", "17.94"],
+    ],
+    [55, 40, 40, 40, 40],
+)
+pdf.callout(
+    "Honest result: mixed, not a clean win - and the reason why is itself a real, informative finding.",
+    "2028 improved on shortage hours (17 to 10, a genuine reduction) and all-hours "
+    "correlation, but excl-shortage bias and MAE both moved slightly the wrong way. 2029 is "
+    "more striking: shortage hours got WORSE (76 to 89), contradicting the simple expectation "
+    "that more ROE supply should relieve scarcity. Investigated why directly rather than "
+    "treat it as noise: dispatchable capacity (coal+gas+oil+nuclear combined) actually "
+    "DECLINES across the real ERAA trajectory (160,803 to 158,321 to 151,815 MW, 2024 to 2028 "
+    "to 2029) even as demand grows and variable renewable capacity expands substantially. "
+    "This is a genuine, well-documented real-world phenomenon - a resource-adequacy gap "
+    "during energy transition, where fossil retirement outpaces dispatchable replacement - not "
+    "a modelling artifact. ERAA itself exists specifically to study this exact risk. The "
+    "growth-projected builds are kept as real, documented evidence of this finding; the "
+    "frozen-ROE builds (Phase 38) remain the standing reference for the project's headline "
+    "out-of-sample comparison, since the growth variant does not cleanly outperform it.",
+    color=AMBER,
+)
+
+# =====================================================================
 pdf.h1("Where Things Stand Now")
 pdf.table(
     ["Build", "Final import ceiling", "Shortage hours", "Mean price", "Bias vs. Brainpool"],
@@ -2637,7 +2722,8 @@ pdf.bullet("DONE (Phase 42): piloted escalating from the single aggregate ROE zo
 pdf.bullet("DONE (Phase 43): tested Phase 42's own prediction by fully disaggregating all 10 real neighbours (star topology throughout). Found and fixed a genuine AMIRIS engine bug along the way (storage/renewable dispatch breaks below a certain absolute MW scale - confirmed via bisection and a reproducible scale-up/scale-down test; fixed with a documented, openly-artificial 1,000 MW hydro floor for Denmark and the Netherlands, whose real hydro is far below that scale). Result was more nuanced than Phase 42's own prediction: shortage hours improved over the France-only pilot (167 to 120), bias improved (+9.65 to +4.87), and excl-shortage correlation reached a new project-best (0.7311) - but still short of Phase 37's aggregate on bias and MAE. Phase 37 remains the standing best result.")
 pdf.bullet("DONE (Phase 44): rebuilt the ROE zone on real 2024 Eurostat/ENTSO-E data (Brainpool's own reported base year for its export scenarios), isolating the data-year as the only variable against Phase 37's 2023-base build. Live-confirmed 2024 data was actually published before building anything. Result: close to but not better than Phase 37 on every trusted metric (excl-shortage correlation 0.7168 to 0.7066, bias -2.90 to -4.78, MAE 16.69 to 17.60), though shortage hours improved slightly (7 to 5). A genuine, informative robustness check - the project's result is reasonably stable across this input choice - not a reason to switch the reference build. Bonus: SE_4 (Sweden), the one persistently missing border since Phase 35, succeeded on this fetch (ENTSO-E now stable), so this is the first build using all 11 real neighbouring zones.")
 pdf.bullet("DONE (Phase 45): deadline extended to January 2027, reopening room to properly test the price-convergence-stopping-logic hypothesis. Installed Maven, built AMIRIS from its own real source (v4.1.2, matching this project's jar), instrumented every real exit point in the market-coupling clearing algorithm, and tested it against all 76 real 2029 shortage hours. Result: hypothesis REFUTED - no engine bug, every stop was for a legitimate reason (72% ROE's own real supply exhausted, 18% real transmission ceiling reached, 9% a correctness guard). The out-of-sample shortage-hour growth is a genuine data limitation (ROE's supply held frozen across years), not a software defect. No patch needed or recommended.")
-pdf.bullet("NEXT: given Phase 45's finding, the best-evidenced remaining lever is a real, sourced Rest-of-Europe capacity-growth trajectory for 2028/2029 (AMIRIS's InstalledPowerInMW and OpexVarInEURperMWH are already genuine time-series inputs, confirmed directly from schema.yaml - no source patch required for this). Also still worth considering with the extra time: sourcing real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself.")
+pdf.bullet("DONE (Phase 46): sourced a real ROE growth trajectory (ENTSO-E's ERAA 2024, live-verified) for demand, capacity by technology, and DE<->ROE transmission capacity, replacing Phase 38's frozen-2024 snapshot for 2028/2029. Caught and fixed a real methodological trap along the way (ERAA's demand is gross, not comparable to Eurostat's net figure - used only ERAA's internal growth rate, never its absolute demand value). Result: mixed. 2028 improved on shortage hours (17 to 10) but excl-shortage bias/MAE moved slightly worse; 2029 got WORSE on shortage hours (76 to 89) - traced to a real, defensible cause: dispatchable capacity (coal+gas+oil+nuclear) actually declines across the real ERAA trajectory even as demand grows, a genuine energy-transition resource-adequacy pattern, not a modelling artifact. The frozen-ROE builds (Phase 38) remain the standing reference; the growth-projected builds are kept as real, documented evidence of this finding.")
+pdf.bullet("NEXT: with the January 2027 deadline, still worth considering: sourcing real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself. Otherwise, Phase 37/38 (frozen-ROE, 2023/2024-base) stands as this project's best, most defensible market-coupling result, now stress-tested from multiple real angles (disaggregation, data-year, growth trajectory) without being displaced by any of them - a strong basis to begin finalising the write-up.")
 pdf.bullet("Fold this whole investigation into the formal build documentation (already partially updated with the V2 and original-import findings).")
 pdf.bullet("Revisit the still-open data gaps flagged earlier: the wind offshore subsidy rate (no real 2027 figure exists anywhere yet), the solar rooftop FIT's exposure to a draft 2026 EEG reform, and the heat-pump profile's constant-COP simplification.")
 

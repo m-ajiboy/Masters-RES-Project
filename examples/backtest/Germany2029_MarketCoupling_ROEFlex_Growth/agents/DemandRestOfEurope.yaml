@@ -1,0 +1,11 @@
+Agents:
+  # Rest-of-Europe aggregate demand - real ERAA-growth-rate-projected 2029 total
+  # (1,264,161 MWh), applied to the real 2024 Eurostat baseline (see
+  # build_roeflex_growth_timeseries.py). Shape still borrowed from Germany's own real 2029
+  # demand pattern.
+  - Type: DemandTrader
+    Id: 9500
+    Attributes:
+      Loads:
+        - ValueOfLostLoad: 3000.0
+          DemandSeries: "./timeseries/load_restofeurope_2029_shapeFromDE.csv"

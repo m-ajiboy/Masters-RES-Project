@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2029_MarketCoupling_ROEFlex_Growth"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2029 - a GROWTH-PROJECTED rebuild of Germany2029_MarketCoupling_ROEFlex (the frozen-ROE out-of-sample build), same real ERAA-growth-rate methodology as Germany2028_MarketCoupling_ROEFlex_Growth (see that scenario's description for the full rationale). ROE's demand, capacity, and transmission capacity are projected via ENTSO-E's real ERAA 2024 growth rates (2026->2028->2030, this year log-linearly interpolated at the midpoint) applied to the real 2024 Eurostat/ENTSO-E baseline, instead of held frozen. Same country coverage, storage-split methodology, and subsidy reference values as every prior ROE build - isolating growth as the one new variable. See build_roeflex_growth_timeseries.py, build_roeflex_growth_agents.py, _compute_roe_growth_projection.py, and _compute_ntc_growth.py for the full build. Germany2029_MarketCoupling_ROEFlex (frozen-ROE) is kept fully unmodified as the comparison baseline."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2028-12-30_23:58:00
+    StopTime: 2029-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE']

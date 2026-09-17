@@ -1,0 +1,72 @@
+Agents:
+  - Type: RenewableTrader
+    Id: 9011
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 9013
+
+  - Type: SupportPolicy
+    Id: 9090
+    Attributes:
+      SetSupportData:
+        - PolicySet: ROE_WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_WindOffMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_SolarMpvar
+          MPVAR:
+            Lcoe: 49.0
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.0
+
+  # Wind onshore - real ERAA-growth-projected 2029, 88,956.977 MW.
+  - Type: VariableRenewableOperator
+    Id: 9401
+    Attributes:
+      PolicySet: ROE_WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 88956.977
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile_restofeurope_2029.csv"
+
+  # Wind offshore - real ERAA-growth-projected 2029, 24,121.718 MW.
+  - Type: VariableRenewableOperator
+    Id: 9402
+    Attributes:
+      PolicySet: ROE_WindOffMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 24121.718
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_offshore_profile_restofeurope_2029.csv"
+
+  # Solar PV - real ERAA-growth-projected 2029, 142,778.826 MW.
+  - Type: VariableRenewableOperator
+    Id: 9403
+    Attributes:
+      PolicySet: ROE_SolarMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 142778.826
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile_restofeurope_2029.csv"
+
+  # Run-of-river hydro - 7,003.34 MW, split from the real ERAA-growth-projected
+  # 2029 Hydro_total (101,111.9 MW) using the same 30% IHA pumped-storage share and
+  # Switzerland's real reservoir:run-of-river ratio as Phase 37/44 (technology-characteristic
+  # constants, not re-derived for this growth investigation).
+  - Type: VariableRenewableOperator
+    Id: 9404
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 7003.34
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_profile_restofeurope_FLAT.csv"

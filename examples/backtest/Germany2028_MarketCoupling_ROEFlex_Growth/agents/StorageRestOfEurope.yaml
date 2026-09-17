@@ -1,0 +1,42 @@
+Agents:
+  # ROE Pumped Storage (real ERAA-growth-projected 2028) - 29,859.03 MW.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 191065.38
+        GrossChargingPowerInMW: 29859.03
+        InitialEnergyContentInMWH: 95532.69
+        NetDischargingPowerInMW: 28366.08
+      StateDiscretisation:
+        EnergyResolutionInMWH: 5619.57
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 9601
+    Type: GenericFlexibilityTrader
+
+  # ROE Reservoir Hydro (real ERAA-growth-projected 2028) - 62,575.90 MW.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 6959830.39
+        GrossChargingPowerInMW: 62575.90
+        InitialEnergyContentInMWH: 3479915.19
+        NetDischargingPowerInMW: 73213.80
+      StateDiscretisation:
+        EnergyResolutionInMWH: 5695.44
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 9602
+    Type: GenericFlexibilityTrader

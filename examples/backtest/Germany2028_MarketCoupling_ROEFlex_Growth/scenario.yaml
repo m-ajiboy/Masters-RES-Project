@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2028_MarketCoupling_ROEFlex_Growth"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2028 - a GROWTH-PROJECTED rebuild of Germany2028_MarketCoupling_ROEFlex (the frozen-ROE out-of-sample build), prompted by Phase 45's finding that the out-of-sample shortage-hour growth is a genuine data limitation (ROE's supply held frozen across years), not an engine defect - directly motivating a real, sourced ROE growth trajectory instead. ROE's demand, capacity by technology, and DE<->ROE transmission capacity are no longer frozen at the 2024 snapshot: real growth RATES from ENTSO-E's ERAA 2024 (European Resource Adequacy Assessment, National Trends scenario, 2026->2028->2030, live-verified download) are applied to the real 2024 Eurostat/ENTSO-E baseline (Phase 44) - isolating growth as the one new variable, same country coverage, same storage-split methodology (30% IHA pumped-storage share, Switzerland's real reservoir:run-of-river ratio), same subsidy reference values as every prior ROE build. One real methodological catch made and fixed along the way: ERAA's own demand figure is GROSS demand (confirmed via ENTSO-E's methodology docs), a different concept from Eurostat's NET final consumption used everywhere else in this project - so only ERAA's internal growth RATE is used, never its absolute demand figure, avoiding a spurious ~30% mismatch. Transmission capacity growth uses ERAA's own real hourly NTC data (98th percentile per border, same technique as Phase 35/44's flow-based estimate), not observed flow. See build_roeflex_growth_timeseries.py, build_roeflex_growth_agents.py, _compute_roe_growth_projection.py, and _compute_ntc_growth.py for the full build. Germany2028_MarketCoupling_ROEFlex (frozen-ROE) is kept fully unmodified as the comparison baseline."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2027-12-31_23:58:00
+    StopTime: 2028-12-30_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE']

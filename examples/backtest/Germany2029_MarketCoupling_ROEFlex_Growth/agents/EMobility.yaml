@@ -1,0 +1,35 @@
+Agents:
+  # Price-responsive e-mobility (smart charging) - OUT-OF-SAMPLE VALIDATION for 2029 (second
+  # validation year): same design as Phase 21 (Germany2027_FlexEMobility). GrossChargingPowerInMW
+  # kept at the exact ratio-scaled value (2.9516x average draw, unchanged). NECESSARY TECHNICAL
+  # DEVIATION: the ratio-scaled buffer (19.68h of average draw, ~57,716 MWh) made AMIRIS's own
+  # dispatch-planning solver throw "Maybe too large inflows/outflows" for this specific year's
+  # price pattern - a genuine solver feasibility limit, not a numerical rounding artefact (a
+  # coarser discretisation alone did not fix it). Enlarging the buffer to a round 100,000 MWh
+  # (~34h of average draw) resolved it. This is a technical fix to keep the mechanism runnable,
+  # not a re-tuning of the calibrated design intent - flagged here transparently.
+  #
+  # Target average draw: 25.694 TWh / 8760 h = 2933.12 MW (2029's own Brainpool e-mobility
+  # target - up from 21.393 TWh in 2028, 17.807 TWh in 2027).
+  - Type: GenericFlexibilityTrader
+    Id: 705
+    Attributes:
+      Device:
+        ChargingEfficiency: 1.0
+        DischargingEfficiency: 1.0
+        GrossChargingPowerInMW: 8657.45
+        NetDischargingPowerInMW: 0.0
+        EnergyContentLowerLimitInMWH: 0.0
+        EnergyContentUpperLimitInMWH: 100000.0
+        InitialEnergyContentInMWH: 50000.0
+        NetInflowPowerInMW: -2933.12
+        VariableCostInEURperMWH: 0.0
+      Assessment:
+        Type: MAX_PROFIT
+      StateDiscretisation:
+        Type: STATE_OF_CHARGE
+        PlanningHorizonInHours: 168
+        EnergyResolutionInMWH: 500.0
+      Bidding:
+        Type: ENSURE_DISPATCH
+        SchedulingHorizonInHours: 24
