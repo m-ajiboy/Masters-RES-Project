@@ -2657,6 +2657,68 @@ pdf.callout(
 )
 
 # =====================================================================
+pdf.h1("Phase 47: ShortagePriceMethod - a Real, Documented Alternative Mechanism That Resolves the All-Hours Correlation Distortion")
+pdf.body(
+    "Prompted by a direct question: beyond real-data-grounded calibration (the standard this "
+    "project has held throughout - every accepted parameter change had independent real "
+    "justification BEFORE testing, and pure curve-fitting purely to inflate a correlation "
+    "number has been explicitly rejected once already, see Next Steps), are there real, "
+    "documented AMIRIS mechanisms - not arbitrary tuned constants - that remain genuinely "
+    "untested? Built a grounded inventory by reading AMIRIS's own schema and source directly "
+    "rather than guessing, surfacing several real optional attributes never yet touched in "
+    "this project (ForecastError for renewable forecasting noise/bias, Strategist bidding "
+    "tolerance/forecast-update settings, and ShortagePriceMethod on DayAheadMarket)."
+)
+pdf.callout(
+    "ShortagePriceMethod: a genuine, documented alternative to the VoLL convention used throughout this project.",
+    "Confirmed directly in AMIRIS's own source (MarketClearing.java): the default "
+    "(ValueOfLostLoad, used in every prior build here) caps a shortage hour's price at the "
+    "DemandTrader's own administratively-set VoLL (3,000 EUR/MWh). The real alternative, "
+    "LastSupplyPrice, instead caps it at the highest REAL supply bid's own offer price - a "
+    "genuine, economically meaningful convention distinguishing an administrative price cap "
+    "from a technically-grounded one, not a number chosen to fit. Independently supported by "
+    "Brainpool's own real data: their forecast never exceeds 330 EUR/MWh across the whole "
+    "year, meaning Brainpool's own methodology never behaves like it is hitting anything "
+    "resembling a VoLL-level spike either.",
+)
+pdf.body(
+    "Tested directly (Germany2027_MarketCoupling_ROEFlex_LastSupplyPrice, one change from the "
+    "Phase 37 baseline: ShortagePriceMethod set to LastSupplyPrice for both DE and ROE zones)."
+)
+pdf.table(
+    ["Metric", "Baseline (VoLL, Phase 37)", "LastSupplyPrice"],
+    [
+        ["All-hours correlation", "0.3003", "0.7167"],
+        ["Excl-shortage correlation", "0.7168", "0.7168 (unchanged)"],
+        ["All-hours MAE", "18.99", "16.72"],
+        ["Excl-shortage MAE", "16.69", "16.69 (unchanged)"],
+        ["Price during the 7 real shortage hours", "3,000.00 (fixed)", "~161-163 (real supply-bid-capped)"],
+    ],
+    [55, 65, 62],
+)
+pdf.callout(
+    "What actually changed, precisely - avoiding overclaiming.",
+    "The 7 real hours of physical scarcity (unmet demand) are exactly the same 7 hours as "
+    "before - LastSupplyPrice does not make shortage disappear, only changes how its PRICE is "
+    "represented. The excl-shortage metrics are byte-identical to the baseline, confirming "
+    "this is not new accuracy on the other 8,753 hours - it is a more realistic price "
+    "convention applied to the extreme tail, which happens to also remove the all-hours-"
+    "correlation distortion this project has had to caveat since Phase 25 ('a handful of "
+    "extreme shortage-hour outliers dominate the Pearson correlation'). Genuinely different in "
+    "kind from the constant-tweaking approach explicitly rejected earlier: this is a real, "
+    "source-confirmed AMIRIS mechanism, independently justified by Brainpool's own observed "
+    "price behaviour, not a number chosen to force agreement.",
+    color=GOOD,
+)
+pdf.body(
+    "Kept as its own separate, fully documented exploratory scenario alongside the untouched "
+    "Phase 37 baseline. Recommendation: given the strength of the independent justification, "
+    "worth considering as an adopted improvement to the project's standard methodology going "
+    "forward (eliminating the need to report two separate correlation numbers) - a decision "
+    "left open pending review, not silently adopted."
+)
+
+# =====================================================================
 pdf.h1("Where Things Stand Now")
 pdf.table(
     ["Build", "Final import ceiling", "Shortage hours", "Mean price", "Bias vs. Brainpool"],
@@ -2723,7 +2785,8 @@ pdf.bullet("DONE (Phase 43): tested Phase 42's own prediction by fully disaggreg
 pdf.bullet("DONE (Phase 44): rebuilt the ROE zone on real 2024 Eurostat/ENTSO-E data (Brainpool's own reported base year for its export scenarios), isolating the data-year as the only variable against Phase 37's 2023-base build. Live-confirmed 2024 data was actually published before building anything. Result: close to but not better than Phase 37 on every trusted metric (excl-shortage correlation 0.7168 to 0.7066, bias -2.90 to -4.78, MAE 16.69 to 17.60), though shortage hours improved slightly (7 to 5). A genuine, informative robustness check - the project's result is reasonably stable across this input choice - not a reason to switch the reference build. Bonus: SE_4 (Sweden), the one persistently missing border since Phase 35, succeeded on this fetch (ENTSO-E now stable), so this is the first build using all 11 real neighbouring zones.")
 pdf.bullet("DONE (Phase 45): deadline extended to January 2027, reopening room to properly test the price-convergence-stopping-logic hypothesis. Installed Maven, built AMIRIS from its own real source (v4.1.2, matching this project's jar), instrumented every real exit point in the market-coupling clearing algorithm, and tested it against all 76 real 2029 shortage hours. Result: hypothesis REFUTED - no engine bug, every stop was for a legitimate reason (72% ROE's own real supply exhausted, 18% real transmission ceiling reached, 9% a correctness guard). The out-of-sample shortage-hour growth is a genuine data limitation (ROE's supply held frozen across years), not a software defect. No patch needed or recommended.")
 pdf.bullet("DONE (Phase 46): sourced a real ROE growth trajectory (ENTSO-E's ERAA 2024, live-verified) for demand, capacity by technology, and DE<->ROE transmission capacity, replacing Phase 38's frozen-2024 snapshot for 2028/2029. Caught and fixed a real methodological trap along the way (ERAA's demand is gross, not comparable to Eurostat's net figure - used only ERAA's internal growth rate, never its absolute demand value). Result: mixed. 2028 improved on shortage hours (17 to 10) but excl-shortage bias/MAE moved slightly worse; 2029 got WORSE on shortage hours (76 to 89) - traced to a real, defensible cause: dispatchable capacity (coal+gas+oil+nuclear) actually declines across the real ERAA trajectory even as demand grows, a genuine energy-transition resource-adequacy pattern, not a modelling artifact. The frozen-ROE builds (Phase 38) remain the standing reference; the growth-projected builds are kept as real, documented evidence of this finding.")
-pdf.bullet("NEXT: with the January 2027 deadline, still worth considering: sourcing real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself. Otherwise, Phase 37/38 (frozen-ROE, 2023/2024-base) stands as this project's best, most defensible market-coupling result, now stress-tested from multiple real angles (disaggregation, data-year, growth trajectory) without being displaced by any of them - a strong basis to begin finalising the write-up.")
+pdf.bullet("DONE (Phase 47): tested ShortagePriceMethod=LastSupplyPrice, a real, source-confirmed alternative AMIRIS mechanism (not a tuned constant) for how shortage-hour prices are represented. Result: all-hours correlation jumped from 0.3003 to 0.7167 (now matching the excl-shortage number), MAE from 18.99 to 16.72, with excl-shortage metrics byte-identical to the baseline - confirming this resolves the all-hours-correlation distortion this project has caveated since Phase 25, without changing accuracy on any other hour. Independently justified (not curve-fit): Brainpool's own real forecast never exceeds 330 EUR/MWh either, so it never behaves like it hits a VoLL-level spike. Kept as its own exploratory scenario; recommended for consideration as an adopted methodology improvement, decision left open.")
+pdf.bullet("NEXT: decide whether to adopt Phase 47's ShortagePriceMethod change as the project's standard going forward (would simplify every future results table to a single correlation number). With the January 2027 deadline, still worth considering: sourcing real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself. Otherwise, Phase 37/38 (frozen-ROE, 2023/2024-base) stands as this project's best, most defensible market-coupling result, now stress-tested from multiple real angles (disaggregation, data-year, growth trajectory, shortage-pricing convention) without being displaced by any of them - a strong basis to begin finalising the write-up.")
 pdf.bullet("Fold this whole investigation into the formal build documentation (already partially updated with the V2 and original-import findings).")
 pdf.bullet("Revisit the still-open data gaps flagged earlier: the wind offshore subsidy rate (no real 2027 figure exists anywhere yet), the solar rooftop FIT's exposure to a draft 2026 EEG reform, and the heat-pump profile's constant-COP simplification.")
 
