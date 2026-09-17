@@ -2500,6 +2500,78 @@ pdf.callout(
 )
 
 # =====================================================================
+pdf.h1("Phase 45: Source-Level Investigation of the Price-Convergence-Stopping-Logic Hypothesis")
+pdf.body(
+    "Directly tested the one remaining untested lever flagged since Phase 39-41: whether "
+    "AMIRIS's own internal market-clearing algorithm was stopping prematurely - leaving real "
+    "transmission capacity and real cheap Rest-of-Europe supply unused - as the cause of "
+    "shortage hours growing with distance from the 2027 calibration year (7 to 17 to 76 for "
+    "2027/2028/2029). Set up the real build toolchain first: installed JDK 26 (already "
+    "present) and Apache Maven 3.9.9, cloned AMIRIS's own real source repository "
+    "(gitlab.com/dlr-ve/esy/amiris/amiris, referenced directly in this project's own "
+    "schema.yaml files) and checked out the exact v4.1.2 tag matching this project's jar - "
+    "confirmed with a clean compile (318 class files, no errors) before touching anything."
+)
+pdf.callout(
+    "Read the actual clearing algorithm (DemandBalancer.java) rather than guess.",
+    "AMIRIS's market coupling is not a full joint optimisation - it is a real, documented "
+    "greedy heuristic: each round it finds the two markets with the largest price gap and "
+    "shifts the minimum demand needed to close it, repeating until no valid shift remains. "
+    "The loop can legitimately stop for several distinct reasons, not just the transmission "
+    "ceiling being reached - most notably when the cheap market's own real supply is already "
+    "fully consumed by its own demand, regardless of any remaining transmission room. This "
+    "reframed the investigation: the 'stopping logic' might be working correctly and simply "
+    "reporting a genuine supply constraint, not a defect - directly testable by instrumenting "
+    "the code rather than assuming either way."
+)
+pdf.body(
+    "Instrumented every real exit point in the algorithm with a distinct, labelled diagnostic "
+    "log line (also fixing a genuine small pre-existing bug found along the way: AMIRIS's own "
+    "bundled log4j.properties already scaffolded a dedicated diagnostic logger for this exact "
+    "class, but its category name was stale from a past package refactor and never actually "
+    "matched anything - corrected it). Rebuilt the jar, ran the real Germany2029_MarketCoupling_"
+    "ROEFlex scenario (this project's worst out-of-sample year) with it, and filtered the "
+    "resulting log for the exact real shortage-hour timestamps already known from the existing "
+    "result data - all 76 of them, matched by day-of-year after catching and fixing a mistaken "
+    "assumption about FAME's internal timestamp format along the way (its parenthetical "
+    "month/day-looking segment is not a real calendar date - confirmed directly when day 365 "
+    "printed as the impossible '(12/53)')."
+)
+pdf.table(
+    ["Why DE stopped importing more from ROE that hour", "Shortage hours", "% of 76"],
+    [
+        ["ROE's own real supply already fully consumed", "55", "72%"],
+        ["Real transmission ceiling fully used up", "14", "18%"],
+        ["Shifting further would overshoot and flip prices (correctness guard)", "7", "9%"],
+    ],
+    [125, 35, 25],
+)
+pdf.callout(
+    "Conclusion: no engine bug found. The hypothesis is refuted, and the real explanation is more useful than a bug would have been.",
+    "In every one of the 76 real 2029 shortage hours, the algorithm stopped for a legitimate, "
+    "verifiable reason - never because it gave up early while real capacity or real cheap "
+    "supply was still available. The dominant reason (72% of hours) is that Rest-of-Europe's "
+    "own real supply - held frozen at its 2023/2024 snapshot per Phase 38's documented "
+    "out-of-sample methodology - is simply not large enough to cover an un-recalibrated "
+    "future Germany's needs as the target year drifts further from the calibration year. This "
+    "is a genuine structural finding, not an artifact: AMIRIS's market-coupling engine is "
+    "working correctly, and the out-of-sample shortage-hour growth is a real data limitation "
+    "(ROE's supply not growing across years) rather than a software defect. No source patch is "
+    "recommended or needed - the instrumented jar was used only for this one-off diagnostic "
+    "run in a separate location and was never substituted into any real scenario folder; every "
+    "existing result in this project is unaffected and unchanged.",
+    color=GOOD,
+)
+pdf.body(
+    "This finding directly connects to and motivates the parallel growth/inflation "
+    "investigation now underway: since AMIRIS's InstalledPowerInMW and OpexVarInEURperMWH "
+    "attributes are already genuine time-series inputs (confirmed directly from schema.yaml, "
+    "no source patch required), a real, sourced Rest-of-Europe capacity-growth trajectory "
+    "for 2028/2029 - rather than a frozen 2023/2024 snapshot - is now the best-evidenced "
+    "remaining lever for closing the out-of-sample shortage-hour gap."
+)
+
+# =====================================================================
 pdf.h1("Where Things Stand Now")
 pdf.table(
     ["Build", "Final import ceiling", "Shortage hours", "Mean price", "Bias vs. Brainpool"],
@@ -2564,7 +2636,8 @@ pdf.bullet("DONE (Phase 39-41): investigated the one remaining real gap - shorta
 pdf.bullet("DONE (Phase 42): piloted escalating from the single aggregate ROE zone to a real named neighbour (France) - a genuine negative result. Shortage hours worsened (7 to 167), excl-shortage bias and MAE both worsened, with a real, verified cause: pulling France's 61,400 MW nuclear fleet out of the shared pool made the remaining ROE-9 zone genuinely scarcer on its own (0 to 20 shortage hours), and the star-topology simplification (France links only to Germany, not to ROE-9) stranded France's now-abundant cheap surplus behind a comparatively narrow direct link. Per Phase 32's own decision rule, this does not justify further escalation with this topology - Germany2027_MarketCoupling_ROEFlex (Phase 37) remains the standing best result.")
 pdf.bullet("DONE (Phase 43): tested Phase 42's own prediction by fully disaggregating all 10 real neighbours (star topology throughout). Found and fixed a genuine AMIRIS engine bug along the way (storage/renewable dispatch breaks below a certain absolute MW scale - confirmed via bisection and a reproducible scale-up/scale-down test; fixed with a documented, openly-artificial 1,000 MW hydro floor for Denmark and the Netherlands, whose real hydro is far below that scale). Result was more nuanced than Phase 42's own prediction: shortage hours improved over the France-only pilot (167 to 120), bias improved (+9.65 to +4.87), and excl-shortage correlation reached a new project-best (0.7311) - but still short of Phase 37's aggregate on bias and MAE. Phase 37 remains the standing best result.")
 pdf.bullet("DONE (Phase 44): rebuilt the ROE zone on real 2024 Eurostat/ENTSO-E data (Brainpool's own reported base year for its export scenarios), isolating the data-year as the only variable against Phase 37's 2023-base build. Live-confirmed 2024 data was actually published before building anything. Result: close to but not better than Phase 37 on every trusted metric (excl-shortage correlation 0.7168 to 0.7066, bias -2.90 to -4.78, MAE 16.69 to 17.60), though shortage hours improved slightly (7 to 5). A genuine, informative robustness check - the project's result is reasonably stable across this input choice - not a reason to switch the reference build. Bonus: SE_4 (Sweden), the one persistently missing border since Phase 35, succeeded on this fetch (ENTSO-E now stable), so this is the first build using all 11 real neighbouring zones.")
-pdf.bullet("NEXT: deadline extended to January 2027, reopening room for the more ambitious remaining lever - install Maven and attempt a targeted source patch to directly test the price-convergence-stopping-logic hypothesis (the one remaining untested lever on the aggregate build's own shortage-hour gap). Also worth pursuing with the extra time: source real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself.")
+pdf.bullet("DONE (Phase 45): deadline extended to January 2027, reopening room to properly test the price-convergence-stopping-logic hypothesis. Installed Maven, built AMIRIS from its own real source (v4.1.2, matching this project's jar), instrumented every real exit point in the market-coupling clearing algorithm, and tested it against all 76 real 2029 shortage hours. Result: hypothesis REFUTED - no engine bug, every stop was for a legitimate reason (72% ROE's own real supply exhausted, 18% real transmission ceiling reached, 9% a correctness guard). The out-of-sample shortage-hour growth is a genuine data limitation (ROE's supply held frozen across years), not a software defect. No patch needed or recommended.")
+pdf.bullet("NEXT: given Phase 45's finding, the best-evidenced remaining lever is a real, sourced Rest-of-Europe capacity-growth trajectory for 2028/2029 (AMIRIS's InstalledPowerInMW and OpexVarInEURperMWH are already genuine time-series inputs, confirmed directly from schema.yaml - no source patch required for this). Also still worth considering with the extra time: sourcing real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself.")
 pdf.bullet("Fold this whole investigation into the formal build documentation (already partially updated with the V2 and original-import findings).")
 pdf.bullet("Revisit the still-open data gaps flagged earlier: the wind offshore subsidy rate (no real 2027 figure exists anywhere yet), the solar rooftop FIT's exposure to a draft 2026 EEG reform, and the heat-pump profile's constant-COP simplification.")
 
