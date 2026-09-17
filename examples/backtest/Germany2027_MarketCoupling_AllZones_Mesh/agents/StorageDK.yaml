@@ -1,0 +1,50 @@
+Agents:
+  # Denmark's real hydro total (7.1 MW) is far too small for AMIRIS to dispatch reliably -
+  # confirmed directly via bisection: the pristine real-magnitude config crashes
+  # reproducibly ('List has not exactly one entry!' in PowerPlantOperator.executeDispatch),
+  # while an otherwise-identical config with only the MW values scaled up runs cleanly and
+  # reproducibly. Simply OMITTING the hydro agents was tested too and did NOT fix the crash
+  # (it just moved to a different agent), so omission is not a valid workaround here. Applied
+  # instead: a documented, artificial 1,000 MW hydro-total FLOOR (real EU-wide 30%/70%
+  # pumped/conventional split and Swiss 90.2%/9.8% reservoir/run-of-river ratio still
+  # applied on top) - openly NOT Denmark's real hydro scale, a necessary technical
+  # workaround for a genuine AMIRIS engine limitation, not a data claim.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 1919.67
+        GrossChargingPowerInMW: 300.00
+        InitialEnergyContentInMWH: 959.84
+        NetDischargingPowerInMW: 285.00
+      StateDiscretisation:
+        EnergyResolutionInMWH: 56.46
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 6601
+    Type: GenericFlexibilityTrader
+
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 70225.71
+        GrossChargingPowerInMW: 631.40
+        InitialEnergyContentInMWH: 35112.85
+        NetDischargingPowerInMW: 738.74
+      StateDiscretisation:
+        EnergyResolutionInMWH: 57.47
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 6602
+    Type: GenericFlexibilityTrader

@@ -1,0 +1,10 @@
+Agents:
+  # France's own real 2023 annual demand total (407,334,230 MWh, Eurostat), shaped using
+  # Germany's own real 2027 demand pattern - same documented simplification as the ROE
+  # aggregate (Eurostat has no hourly resolution; the SHAPE is borrowed, the TOTAL is real).
+  - Type: DemandTrader
+    Id: 8500
+    Attributes:
+      Loads:
+        - ValueOfLostLoad: 3000.0
+          DemandSeries: "./timeseries/load_france_2027_shapeFromDE.csv"

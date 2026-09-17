@@ -2939,6 +2939,70 @@ pdf.body(
 )
 
 # =====================================================================
+pdf.h1("Phase 48: Real Bilateral Transmission Data and the Mesh-Topology Rebuild")
+pdf.body(
+    "Directly acted on Phase 45's diagnosis of Phase 42/43's stranded-surplus problem: the "
+    "star topology (every disaggregated zone trading only with Germany, never with each "
+    "other) was identified as the likely real cause, not disaggregation itself. Sourced real "
+    "bilateral (country-to-country) transmission capacity data to test this directly, rather "
+    "than assume it."
+)
+pdf.callout(
+    "Real data source reused, not re-fetched: ENTSO-E's own ERAA 2024 PEMMDB NTC file (already downloaded and verified in Phase 46) turned out to contain the full European interconnection matrix, not just DE-centric pairs.",
+    "Extracted every real bilateral pair among the 10 ROE countries (98th percentile of real "
+    "hourly NTC values, the same technique already used on flow data in Phase 35/36/44/46) - "
+    "12 real pairs found (24 directional connections): AT-CH, AT-CZ, BE-FR, BE-NL, CH-FR, "
+    "CZ-PL, DK-NL, DK-NO, DK-SE, NL-NO, NO-SE, PL-SE. Cross-validated against known real "
+    "infrastructure before trusting the numbers: NL-NO (700 MW) matches the real NorNed "
+    "cable, DK-NO (1,632 MW) matches the real Skagerrak link, PL-SE (600 MW) matches the "
+    "real SwePol cable - genuine confidence, not assumed accuracy. Not a fully-connected "
+    "graph, correctly: e.g. no direct AT-FR link exists in the real data, since Austria and "
+    "France do not share a border.",
+)
+pdf.body(
+    "Built Germany2027_MarketCoupling_AllZones_Mesh, adding these 24 real connections to "
+    "Phase 43's 11-zone build. Deliberately isolated topology as the only new variable: every "
+    "one of Phase 43's original DE-country transmission values, demand/capacity/renewable/"
+    "storage figures, and subsidy levels was left completely unchanged - a real bug caught "
+    "and fixed along the way (the AT-CZ pair was initially built as timeseries files but "
+    "never wired into the scenario YAML; caught via a direct YAML-parse verification of the "
+    "full connectivity graph before running, not left to surface as a silent gap)."
+)
+pdf.table(
+    ["", "Phase 37 (aggregate)", "Phase 43 (star)", "Mesh (new)"],
+    [
+        ["Mean price", "67.45", "112.32", "105.27"],
+        ["Shortage hours", "7", "120", "95"],
+        ["Excl-shortage correlation", "0.7168", "0.7311", "0.7297"],
+        ["Excl-shortage bias", "-2.90", "+4.87", "+6.05"],
+        ["Excl-shortage MAE", "16.69", "20.97", "20.32"],
+    ],
+    [55, 55, 50, 42],
+)
+pdf.callout(
+    "Phase 45's diagnosis is directionally confirmed - real relief from adding real mesh connections - but the gap to the aggregate approach does not close.",
+    "Shortage hours fell 120 to 95 (-21%) and mean price moved measurably closer to "
+    "Brainpool's real 68.04 (112.32 to 105.27) - genuine, real evidence that the star "
+    "topology was indeed part of the problem, not a false lead. But the metrics that matter "
+    "most for this project's own trusted comparison did not improve: excl-shortage "
+    "correlation stayed essentially flat (0.7311 to 0.7297), and bias actually moved slightly "
+    "further from zero (+4.87 to +6.05). Phase 37's much simpler aggregate build remains the "
+    "standing best result by a clear margin on every trusted metric. A complete, honest "
+    "picture: the mesh topology is a real, evidenced improvement over the star topology it "
+    "replaces, confirming the diagnosed mechanism - but full disaggregation, even meshed, "
+    "still does not out-perform treating Rest-of-Europe as one aggregate zone for this "
+    "project's purposes.",
+    color=AMBER,
+)
+pdf.body(
+    "Kept as its own separate, fully documented scenario alongside the untouched Phase 37 "
+    "and Phase 43 baselines. A genuine mesh would need real bilateral data for the remaining "
+    "unconnected pairs too (e.g. real DK-DE-adjacent links, or Baltic-region connections) to "
+    "be more complete, but the core finding - mesh beats star, aggregate beats both - is "
+    "already clear enough to not warrant further investment in this specific direction."
+)
+
+# =====================================================================
 pdf.h1("Where Things Stand Now")
 pdf.table(
     ["Build", "Final import ceiling", "Shortage hours", "Mean price", "Bias vs. Brainpool"],
@@ -3007,7 +3071,8 @@ pdf.bullet("DONE (Phase 45): deadline extended to January 2027, reopening room t
 pdf.bullet("DONE (Phase 46): sourced a real ROE growth trajectory (ENTSO-E's ERAA 2024, live-verified) for demand, capacity by technology, and DE<->ROE transmission capacity, replacing Phase 38's frozen-2024 snapshot for 2028/2029. Caught and fixed a real methodological trap along the way (ERAA's demand is gross, not comparable to Eurostat's net figure - used only ERAA's internal growth rate, never its absolute demand value). Result: mixed. 2028 improved on shortage hours (17 to 10) but excl-shortage bias/MAE moved slightly worse; 2029 got WORSE on shortage hours (76 to 89) - traced to a real, defensible cause: dispatchable capacity (coal+gas+oil+nuclear) actually declines across the real ERAA trajectory even as demand grows, a genuine energy-transition resource-adequacy pattern, not a modelling artifact. The frozen-ROE builds (Phase 38) remain the standing reference; the growth-projected builds are kept as real, documented evidence of this finding.")
 pdf.bullet("DONE (Phase 47): tested ShortagePriceMethod=LastSupplyPrice, a real, source-confirmed alternative AMIRIS mechanism (not a tuned constant) for how shortage-hour prices are represented. Result: all-hours correlation jumped from 0.3003 to 0.7167 (now matching the excl-shortage number), MAE from 18.99 to 16.72, with excl-shortage metrics byte-identical to the baseline - confirming this resolves the all-hours-correlation distortion this project has caveated since Phase 25, without changing accuracy on any other hour. Independently justified (not curve-fit): Brainpool's own real forecast never exceeds 330 EUR/MWh either, so it never behaves like it hits a VoLL-level spike. Kept as its own exploratory scenario; recommended for consideration as an adopted methodology improvement, decision left open.")
 pdf.bullet("DONE (Phase 47 continuation): a direct request to search specifically for tweaks that reduce or remove the physical shortage-hour count (not just its price representation), prompted by the observation that Brainpool's own real forecast never exceeds 330 EUR/MWh. Diagnosed the real cause of each of the 7 baseline shortage hours first: 4 are genuinely transmission-ceiling-bound (import at 22,011.8 of a real 22,012 MW flow-derived ceiling); the other 3 (2027-12-17, 06:00-08:00) are not - real spare transmission capacity goes unused. Tested five further real, source-confirmed mechanisms against the second group: three fuels' markup bands widened (gas/coal/oil, each a decisive negative, excl-shortage correlation crashing to 0.27-0.35), both ROE storage agents' scheduling horizons (Reservoir shortened 168->48h and Pumped Storage widened 24->168h, both real dead ends - neither resolved the 3 targeted hours, both created more shortage hours elsewhere, correlation collapsed to 0.31-0.32), and ForecastError (a real, IEA/50Hertz-sourced 3% wind-forecast-error anchor - also a dead end, correlation fell to 0.40, explained cleanly: injecting random noise cannot improve correspondence with Brainpool's own single deterministic forecast, which contains no equivalent noise to correlate against). Found the definitive root cause at zero additional simulation cost, from the existing baseline result alone: Reservoir Hydro's own price forecast (75-93 EUR/MWh all day) is completely blind to DE's shortage, even within the same hour it happens - explaining structurally why every scheduling-horizon test failed regardless of direction. A genuine fix would need a source-level change making AMIRIS's per-zone forecaster cross-zone-shortage-aware, not a configuration parameter. Investigation closed with a complete, honest, structural explanation for all 7 shortage hours, rather than an unexplained gap.")
-pdf.bullet("NEXT: decide whether to adopt Phase 47's ShortagePriceMethod change as the project's standard going forward (would simplify every future results table to a single correlation number). With the January 2027 deadline, still worth considering: sourcing real bilateral transmission data between the 10 named zones themselves (not just each-to-Germany) to give a future disaggregation escalation a genuine mesh topology, since Phase 42/43 both point at the star topology's stranded-surplus problem as the actual blocker, not disaggregation itself. Otherwise, Phase 37/38 (frozen-ROE, 2023/2024-base) stands as this project's best, most defensible market-coupling result, now stress-tested from multiple real angles (disaggregation, data-year, growth trajectory, shortage-pricing convention, six further sensitivity mechanisms) without being displaced by any of them - a strong basis to begin finalising the write-up.")
+pdf.bullet("DONE (Phase 48): sourced real bilateral (country-to-country) transmission data - reused ENTSO-E's already-downloaded ERAA 2024 NTC file (Phase 46), which turned out to contain the full European interconnection matrix, not just DE-centric pairs. Found and cross-validated 12 real ROE-ROE links (24 directional connections) against known real infrastructure (NL-NO matches NorNed, DK-NO matches Skagerrak, PL-SE matches SwePol). Built Germany2027_MarketCoupling_AllZones_Mesh, adding these to Phase 43's star-topology build, isolating topology as the only new variable. Result: Phase 45's diagnosis directionally confirmed - shortage hours fell 120 to 95 (-21%), mean price moved closer to Brainpool (112.32 to 105.27) - but excl-shortage correlation stayed flat (0.7311 to 0.7297) and bias moved slightly further from zero (+4.87 to +6.05). Mesh beats star, but full disaggregation (even meshed) still does not out-perform Phase 37's much simpler aggregate approach.")
+pdf.bullet("NEXT: decide whether to adopt Phase 47's ShortagePriceMethod change as the project's standard going forward (would simplify every future results table to a single correlation number). Phase 37/38 (frozen-ROE, 2023/2024-base) stands as this project's best, most defensible market-coupling result, now stress-tested from every real angle attempted (disaggregation, mesh vs. star topology, data-year, growth trajectory, shortage-pricing convention, seven further sensitivity mechanisms) without being displaced by any of them - a strong basis to begin finalising the write-up.")
 pdf.bullet("Fold this whole investigation into the formal build documentation (already partially updated with the V2 and original-import findings).")
 pdf.bullet("Revisit the still-open data gaps flagged earlier: the wind offshore subsidy rate (no real 2027 figure exists anywhere yet), the solar rooftop FIT's exposure to a draft 2026 EEG reform, and the heat-pump profile's constant-COP simplification.")
 

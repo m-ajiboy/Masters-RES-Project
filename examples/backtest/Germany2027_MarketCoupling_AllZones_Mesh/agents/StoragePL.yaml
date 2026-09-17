@@ -1,0 +1,43 @@
+Agents:
+  # Poland Pumped Storage - 723.1 MW (30% EU-wide IHA method, Phase 33).
+  # Duration/efficiency/power-ratio reused from Germany's own real pumped-hydro figures.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 4627.20
+        GrossChargingPowerInMW: 723.12
+        InitialEnergyContentInMWH: 2313.60
+        NetDischargingPowerInMW: 686.97
+      StateDiscretisation:
+        EnergyResolutionInMWH: 136.09
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 10601
+    Type: GenericFlexibilityTrader
+
+  # Poland Reservoir Hydro - 1,521.9 MW (90.2% of conventional hydro, Swiss ratio).
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 169272.67
+        GrossChargingPowerInMW: 1521.93
+        InitialEnergyContentInMWH: 84636.34
+        NetDischargingPowerInMW: 1780.66
+      StateDiscretisation:
+        EnergyResolutionInMWH: 138.52
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 10602
+    Type: GenericFlexibilityTrader

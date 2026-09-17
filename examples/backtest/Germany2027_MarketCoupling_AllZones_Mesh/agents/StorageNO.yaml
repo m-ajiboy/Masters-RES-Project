@@ -1,0 +1,43 @@
+Agents:
+  # Norway Pumped Storage - 10,287.3 MW (30% EU-wide IHA method, Phase 33).
+  # Duration/efficiency/power-ratio reused from Germany's own real pumped-hydro figures.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 65827.56
+        GrossChargingPowerInMW: 10287.30
+        InitialEnergyContentInMWH: 32913.78
+        NetDischargingPowerInMW: 9772.93
+      StateDiscretisation:
+        EnergyResolutionInMWH: 1936.11
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 7601
+    Type: GenericFlexibilityTrader
+
+  # Norway Reservoir Hydro - 21,651.3 MW (90.2% of conventional hydro, Swiss ratio).
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 2408109.69
+        GrossChargingPowerInMW: 21651.34
+        InitialEnergyContentInMWH: 1204054.84
+        NetDischargingPowerInMW: 25332.06
+      StateDiscretisation:
+        EnergyResolutionInMWH: 1970.63
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 7602
+    Type: GenericFlexibilityTrader

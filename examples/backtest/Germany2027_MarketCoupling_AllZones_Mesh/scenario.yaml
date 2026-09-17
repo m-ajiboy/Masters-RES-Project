@@ -1,0 +1,64 @@
+Metadata:
+  runId: "Germany2027_MarketCoupling_AllZones_Mesh"
+  description: "AMIRIS scenario for German day-ahead electricity market in 2027 - a MESH-TOPOLOGY rebuild of Phase 43's fully-disaggregated 11-zone build (Germany2027_MarketCoupling_AllZones), directly testing Phase 45's diagnosis that the star topology (every zone trading only with Germany) was the real cause of France's stranded-surplus problem in Phase 42/43. Adds 12 real bilateral ROE-ROE transmission links (24 directional connections) sourced from ENTSO-E's real ERAA 2024 PEMMDB NTC data (TY2026, 98th percentile of real hourly values per border, the same technique already used on flow data in Phase 35/36/44/46) - AT<->CH, AT<->CZ, BE<->FR, BE<->NL, CH<->FR, CZ<->PL, DK<->NL, DK<->NO, DK<->SE, NL<->NO, NO<->SE, PL<->SE - live-verified against known real infrastructure (NL<->NO 700 MW matches the real NorNed cable, DK<->NO 1,632 MW matches the real Skagerrak link, PL<->SE 600 MW matches the real SwePol cable). Deliberately isolates topology as the ONE new variable: every one of Phase 43's original real DE<->country transmission values, demand/capacity/renewable/storage figures, and subsidy levels is left completely unchanged - only the ROE-ROE connections are new. Not a fully-connected graph - only real, physically-existing interconnections are included (e.g. no AT<->FR link, since Austria and France do not share a border). See _explore_bilateral_ntc.py, build_mesh_bilateral_timeseries.py, and _add_mesh_transmission_entries.py for the full real-data sourcing and build. Germany2027_MarketCoupling_ROEFlex (Phase 37, aggregate) and Germany2027_MarketCoupling_AllZones (Phase 43, star topology) are both kept fully unmodified for comparison."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'FR', 'AT', 'BE', 'CZ', 'DK', 'NO', 'NL', 'PL', 'SE', 'CH']

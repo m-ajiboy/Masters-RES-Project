@@ -1,0 +1,43 @@
+Agents:
+  # Sweden Pumped Storage - 4,921.8 MW (30% EU-wide IHA method, Phase 33).
+  # Duration/efficiency/power-ratio reused from Germany's own real pumped-hydro figures.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 31494.18
+        GrossChargingPowerInMW: 4921.80
+        InitialEnergyContentInMWH: 15747.09
+        NetDischargingPowerInMW: 4675.71
+      StateDiscretisation:
+        EnergyResolutionInMWH: 926.30
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 11601
+    Type: GenericFlexibilityTrader
+
+  # Sweden Reservoir Hydro - 10,358.7 MW (90.2% of conventional hydro, Swiss ratio).
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 1152122.93
+        GrossChargingPowerInMW: 10358.75
+        InitialEnergyContentInMWH: 576061.47
+        NetDischargingPowerInMW: 12119.73
+      StateDiscretisation:
+        EnergyResolutionInMWH: 942.82
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 11602
+    Type: GenericFlexibilityTrader

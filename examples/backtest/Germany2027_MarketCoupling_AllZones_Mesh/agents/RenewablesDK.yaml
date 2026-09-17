@@ -1,0 +1,71 @@
+Agents:
+  # Denmark's own dedicated SupportPolicy - NOT shared with any other zone
+  # (confirmed required directly in Phase 42: a shared SupportPolicy crashes once more than
+  # one zone's exchange sends it Awards).
+  - Type: SupportPolicy
+    Id: 6090
+    Attributes:
+      SetSupportData:
+        - PolicySet: ROE_WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_WindOffMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_SolarMpvar
+          MPVAR:
+            Lcoe: 49.0
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.0
+
+  - Type: VariableRenewableOperator
+    Id: 6401
+    Attributes:
+      PolicySet: ROE_WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 4821.733
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile_dk_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 6402
+    Attributes:
+      PolicySet: ROE_WindOffMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 2469.1
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_offshore_profile_dk_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 6403
+    Attributes:
+      PolicySet: ROE_SolarMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 3529.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile_dk_2027.csv" 
+
+  # Run-of-river hydro - see StorageDK.yaml for the full confirmed evidence on why Denmark's
+  # real hydro-derived values (0.49 MW here) had to be floored to a documented artificial
+  # 1,000 MW hydro-total minimum rather than used as-is or omitted.
+  - Type: VariableRenewableOperator
+    Id: 6404
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 68.60
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_profile_restofeurope_FLAT.csv"
+
+  - Type: RenewableTrader
+    Id: 6011
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 6013

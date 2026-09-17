@@ -1,0 +1,55 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  # Denmark - real Eurostat 2023 capacity, same efficiency/markup/CO2 assumptions reused from DE's own fleet (Phase 33/42 precedent). Technologies with zero real capacity are simply absent, not zeroed out.
+
+  - Type: PredefinedPlantBuilder
+    Id: 6102
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS
+        SpecificCo2EmissionsInTperMWH: 0.202
+        OutageFactor: 0.05
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.516
+        Maximal: 0.617
+      BlockSizeInMW: 200.0
+      InstalledPowerInMW: 1776.238
+
+  - Type: PredefinedPlantBuilder
+    Id: 6103
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: OIL
+        SpecificCo2EmissionsInTperMWH: 0.266
+        OutageFactor: 0.07
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.311
+        Maximal: 0.397
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 1030.147
+
+  - Type: ConventionalTrader # NATURAL_GAS (DK)
+    Id: 6202
+    Attributes:
+      minMarkup: -10
+      maxMarkup: 10
+
+  - Type: ConventionalTrader # OIL (DK)
+    Id: 6203
+    Attributes:
+      minMarkup: 0
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator # NATURAL_GAS (DK)
+    Id: 6302
+
+  - Type: ConventionalPlantOperator # OIL (DK)
+    Id: 6303

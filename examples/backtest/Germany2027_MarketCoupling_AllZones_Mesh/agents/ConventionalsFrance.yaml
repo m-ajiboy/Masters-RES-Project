@@ -1,0 +1,111 @@
+Variables:
+  - &portfolioBuildingOffset 60
+
+Agents:
+  # Phase 42 pilot: France disaggregated out of the ROE aggregate into its own real zone.
+  # Every capacity figure below is France's own real 2023 Eurostat data (nrg_inf_epc),
+  # subtracted out of the aggregate's totals - see build_france_zone_data.py. Same real
+  # efficiency/markup/CO2-factor assumptions reused from DE's own fleet, same precedent as
+  # the ROE aggregate build (Phase 33).
+
+  # Coal (Eurostat 'Coal_and_manufactured_gases', 19.2 MW - genuinely tiny for France, almost
+  # entirely nuclear-based). Small block size used since the fleet itself is small.
+  - Type: PredefinedPlantBuilder
+    Id: 8101
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: HARD_COAL
+        SpecificCo2EmissionsInTperMWH: 0.338
+        OutageFactor: 0.05
+        OpexVarInEURperMWH: 2.5
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.339
+        Maximal: 0.492
+      BlockSizeInMW: 20.0
+      InstalledPowerInMW: 19.193
+
+  # Natural Gas (Eurostat, 10,878 MW)
+  - Type: PredefinedPlantBuilder
+    Id: 8102
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NATURAL_GAS
+        SpecificCo2EmissionsInTperMWH: 0.202
+        OutageFactor: 0.05
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.516
+        Maximal: 0.617
+      BlockSizeInMW: 200.0
+      InstalledPowerInMW: 10878.066
+
+  # Oil (Eurostat, 3,780 MW)
+  - Type: PredefinedPlantBuilder
+    Id: 8103
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: OIL
+        SpecificCo2EmissionsInTperMWH: 0.266
+        OutageFactor: 0.07
+        OpexVarInEURperMWH: 1.2
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.311
+        Maximal: 0.397
+      BlockSizeInMW: 100.0
+      InstalledPowerInMW: 3779.715
+
+  # Nuclear (Eurostat, 61,400 MW - the real, defining feature of France's own generation
+  # mix, ~65-70% of French output in reality). Same real-world thermal efficiency and narrow
+  # baseload markup band reused from the ROE aggregate's own nuclear assumption (Phase 33) -
+  # not researched per-plant, a documented simplification.
+  - Type: PredefinedPlantBuilder
+    Id: 8104
+    Attributes:
+      PortfolioBuildingOffsetInSeconds: *portfolioBuildingOffset
+      Prototype:
+        FuelType: NUCLEAR
+        SpecificCo2EmissionsInTperMWH: 0.0
+        OutageFactor: 0.10
+        OpexVarInEURperMWH: 3.0
+        CyclingCostInEURperMW: 0.0
+      Efficiency:
+        Minimal: 0.33
+        Maximal: 0.33
+      BlockSizeInMW: 1000.0
+      InstalledPowerInMW: 61400.0
+
+  - Type: ConventionalTrader # HARD_COAL (France)
+    Id: 8201
+    Attributes:
+      minMarkup: -15
+      maxMarkup: 5
+  - Type: ConventionalTrader # NATURAL_GAS (France)
+    Id: 8202
+    Attributes:
+      minMarkup: -10
+      maxMarkup: 10
+  - Type: ConventionalTrader # OIL (France)
+    Id: 8203
+    Attributes:
+      minMarkup: 0
+      maxMarkup: 0
+  - Type: ConventionalTrader # NUCLEAR (France)
+    Id: 8204
+    Attributes:
+      minMarkup: -5
+      maxMarkup: 0
+
+  - Type: ConventionalPlantOperator # HARD_COAL (France)
+    Id: 8301
+  - Type: ConventionalPlantOperator # NATURAL_GAS (France)
+    Id: 8302
+  - Type: ConventionalPlantOperator # OIL (France)
+    Id: 8303
+  - Type: ConventionalPlantOperator # NUCLEAR (France)
+    Id: 8304

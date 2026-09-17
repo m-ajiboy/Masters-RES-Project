@@ -1,0 +1,58 @@
+Agents:
+  # Czech Republic's own dedicated SupportPolicy - NOT shared with any other zone
+  # (confirmed required directly in Phase 42: a shared SupportPolicy crashes once more than
+  # one zone's exchange sends it Awards).
+  - Type: SupportPolicy
+    Id: 5090
+    Attributes:
+      SetSupportData:
+        - PolicySet: ROE_WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_WindOffMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_SolarMpvar
+          MPVAR:
+            Lcoe: 49.0
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.0
+
+  - Type: VariableRenewableOperator
+    Id: 5401
+    Attributes:
+      PolicySet: ROE_WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 342.5
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile_cz_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 5403
+    Attributes:
+      PolicySet: ROE_SolarMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 3250.961
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile_cz_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 5404
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 156.98
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_profile_restofeurope_FLAT.csv" 
+
+  - Type: RenewableTrader
+    Id: 5011
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 5013

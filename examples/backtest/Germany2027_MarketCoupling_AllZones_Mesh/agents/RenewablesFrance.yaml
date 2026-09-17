@@ -1,0 +1,85 @@
+Agents:
+  # France gets its OWN dedicated SupportPolicy (Id 8090) rather than sharing ROE's (9090) -
+  # confirmed required directly: sharing one SupportPolicy across two zones' exchanges
+  # crashed with the exact same class of bug already documented in Phase 37 for a shared
+  # forecaster ('List has not exactly one entry!' in SupportPolicy.logPowerPrice, since the
+  # policy received Awards broadcasts from two different exchanges at once). Uses the SAME
+  # PolicySet subsidy levels as the ROE aggregate (Germany's own real BNetzA-auction-sourced
+  # figures, the best available real EU reference point - no separate French subsidy scheme
+  # researched, a documented simplification carried over unchanged from Phase 37) - just
+  # duplicated into its own dedicated policy agent instance.
+  - Type: SupportPolicy
+    Id: 8090
+    Attributes:
+      SetSupportData:
+        - PolicySet: ROE_WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_WindOffMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_SolarMpvar
+          MPVAR:
+            Lcoe: 49.0
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.0
+
+  # Wind onshore - 21,610 MW (real Eurostat 2023). Yield profile: France's OWN real 2009
+  # weather (renewables.ninja), no cross-country blending needed - a genuine data-quality
+  # upgrade over the aggregate's capacity-weighted blend.
+  - Type: VariableRenewableOperator
+    Id: 8401
+    Attributes:
+      PolicySet: ROE_WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 21609.93
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile_france_2027.csv"
+
+  # Wind offshore - 1,487 MW (real Eurostat 2023).
+  - Type: VariableRenewableOperator
+    Id: 8402
+    Attributes:
+      PolicySet: ROE_WindOffMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 1486.5
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_offshore_profile_france_2027.csv"
+
+  # Solar PV - 19,749 MW (real Eurostat 2023).
+  - Type: VariableRenewableOperator
+    Id: 8403
+    Attributes:
+      PolicySet: ROE_SolarMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 19749.307
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile_france_2027.csv"
+
+  # Run-of-river hydro ONLY - 1,985.3 MW. Split out of France's real Eurostat Hydro_total
+  # (26,058.3 MW) using France's own real RTE pumped-storage figure (5,800 MW, ~2015, most
+  # recent published) for the pumped share, then Switzerland's real reservoir:run-of-river
+  # ratio (90.2%:9.8%) for the remainder - see build_france_zone_data.py. Same flat 40%
+  # capacity-factor placeholder profile as the ROE aggregate (no real weather-driven
+  # run-of-river shape available).
+  - Type: VariableRenewableOperator
+    Id: 8404
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 1985.32
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_profile_restofeurope_FLAT.csv"
+
+  - Type: RenewableTrader
+    Id: 8011
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 8013

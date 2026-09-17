@@ -1,0 +1,68 @@
+Agents:
+  # Sweden's own dedicated SupportPolicy - NOT shared with any other zone
+  # (confirmed required directly in Phase 42: a shared SupportPolicy crashes once more than
+  # one zone's exchange sends it Awards).
+  - Type: SupportPolicy
+    Id: 11090
+    Attributes:
+      SetSupportData:
+        - PolicySet: ROE_WindOnMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_WindOffMpvar
+          MPVAR:
+            Lcoe: 52.0
+        - PolicySet: ROE_SolarMpvar
+          MPVAR:
+            Lcoe: 49.0
+        - PolicySet: Undefined
+          FIT:
+            TsFit: 0.0
+
+  - Type: VariableRenewableOperator
+    Id: 11401
+    Attributes:
+      PolicySet: ROE_WindOnMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOn
+      InstalledPowerInMW: 16031.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_onshore_profile_se_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 11402
+    Attributes:
+      PolicySet: ROE_WindOffMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: WindOff
+      InstalledPowerInMW: 193.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/wind_offshore_profile_se_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 11403
+    Attributes:
+      PolicySet: ROE_SolarMpvar
+      SupportInstrument: MPVAR
+      EnergyCarrier: PV
+      InstalledPowerInMW: 3993.0
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/solar_profile_se_2027.csv" 
+
+  - Type: VariableRenewableOperator
+    Id: 11404
+    Attributes:
+      PolicySet: Undefined
+      SupportInstrument: FIT
+      EnergyCarrier: RunOfRiver
+      InstalledPowerInMW: 1125.45
+      OpexVarInEURperMWH: 0.0
+      YieldProfile: "./timeseries/hydro_profile_restofeurope_FLAT.csv" 
+
+  - Type: RenewableTrader
+    Id: 11011
+    Attributes:
+      ShareOfRevenues: 0.0
+
+  - Type: SystemOperatorTrader
+    Id: 11013

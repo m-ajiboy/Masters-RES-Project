@@ -1,0 +1,43 @@
+Agents:
+  # Switzerland Pumped Storage - 3,866.8 MW (30% EU-wide IHA method, Phase 33).
+  # Duration/efficiency/power-ratio reused from Germany's own real pumped-hydro figures.
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 24
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.875
+        DischargingEfficiency: 0.852
+        EnergyContentUpperLimitInMWH: 24743.07
+        GrossChargingPowerInMW: 3866.76
+        InitialEnergyContentInMWH: 12371.53
+        NetDischargingPowerInMW: 3673.42
+      StateDiscretisation:
+        EnergyResolutionInMWH: 727.74
+        PlanningHorizonInHours: 168
+        Type: STATE_OF_CHARGE
+    Id: 12601
+    Type: GenericFlexibilityTrader
+
+  # Switzerland Reservoir Hydro - 8,138.2 MW (90.2% of conventional hydro, Swiss ratio).
+  - Attributes:
+      Assessment:
+        Type: MIN_SYSTEM_COST
+      Bidding:
+        SchedulingHorizonInHours: 168
+        Type: ENSURE_DISPATCH
+      Device:
+        ChargingEfficiency: 0.91
+        DischargingEfficiency: 0.91
+        EnergyContentUpperLimitInMWH: 905153.17
+        GrossChargingPowerInMW: 8138.24
+        InitialEnergyContentInMWH: 452576.59
+        NetDischargingPowerInMW: 9521.74
+      StateDiscretisation:
+        EnergyResolutionInMWH: 740.71
+        PlanningHorizonInHours: 730
+        Type: STATE_OF_CHARGE
+    Id: 12602
+    Type: GenericFlexibilityTrader
