@@ -3003,6 +3003,192 @@ pdf.body(
 )
 
 # =====================================================================
+pdf.h1("Phase 49: Demand-Shape-Year Sensitivity - A Real Temperature-Superior Challenger, Tested and Rejected")
+pdf.body(
+    "Directly tested whether Phase 17's real 2016 demand-shape choice, made by scoring six "
+    "candidate years (2015-2019, 2023) against real 2009 temperature, would survive a wider "
+    "real search. Extended the exact same DWD 4-station methodology (fetch_candidate_years_"
+    "temperature_extended.py, compare_candidate_years_to_2009_extended.py) to ten further "
+    "real years: 2010-2014 and 2020-2025 (2026 excluded - the real year is not yet complete). "
+    "One real data gap, disclosed rather than hidden: the East DWD station's historical "
+    "archive has no real 2024 data at all despite claiming coverage through 2025 - 2024's "
+    "national average was computed from the other 3 stations only, flagged explicitly."
+)
+pdf.callout(
+    "A genuinely better real temperature match than 2016 was found - twice.",
+    "2011 (monthly RMSE 1.78 C vs 2009, HDD diff -201) and 2025 (RMSE 2.11 C) both beat "
+    "2016's own RMSE of 2.31 C, the best of every year Phase 17 originally tested. Full "
+    "ranking confirmed 2016 was not, in fact, the true best match available - only the best "
+    "among the six years checked at the time.",
+    color=AMBER,
+)
+pdf.body(
+    "2025's real hourly load was fetched directly via this project's existing ENTSO-E "
+    "pipeline (same method as the 2023 pull). 2011's real load data could not be obtained: "
+    "it sits in ENTSO-E's decommissioned pre-2015 legacy archive, and nine separate real "
+    "attempts to locate a working current URL for it - three ENTSO-E legacy-archive URL "
+    "variations, the entsoe.eu statistics-and-data page, Open Power System Data, "
+    "netztransparenz.de (the four TSOs' own joint platform), and 50Hertz's own Netzdaten "
+    "archive (which references real downloadable CSVs but renders its actual links via "
+    "JavaScript this project's tooling cannot execute) - all failed or confirmed "
+    "insufficient. A real person with a browser could very likely retrieve it in under a "
+    "minute; this project's automated tooling could not. Genuinely left untested, not "
+    "assumed to be either better or worse."
+)
+pdf.callout(
+    "A real, previously-latent bug found and fixed along the way: the weekday-shift redating technique does not check for public holidays.",
+    "Building the 2025-shape demand series crashed AMIRIS outright (DispatchPlanningError, "
+    "Agent 705, 'too large inflows/outflows' right at the start of the simulated year). "
+    "Root-caused directly: the required +2-day shift (2025-01-01 Wed to 2027-01-01 Fri) maps "
+    "2027's real New Year's Day onto real 2025-01-03 - an ordinary working Friday, not a "
+    "holiday. Checked systematically using the same 'holidays' library already used in Phase "
+    "16: all five of Germany's 2027 weekday national holidays (Neujahr, Karfreitag, "
+    "Ostermontag, Christi Himmelfahrt, Pfingstmontag) suffer the identical mismatch under "
+    "this shift - a general gap in the technique itself, not a 2025-specific fluke, simply "
+    "never exposed before because 2016's required shift happened to be 0 days. Fixed by "
+    "substituting the real 2025 date of each SAME-NAMED holiday for the mechanically-shifted "
+    "(wrong) source day, leaving every other day on the standard shift - confirmed to resolve "
+    "the crash (AMIRIS ran to completion afterward). 2029's 3-day shift was not re-checked "
+    "this session and may carry the same latent risk.",
+    color=BAD,
+)
+pdf.table(
+    ["Metric", "Headline (2016-shape)", "Demand2025 (holiday-fixed)"],
+    [
+        ["Mean price (Brainpool: 68.04)", "67.45", "73.11"],
+        ["Shortage hours", "7", "26"],
+        ["Excl-shortage correlation", "0.7168", "0.7104"],
+        ["Excl-shortage bias", "-2.90", "-3.53"],
+        ["Excl-shortage MAE", "16.69", "17.24"],
+        ["Negative-price hours", "7.7%", "8.5%"],
+    ],
+    [55, 65, 65],
+)
+pdf.callout(
+    "A clean, decisive negative result: real temperature superiority does not translate into a better AMIRIS-vs-Brainpool fit.",
+    "Despite matching 2009's real temperature pattern more closely than 2016 does, the "
+    "2025-shape build is worse on every trusted metric - shortage hours alone nearly "
+    "quadrupled (7 to 26). The most likely real mechanism: 2025's real winter demand carries "
+    "sharper peak structure than 2016's, even though its monthly-aggregate temperature "
+    "pattern matches 2009 better - the same lesson Phase 9 already found once for the "
+    "renewable weather-year question (a better aggregate match does not guarantee a better "
+    "outcome). 2016 remains the standing choice, now more robustly justified than before: it "
+    "has been directly tested against, and beaten, a real temperature-superior challenger.",
+    color=GOOD,
+)
+pdf.body(
+    "Kept as its own separate scenario (Germany2027_MarketCoupling_ROEFlex_Demand2025), with "
+    "the untouched Phase 37 headline preserved for comparison. See build_demand_2025_shape.py "
+    "(the crashing v1) and build_demand_2025_shape_v2_holidayfix.py (the working, holiday-"
+    "fixed version actually used for the result above)."
+)
+
+# =====================================================================
+pdf.h1("Phase 50: Wind-Offshore Weather-Year Sensitivity - a 16-Year Real Sweep, Also Rejected")
+pdf.body(
+    "DE's wind-offshore profile, unlike solar/wind-onshore (Brainpool's own real "
+    "feedinprofile data) and demand (real 2016 shape, temperature-matched to Brainpool's "
+    "2009 weather basis), was never weather-year-matched to anything - it is simply AMIRIS's "
+    "own bundled 2019-example default, validated only once, early in this project, against "
+    "an aggregate real capacity-factor benchmark (37-45% German offshore range). Tested "
+    "directly whether a real, deliberately weather-year-matched alternative would improve on "
+    "this. Fetched real hourly wind-offshore capacity factors (renewables.ninja, MERRA-2, the "
+    "same 2 representative points - German Bight/North Sea, near Ruegen/Baltic Sea - already "
+    "used for the original Weather2009 test) for 16 real candidate years, 2010-2025."
+)
+pdf.callout(
+    "2025 is the best real monthly-pattern match to 2009 of all 16 years tested - by a clear margin.",
+    "Monthly-pattern RMSE ranking: 2025 (0.0493), 2012 (0.0583), 2010 (0.0709), then a long "
+    "tail out to 2022's worst match (0.1134). 2025's real annual mean capacity factor (0.4610) "
+    "is substantially higher than AMIRIS's 2019-default baseline (0.3709) - a real, "
+    "substantial increase in average offshore output, not a subtle shift.",
+)
+pdf.table(
+    ["Metric", "Headline (AMIRIS-2019 default)", "WindOffshore2025"],
+    [
+        ["Mean price (Brainpool: 68.04)", "67.45", "67.74"],
+        ["Shortage hours", "7", "12"],
+        ["Excl-shortage correlation", "0.7168", "0.7124"],
+        ["Excl-shortage bias", "-2.90", "-4.25"],
+        ["Excl-shortage MAE", "16.69", "17.14"],
+        ["Negative-price hours", "7.7%", "8.1%"],
+    ],
+    [55, 68, 62],
+)
+pdf.callout(
+    "Another clean negative result - mean price edges closer to Brainpool, but every trusted metric gets worse.",
+    "Mean price actually improves marginally (67.74 vs 67.45, both near Brainpool's real "
+    "68.04) - the only metric favouring the challenger. Shortage hours, excl-shortage "
+    "correlation, bias, and MAE all move the wrong way. This is now the SECOND independent "
+    "test this session (after Phase 49's demand result) reaching the identical structural "
+    "conclusion: closer real alignment with Brainpool's stated weather basis does not "
+    "reliably improve the actual AMIRIS-vs-Brainpool comparison. AMIRIS's own 2019-default "
+    "wind-offshore profile remains the better choice.",
+    color=GOOD,
+)
+pdf.body(
+    "Kept as its own separate scenario (Germany2027_MarketCoupling_ROEFlex_WindOffshore2025). "
+    "See fetch_windoffshore_candidate_years.py, compare_windoffshore_years_to_2009.py, and "
+    "build_windoffshore_2025_test.py for the full method."
+)
+
+# =====================================================================
+pdf.h1("Phase 51: Run-of-River Weather-Year Sensitivity - Completing the Sweep, a Near-Wash")
+pdf.body(
+    "Completed the renewable weather-year investigation with run-of-river, DE's third "
+    "candidate for this kind of test. Unlike solar/wind-onshore/wind-offshore, no 'match "
+    "Brainpool's 2009 weather basis' criterion applies here - Brainpool's own documented "
+    "methodology says nothing about hydro's weather-year basis - so this was an open "
+    "comparison rather than a matching exercise. renewables.ninja has no hydro data at all "
+    "(confirmed in the original Weather2009 work), so real ENTSO-E generation data (PSR B11, "
+    "Hydro Run-of-river and pondage) was used instead. Its real coverage for this specific "
+    "PSR type was tested directly rather than assumed: 2015-2018 all return "
+    "NoMatchingDataError; 2019-2025 all work. Confirmed along the way that AMIRIS's own "
+    "bundled run-of-river default (mean CF 0.3450) does not match real ENTSO-E 2019 data "
+    "(mean CF 0.4157) - it is not simply real 2019 under another name, its true source/"
+    "vintage is unclear."
+)
+pdf.callout(
+    "All 7 available real years fetched, each normalised by its own real installed capacity.",
+    "Real installed run-of-river capacity fell from 4,007.9 MW (2019) to 3,923.0 MW (2025), "
+    "fetched per year rather than assumed constant. Real 2022 was the driest year (mean CF "
+    "0.3503, consistent with Germany's documented real 2022 drought); 2024 the wettest "
+    "(0.4782). With no matching criterion to anchor on, the most current complete real year "
+    "(2025, mean CF 0.3767) was chosen as the single AMIRIS-tested candidate on practical "
+    "'most current real data' grounds, rather than running all 7 through full simulations.",
+)
+pdf.table(
+    ["Metric", "Headline (AMIRIS default)", "RunOfRiver2025"],
+    [
+        ["Mean price (Brainpool: 68.04)", "67.45", "67.66"],
+        ["Shortage hours", "7", "8"],
+        ["Excl-shortage correlation", "0.7168", "0.7149"],
+        ["Excl-shortage bias", "-2.90", "-3.02"],
+        ["Excl-shortage MAE", "16.69", "16.77"],
+        ["Negative-price hours", "7.7%", "7.8%"],
+    ],
+    [55, 62, 68],
+)
+pdf.callout(
+    "A third consecutive negative result, this time a near-wash rather than a clear regression.",
+    "Every trusted metric moves the wrong way again, but only marginally this time (shortage "
+    "hours +1, correlation -0.0019, bias -0.12, MAE +0.08) - materially smaller than the "
+    "demand or wind-offshore regressions. Completes a full, honest three-for-three real "
+    "test of this session's central question: across demand shape, wind-offshore, and "
+    "run-of-river, no real alternative year tested improved on the Phase 37 headline build's "
+    "existing choices. The headline build is now stress-tested against every real weather/"
+    "demand-year alternative this session could source data for, and none displaced it.",
+    color=GOOD,
+)
+pdf.body(
+    "Kept as its own separate scenario (Germany2027_MarketCoupling_ROEFlex_RunOfRiver2025). "
+    "See fetch_ror_candidate_years.py and build_ror_2025_test.py for the full method. "
+    "Germany2027_MarketCoupling_ROEFlex (Phase 37) remains this project's standing best "
+    "result and reference build, now validated against real challengers on every major "
+    "weather- and demand-year input this session identified as testable."
+)
+
+# =====================================================================
 pdf.h1("Where Things Stand Now")
 pdf.table(
     ["Build", "Final import ceiling", "Shortage hours", "Mean price", "Bias vs. Brainpool"],
