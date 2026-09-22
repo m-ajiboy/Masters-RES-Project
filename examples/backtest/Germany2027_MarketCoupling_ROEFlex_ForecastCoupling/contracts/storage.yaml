@@ -1,0 +1,56 @@
+AgentGroups:
+  # Germany2027: Pumpspeicher (700), Battery (701), Reservoir Hydro (702) - see Storage.yaml.
+  # Electrolysis (704, see Electrolysis.yaml) and e-mobility smart charging (705, see
+  # EMobility.yaml) join this same, already-working GenericFlexibilityTrader/forecaster
+  # contract group rather than a separate one.
+  - &exchange 1
+  - &forecaster 6
+  - &storage [700, 701, 702, 704, 705]
+
+Contracts:
+##########################
+# -- Forecasting --      #
+##########################
+  - SenderId: *storage
+    ReceiverId: *forecaster
+    ProductName: ForecastRegistration
+    FirstDeliveryTime: -30
+    Every: 1 year
+
+  - SenderId: *storage
+    ReceiverId: *forecaster
+    ProductName: SensitivityRequest
+    FirstDeliveryTime: -21
+    Every: 1 hour
+
+  - SenderId: *forecaster
+    ReceiverId: *storage
+    ProductName: SensitivityForecast
+    FirstDeliveryTime: -19
+    Every: 1 hour
+
+  - SenderId: *storage
+    ReceiverId: *forecaster
+    ProductName: NetAward
+    FirstDeliveryTime: 6
+    Every: 1 hour
+##########################
+# -- Bidding --          #
+##########################
+  - SenderId: *exchange
+    ReceiverId: [*storage, *forecaster]
+    ProductName: GateClosureInfo
+    FirstDeliveryTime: -30
+    Every: 1 hour
+
+  - SenderId: *storage
+    ReceiverId: *exchange
+    ProductName: Bids
+    FirstDeliveryTime: 0
+    Every: 1 hour
+
+  - SenderId: *exchange
+    ReceiverId: *storage
+    ProductName: Awards
+    FirstDeliveryTime: 4
+    Every: 1 hour

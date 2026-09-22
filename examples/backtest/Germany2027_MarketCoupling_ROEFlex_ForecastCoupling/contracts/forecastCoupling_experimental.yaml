@@ -1,0 +1,55 @@
+####################################################################################
+# EXPERIMENTAL, INVESTIGATIVE ONLY - not part of this project's standing methodology.
+#
+# Wires DE's and ROE's SensitivityForecaster agents into the SAME real MarketCoupling
+# algorithm the live market already uses, via a documented-but-previously-unused
+# AMIRIS feature (confirmed directly in DLR's own docs/Classes/Agents/MarketForecaster.md
+# and MarketCoupling.java: MarketForecaster already implements MarketCouplingClient and
+# has a dedicated forecastCoupledMarkets() pathway; MarketCoupling already has a
+# MarketCouplingForecastResult product distinct from the real MarketCouplingResult -
+# neither has ever been contracted to anything in any scenario this project has built).
+#
+# Tests directly whether this closes the "per-zone forecaster is blind to the other
+# zone's shortage" gap diagnosed in the thesis (Chapter 5, Section 5.4) - specifically
+# the 3 residual, transmission-unconstrained shortage hours on 2027-12-17 06:00-08:00,
+# where Reservoir Hydro's own forecast never reflected Germany's simultaneous price
+# spike. No Java source code changes required - this is a pure configuration fix,
+# using AMIRIS's own built-in, documented capability.
+####################################################################################
+AgentGroups:
+  - &forecasters [6, 9006]
+  - &multiZoneMarkets [1, 9001]
+
+Contracts:
+  # Step 1: each zone's real market shares its (already-loaded) real transmission
+  # capacity time series with its own zone's forecaster. Pattern (FirstDeliveryTime -30,
+  # Every 1 year) mirrors this project's existing ForecastRegistration contracts
+  # (storage.yaml/storage_ROE.yaml) - a send-once-then-refresh-yearly cadence appropriate
+  # for data that doesn't need hourly re-delivery.
+  - SenderId: 1
+    ReceiverId: 6
+    ProductName: TransmissionCapacities
+    FirstDeliveryTime: -30
+    Every: 1 year
+
+  - SenderId: 9001
+    ReceiverId: 9006
+    ProductName: TransmissionCapacities
+    FirstDeliveryTime: -30
+    Every: 1 year
+
+  # Step 2: each forecaster sends its forecast order books to the real MarketCoupling
+  # agent (Id 9099) for forecast-coupling, and receives the coupled result back - same
+  # hourly cadence as this project's existing, proven real-time coupling contracts
+  # (marketCoupling_contracts.yaml: TransmissionAndBids/MarketCouplingResult).
+  - SenderId: *forecasters
+    ReceiverId: 9099
+    ProductName: TransmissionAndBidForecasts
+    FirstDeliveryTime: -30
+    Every: 1 hour
+
+  - SenderId: 9099
+    ReceiverId: *forecasters
+    ProductName: MarketCouplingForecastResult
+    FirstDeliveryTime: -29
+    Every: 1 hour

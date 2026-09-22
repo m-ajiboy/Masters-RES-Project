@@ -1,0 +1,100 @@
+Metadata:
+  runId: "Germany2027_MarketCoupling_ROEFlex_CrossZonePrice"
+  description: >-
+    EXPERIMENTAL / INVESTIGATIVE ONLY - not adopted into the thesis's standing methodology; reported
+    separately to the department as a technical finding, not a thesis result. Third and final attempt at
+    closing the forecaster-blindness gap diagnosed in the thesis (Chapter 5, Section 5.4). Two earlier
+    approaches were abandoned: (1) wiring AMIRIS's full, unused MarketCoupling forecast-coupling pathway
+    (Germany2027_MarketCoupling_ROEFlex_ForecastCoupling) hung indefinitely at the 730-hour rolling
+    horizon; (2) a point-to-point PriceForecastRequest/PriceForecast messaging patch hit an unresolved
+    FAME action-registration bug ("No action uses input product"). This build instead patches
+    SensitivityForecaster.java directly: it loads an optional file-based cross-zone price series (here,
+    an oracle - Germany's own already-realised Phase 37 headline price, "./timeseries/de_actual_price_oracle.csv"
+    - an explicit upper-bound test, not a real-time forecast) and, where that price exceeds ROE's own
+    local supply-sensitivity curve's marginal price at a given hour, re-prices every existing
+    supply-sensitivity segment up to the higher price (maybeBoostWithCrossZonePrice in
+    SensitivityForecaster.java). Two prior variants of this patch failed silently: patching only the
+    scalar market-clearing price field did nothing (CostSensitive.assess() never reads that field, only
+    the real order books); appending one new segment beyond the curve's end did nothing either (any
+    individual client's physical capacity is far smaller than where the appended segment sat, so it was
+    never reachable). The per-segment re-pricing fix genuinely changes dispatch (confirmed directly via
+    GenericFlexibilityTrader.csv: Reservoir Hydro pinned at its physical discharge cap for hours it was
+    previously idle). Threshold and client-scope were then tuned: an always-on boost applied to BOTH ROE
+    storage agents resolved one of three originally-unresolved shortage hours (17 Dec 2027, 08:00) but
+    worsened correlation and shortage count overall; a 330 EUR/MWh genuine-scarcity threshold (Phase 47's
+    real Brainpool-never-exceeds bound) restored overall metrics but undid that resolution entirely,
+    revealing a lead-time effect (storage needs advance warning within its planning horizon, not just
+    knowledge at the exact shortage hour); a 100 EUR/MWh threshold recovered the resolution but also
+    created a brand-new shortage cluster the same evening (17:00-20:00) - a genuine zero-sum
+    reallocation of ROE storage's finite daily energy budget, not a tuning artifact. The FINAL
+    configuration used here - always-on threshold (0 EUR/MWh), boost scoped to Reservoir Hydro (agent
+    9602) only, excluding Pumped Storage (agent 9601) - was found to be the best-performing variant
+    tested: shortage hours 7->6, bias -2.90->-0.95 EUR/MWh (vs. Phase 37 headline), with no new same-day
+    cascade. Correlation (0.7168->0.6852) and MAE (16.69->17.19) remain slightly worse than headline -
+    this is NOT a clean win on every metric, and is reported honestly as such. See
+    SensitivityForecaster.java's maybeBoostWithCrossZonePrice and RESERVOIR_HYDRO_CLIENT_ID for the exact
+    patch, and compare_crosszoneprice_vs_headline.py / diagnose_reservoir_dispatch.py / list_shortage_hours.py
+    for the verification scripts.
+
+  ORIGINAL PHASE 37 DESCRIPTION (unchanged below, for full context): AMIRIS scenario for German day-ahead electricity market in 2027 - the THIRD MARKET-COUPLING BUILD (Phase 37), built on top of Germany2027_MarketCoupling_RealFlow (Phase 36). Phase 36 found real, tighter transmission limits exposed that the Rest-of-Europe (ROE) zone had no storage/flexibility of its own to help smooth Germany's scarcity hours (shortage hours jumped 1 to 26) - this build addresses that directly with two real, sourced additions. (1) STORAGE: split ROE's real Hydro_total (110,769.3 MW, 10 countries, Phase 33/35) into a genuinely dispatchable component using a real EU-wide reference (30% pumped storage, 46/153 GW, IHA 2023 'EU report details importance of hydropower and pumped storage') and Switzerland's real ENTSO-E reservoir:run-of-river ratio (90.2%:9.8%, the only real per-technology data point available for this aggregate) - yielding two new GenericFlexibilityTrader agents (ROE Pumped Storage 33,303.2 MW, ROE Reservoir Hydro 69,904.1 MW), with duration/efficiency/charge-discharge ratios reused from Germany's own real, calibrated pumped-hydro and reservoir-hydro figures as technology characteristics. Only run-of-river (7,562.1 MW) remains a flat-capacity-factor VariableRenewableOperator. (2) SUBSIDY: replaced the flat zero-FIT NoSupportTrader used in Phases 34-36 with a genuine RenewableTrader + MPVAR SupportPolicy, using Germany's own real BNetzA-auction-sourced 2026 support levels (52 EUR/MWh wind onshore, reused for offshore since no separate figure was researched; 49 EUR/MWh solar) as the best available real EU reference point - not a per-country subsidy model, a documented simplification. See compute_roe_storage_split.py for the full calculation. Every other mechanism (ROE's demand, capacity, renewable yield profiles, fuel prices, the Phase 36 real-flow transmission capacity, and every DE-zone mechanism) is unchanged. Germany2027_MarketCoupling_RealFlow (Phase 36), Germany2027_MarketCoupling (Phase 34, placeholder-based), and Germany2027_Feb29DropFix (pre-coupling baseline) are all kept fully unmodified for comparison."
+  url: "https://gitlab.com/dlr-ve/esy/amiris/examples/"
+  version: "7.0.0"
+  amirisVersion: "4.1.0"
+  output:
+    publicationDate: "2026-08-10"
+    embargoPeriod: None
+    licenses: "CC-BY 4.0"
+
+Schema: !include "schema.yaml"
+
+GeneralProperties:
+  RunId: 1
+  Simulation:
+    StartTime: 2026-12-31_23:58:00
+    StopTime: 2027-12-31_23:58:00
+    RandomSeed: 1
+
+Agents: !include ["agents/*.yaml", "Agents"]
+
+Contracts: !include ["contracts/*.yaml", "Contracts"]
+
+StringSets:
+  FuelType:
+    Values:
+      OIL:
+        MetaData:
+          Description: "Fuel type oil (combined with 'Other Fossil' for Germany2027)"
+          OEONearestConcept: OEO_00010316
+      HARD_COAL:
+        MetaData:
+          Description: "Fuel type hard coal"
+          OEONearestConcept: OEO_00000204
+      LIGNITE:
+        MetaData:
+          Description: "Fuel type lignite"
+          OEONearestConcept: OEO_00000251
+      NUCLEAR:
+        MetaData:
+          Description: "Fuel type nuclear (unused in Germany2027 - 0 GW post phase-out)"
+          OEONearestConcept: OEO_00000302
+      WASTE:
+        MetaData:
+          Description: "Fuel type waste"
+          OEONearestConcept: OEO_00000439
+      NATURAL_GAS:
+        MetaData:
+          Description: "Fuel type natural gas (CCGT+OCGT combined for Germany2027)"
+          OEONearestConcept: OEO_00000292
+      HYDROGEN:
+        MetaData:
+          Description: "Fuel type hydrogen gas"
+      BIOMASS:
+        MetaData:
+          Description: "Fuel type biogas or other bio-fuels"
+      OTHER:
+        MetaData:
+          Description: "Any other type of fuel"
+  PolicySet:
+    Values: ['SolarRooftopFit', 'RunOfRiverFit', 'SolarOpenfieldMpvar', 'WindOnMpvar', 'WindOffMpvar', 'BiomassMpvar', 'Undefined', 'ROE_WindOnMpvar', 'ROE_WindOffMpvar', 'ROE_SolarMpvar']
+  MarketZone:
+    Values: ['DE', 'ROE']

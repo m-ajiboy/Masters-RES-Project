@@ -3189,6 +3189,129 @@ pdf.body(
 )
 
 # =====================================================================
+pdf.h1("Phase 52: Patching AMIRIS's Java Source to Close the Forecaster-Blindness Gap (Investigative Only)")
+pdf.body(
+    "Phase 47 diagnosed the root cause of the 3 remaining unexplained shortage hours (17 Dec "
+    "2027, 06:00-08:00): ROE's own price forecaster is structurally blind to DE's shortage, "
+    "even within the same hour it happens, because its supply-sensitivity curve is built "
+    "entirely from ROE's own currently-awarded local generation. Per an explicit request to "
+    "the department, not adopted into the thesis's standing methodology, this phase attempted "
+    "a real Java source-code patch to close that gap and report the result as a technical "
+    "finding, regardless of whether it improved on Phase 37's headline build."
+)
+pdf.callout(
+    "Two structurally different approaches were tried and abandoned before a working patch was found.",
+    "(1) Wiring up AMIRIS's own real, DLR-documented but never-used full MarketCoupling "
+    "forecast-coupling pathway (a genuine, architecturally valid mechanism per the official "
+    "documentation) hung indefinitely at the project's 730-hour rolling forecast horizon, "
+    "refreshed hourly - likely a DemandBalancer convergence/performance limit at this scale, "
+    "not a bug in the patch. (2) A lighter point-to-point PriceForecastRequest/PriceForecast "
+    "messaging patch (the same product type real storage traders already use) hit an "
+    "unresolved FAME framework issue: the message was correctly sent and received, but no "
+    "registered action ever consumed it ('No action uses input product'), confirmed by "
+    "decompiling FAME's own compiled MessageManager class - a deeper undocumented "
+    "framework-internals problem, not solved within this investigation's scope.",
+    color=BAD,
+)
+pdf.body(
+    "A third, more surgical approach worked: patching SensitivityForecaster.java directly to "
+    "load an optional cross-zone price series (here, an oracle test - DE's own already-"
+    "realised Phase 37 price, an explicit upper-bound test, not a real-time forecast) and, "
+    "where it exceeds ROE's own local price, re-price ROE's existing supply-sensitivity curve "
+    "upward. Two earlier variants of even this patch failed completely and silently, each a "
+    "genuine finding in its own right:"
+)
+pdf.callout(
+    "Silent failure 1: patching the market-clearing price field did nothing.",
+    "The actual code path that builds ROE storage's dispatch incentive (CostSensitive.assess) "
+    "was read in full and confirmed to read ONLY the real order-book bid data, never the "
+    "scalar market-clearing price field - so the first patch attempt was structurally "
+    "invisible to any dispatch decision, despite running successfully and producing a plausible-"
+    "looking log.",
+    color=BAD,
+)
+pdf.callout(
+    "Silent failure 2: appending a new curve segment landed beyond any client's reach.",
+    "The second attempt correctly located the real code path, but appended its boosted value "
+    "as a new segment beyond the existing curve's end (at ROE's entire local supply stack, "
+    "~155,000 MW) - far past Reservoir Hydro's own physical discharge cap (~82,000 MW), so "
+    "the optimiser never tested a delta anywhere near it. Confirmed directly via diagnostic "
+    "instrumentation and raw dispatch-data comparison (GenericFlexibilityTrader.csv): the "
+    "boost fired with the correct value, but dispatch stayed byte-identical to the unpatched "
+    "baseline.",
+    color=BAD,
+)
+pdf.body(
+    "The fix: re-price every EXISTING segment of the supply-sensitivity curve up to the "
+    "higher of the local or cross-zone price, rather than appending beyond it - keeping the "
+    "boost within any client's actually-reachable power range. This genuinely changed real "
+    "dispatch (confirmed directly: Reservoir Hydro discharging at its exact physical "
+    "NetDischargingPowerInMW cap for 6 consecutive hours where it was previously idle)."
+)
+pdf.table(
+    ["Variant tested", "Shortage hrs", "Excl-shortage bias", "Excl-shortage r", "Excl-shortage MAE"],
+    [
+        ["Headline (Phase 37)", "7", "-2.90", "0.7168", "16.69"],
+        ["Always-on boost, both ROE storages", "8", "-0.42", "0.6828", "~17"],
+        ["+ 330 EUR/MWh scarcity threshold", "10", "-2.88", "0.7173", "16.73"],
+        ["+ 100 EUR/MWh scarcity threshold", "10", "-1.83", "0.6988", "17.36"],
+        ["**Reservoir Hydro only, always-on (FINAL)", "**6", "**-0.95", "**0.6852", "**17.19"],
+        ["Reservoir Hydro only + 100 EUR/MWh threshold", "10", "-2.13", "0.6974", "17.27"],
+    ],
+    [65, 25, 32, 28, 30],
+)
+pdf.callout(
+    "Every threshold and scope choice traded off against another metric - a real structural limit, not a tuning failure.",
+    "The always-on boost (applied to both ROE storage agents) resolved one of the three "
+    "targeted hours (08:00: 3,000 to 152.29 EUR/MWh) but worsened correlation and added a "
+    "shortage hour. Restricting to only genuinely extreme cross-zone prices (330 EUR/MWh, "
+    "Phase 47's own real Brainpool-never-exceeds bound) restored overall metrics but undid "
+    "that resolution entirely - traced to a lead-time effect: on 17 Dec 2027 the real "
+    "cross-zone price jumps straight from 153 to 3,000 EUR/MWh with no gradual ramp, so a "
+    "strict threshold gives storage no advance warning within its planning horizon to "
+    "pre-position, only knowledge at the exact moment the shortage is already happening. A "
+    "looser 100 EUR/MWh threshold recovered the resolution but also opened a brand-new "
+    "shortage cluster the SAME evening (17:00-20:00) - confirmed by comparing exact "
+    "shortage-hour timestamps before and after: ROE storage has a finite daily energy budget, "
+    "and pushing it to discharge harder in the morning genuinely leaves less for the evening "
+    "peak on the same day. This is a real zero-sum reallocation, not an artifact of the "
+    "threshold value chosen.",
+    color=NAVY,
+)
+pdf.callout(
+    "The best result: scope the boost to one storage agent, not both.",
+    "Comparing exact shortage-hour timestamps revealed the always-on, unscoped boost was "
+    "creating new shortage hours through Pumped Storage's newly-aggressive early draining, "
+    "separately from Reservoir Hydro's genuine improvement. Restricting the boost to "
+    "Reservoir Hydro only (excluding Pumped Storage, agent 9601) removed that side effect: "
+    "shortage hours fell from 7 to 6 (resolving 17 Dec 08:00, 16 Dec 17:00, and 9 Nov 18:00, "
+    "with only one new, apparently unrelated hour on 3 Feb and one 1-hour timing shift on 9 "
+    "Nov), and bias improved sharply from -2.90 to -0.95 EUR/MWh - the best-performing "
+    "variant of five real patch attempts. Combining this scope restriction with the 100 "
+    "EUR/MWh threshold was also tested and made things WORSE (shortage back to 10, the "
+    "same-day evening cascade reappeared) - confirming the lead-time pre-positioning effect "
+    "needs the boost to fire during the modest, non-extreme pre-event hours, not just the "
+    "spike itself.",
+    color=GOOD,
+)
+pdf.body(
+    "Correlation (0.7168 to 0.6852) and MAE (16.69 to 17.19) remain slightly worse than the "
+    "headline build even in the best variant - this is reported honestly as a real trade-off, "
+    "not a clean win on every metric. The full investigation (all patch attempts, both "
+    "abandoned architectural approaches, and every threshold/scope variant tested) is kept as "
+    "its own scenario (Germany2027_MarketCoupling_ROEFlex_CrossZonePrice, plus the abandoned "
+    "Germany2027_MarketCoupling_ROEFlex_ForecastCoupling), with the exact Java source patch "
+    "(SensitivityForecaster.java's maybeBoostWithCrossZonePrice and RESERVOIR_HYDRO_CLIENT_ID) "
+    "fully documented in the scenario's own metadata. The project's real, unmodified jar was "
+    "never touched - this patch lives only in a separately-built, separately-named "
+    "experimental jar. Per the original request, this is reported to the department as an "
+    "investigative technical finding: a small, explainable Java-source tweak CAN meaningfully "
+    "close part of the forecaster-blindness gap, but the remaining gap is bounded by ROE "
+    "storage's real physical capacity and daily energy budget, not by information alone - "
+    "not adopted into the thesis's standing Phase 37 methodology."
+)
+
+# =====================================================================
 pdf.h1("Where Things Stand Now")
 pdf.table(
     ["Build", "Final import ceiling", "Shortage hours", "Mean price", "Bias vs. Brainpool"],
@@ -3258,6 +3381,7 @@ pdf.bullet("DONE (Phase 46): sourced a real ROE growth trajectory (ENTSO-E's ERA
 pdf.bullet("DONE (Phase 47): tested ShortagePriceMethod=LastSupplyPrice, a real, source-confirmed alternative AMIRIS mechanism (not a tuned constant) for how shortage-hour prices are represented. Result: all-hours correlation jumped from 0.3003 to 0.7167 (now matching the excl-shortage number), MAE from 18.99 to 16.72, with excl-shortage metrics byte-identical to the baseline - confirming this resolves the all-hours-correlation distortion this project has caveated since Phase 25, without changing accuracy on any other hour. Independently justified (not curve-fit): Brainpool's own real forecast never exceeds 330 EUR/MWh either, so it never behaves like it hits a VoLL-level spike. Kept as its own exploratory scenario; recommended for consideration as an adopted methodology improvement, decision left open.")
 pdf.bullet("DONE (Phase 47 continuation): a direct request to search specifically for tweaks that reduce or remove the physical shortage-hour count (not just its price representation), prompted by the observation that Brainpool's own real forecast never exceeds 330 EUR/MWh. Diagnosed the real cause of each of the 7 baseline shortage hours first: 4 are genuinely transmission-ceiling-bound (import at 22,011.8 of a real 22,012 MW flow-derived ceiling); the other 3 (2027-12-17, 06:00-08:00) are not - real spare transmission capacity goes unused. Tested five further real, source-confirmed mechanisms against the second group: three fuels' markup bands widened (gas/coal/oil, each a decisive negative, excl-shortage correlation crashing to 0.27-0.35), both ROE storage agents' scheduling horizons (Reservoir shortened 168->48h and Pumped Storage widened 24->168h, both real dead ends - neither resolved the 3 targeted hours, both created more shortage hours elsewhere, correlation collapsed to 0.31-0.32), and ForecastError (a real, IEA/50Hertz-sourced 3% wind-forecast-error anchor - also a dead end, correlation fell to 0.40, explained cleanly: injecting random noise cannot improve correspondence with Brainpool's own single deterministic forecast, which contains no equivalent noise to correlate against). Found the definitive root cause at zero additional simulation cost, from the existing baseline result alone: Reservoir Hydro's own price forecast (75-93 EUR/MWh all day) is completely blind to DE's shortage, even within the same hour it happens - explaining structurally why every scheduling-horizon test failed regardless of direction. A genuine fix would need a source-level change making AMIRIS's per-zone forecaster cross-zone-shortage-aware, not a configuration parameter. Investigation closed with a complete, honest, structural explanation for all 7 shortage hours, rather than an unexplained gap.")
 pdf.bullet("DONE (Phase 48): sourced real bilateral (country-to-country) transmission data - reused ENTSO-E's already-downloaded ERAA 2024 NTC file (Phase 46), which turned out to contain the full European interconnection matrix, not just DE-centric pairs. Found and cross-validated 12 real ROE-ROE links (24 directional connections) against known real infrastructure (NL-NO matches NorNed, DK-NO matches Skagerrak, PL-SE matches SwePol). Built Germany2027_MarketCoupling_AllZones_Mesh, adding these to Phase 43's star-topology build, isolating topology as the only new variable. Result: Phase 45's diagnosis directionally confirmed - shortage hours fell 120 to 95 (-21%), mean price moved closer to Brainpool (112.32 to 105.27) - but excl-shortage correlation stayed flat (0.7311 to 0.7297) and bias moved slightly further from zero (+4.87 to +6.05). Mesh beats star, but full disaggregation (even meshed) still does not out-perform Phase 37's much simpler aggregate approach.")
+pdf.bullet("DONE (Phase 52, investigative only, not adopted into the thesis): patched AMIRIS's own Java source (SensitivityForecaster.java) to test whether closing ROE's forecaster-blindness gap (diagnosed in Phase 47) could reduce the 3 remaining unexplained shortage hours, per an explicit request to report the finding to the department regardless of outcome. Two architectural approaches (full MarketCoupling forecast-coupling; point-to-point PriceForecastRequest messaging) were abandoned (a performance hang, an unresolved FAME framework bug). A third, direct source patch worked after two silent-failure iterations were diagnosed and fixed (wrong code path; unreachable curve segment). Best result (Reservoir-Hydro-only scope, always-on): shortage hours 7 to 6, bias -2.90 to -0.95 EUR/MWh - but correlation and MAE stayed slightly worse than the headline build in every variant tested, a real, honestly-reported trade-off bounded by ROE storage's finite daily physical energy budget, not a tuning failure. Phase 37 remains the thesis's standing methodology; this patch is documented as a separate, non-adopted technical finding.")
 pdf.bullet("NEXT: decide whether to adopt Phase 47's ShortagePriceMethod change as the project's standard going forward (would simplify every future results table to a single correlation number). Phase 37/38 (frozen-ROE, 2023/2024-base) stands as this project's best, most defensible market-coupling result, now stress-tested from every real angle attempted (disaggregation, mesh vs. star topology, data-year, growth trajectory, shortage-pricing convention, seven further sensitivity mechanisms) without being displaced by any of them - a strong basis to begin finalising the write-up.")
 pdf.bullet("Fold this whole investigation into the formal build documentation (already partially updated with the V2 and original-import findings).")
 pdf.bullet("Revisit the still-open data gaps flagged earlier: the wind offshore subsidy rate (no real 2027 figure exists anywhere yet), the solar rooftop FIT's exposure to a draft 2026 EEG reform, and the heat-pump profile's constant-COP simplification.")
