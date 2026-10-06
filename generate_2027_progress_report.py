@@ -1,6 +1,6 @@
 """Generates AMIRIS_Germany2027_Progress_Report.pdf - a meeting-ready summary of every
 phase of work since Energy Brainpool's real 2027 input data (Amiris_Inputdata_EN.xlsx)
-was first supplied, through the import-ceiling calibration completed this session.
+was first supplied, through the import-ceiling calibration.
 Written directly from the actual build/comparison scripts and their real output numbers,
 not reconstructed from memory.
 """
@@ -324,7 +324,7 @@ pdf.table(
 pdf.callout(
     "The gap was not what it looked like.",
     "This huge apparent mismatch was traced almost entirely to AMIRIS's shortage-hour ceiling "
-    "pricing (a fixed 3,000 EUR/MWh 'we ran out of supply' flag, hit in 5.4-15.9% of hours). "
+    "pricing (a fixed 3,000 EUR/MWh 'supply exhausted' flag, hit in 5.4-15.9% of hours). "
     "A small number of extreme hours were dragging the whole-year average up - the same "
     "statistical effect as one very high salary skewing a company's average pay. Excluding "
     "those hours, AMIRIS's price level on ordinary hours was already close to Brainpool's - "
@@ -716,7 +716,7 @@ pdf.table(
 pdf.callout(
     "A real improvement, but a more modest one than the all-hours numbers suggest.",
     "The all-hours correlation jump (0.299 to 0.439) is the single biggest jump of any "
-    "experiment this session - but it is mostly an artefact of having fewer extreme "
+    "experiment in this project so far - but it is mostly an artefact of having fewer extreme "
     "shortage-hour outliers to distort the pooled statistic (13 down to 4), the same "
     "outlier-leverage effect flagged repeatedly throughout this project as a reason to trust "
     "the excl-shortage numbers more. On excl-shortage hours - the established, trustworthy "
@@ -1331,8 +1331,8 @@ pdf.callout(
     "Found two constants in Constants.java: MINIMAL_PRICE_IN_EUR_PER_MWH = -500.0 and "
     "SCARCITY_PRICE_IN_EUR_PER_MWH = 4000.0. Scanning every class file in the jar for these "
     "literal values found -500 compiled directly into ConventionalTrader, SystemOperatorTrader "
-    "(our renewables), and Strategist/EnsureDispatch (the bidding logic behind every one of "
-    "our GenericFlexibilityTrader agents - storage, electrolysis, e-mobility). Neither "
+    "(the renewables), and Strategist/EnsureDispatch (the bidding logic behind every "
+    "GenericFlexibilityTrader agent in this build - storage, electrolysis, e-mobility). Neither "
     "constant is exposed anywhere in schema.yaml as a configurable scenario attribute. Worth "
     "noting: these aren't arbitrary values either - they match the real, EU-wide harmonised "
     "day-ahead price limits (-500 / +4,000 EUR/MWh) used by the actual EPEX/SDAC market, the "
@@ -1578,7 +1578,7 @@ pdf.callout(
     "'503 Service Unavailable'. Checked the Transparency Platform's own website directly - it "
     "was also failing to load correctly. Retried with a newly-generated API token later in the "
     "same investigation: still 503. A 503 is a server-side error; a bad or expired token "
-    "would return 401/403 instead, so this rules out a token or code issue on our side - a "
+    "would return 401/403 instead, so this rules out a local token or code issue - a "
     "genuine, extended outage on ENTSO-E's own infrastructure.",
     color=BAD,
 )
@@ -1617,7 +1617,7 @@ pdf.callout(
     "checking the raw API response's available-countries list directly). Flagged for backfill "
     "via ENTSO-E once that API recovers - Switzerland's data IS available there (already "
     "confirmed via the real 2023 Swiss price data fetched for Phase 15). Re-tested ENTSO-E "
-    "again after the user generated a fresh API token: still 503 - confirms the outage is "
+    "again after generating a fresh API token: still 503 - confirms the outage is "
     "still ongoing, unrelated to token validity.",
     color=AMBER,
 )
@@ -1660,8 +1660,8 @@ pdf.callout(
 pdf.body(
     "Meanwhile, the recurring ENTSO-E retry set up at the end of Phase 33 (every 3 hours, "
     "checking both the API and the Transparency Platform website directly) continues in the "
-    "background - the platform's own website confirmed a maintenance notice during this "
-    "session, consistent with the persistent 503 errors already seen."
+    "background - the platform's own website confirmed a maintenance notice at the time, "
+    "consistent with the persistent 503 errors already seen."
 )
 pdf.callout(
     "Closed the second gap too: real, capacity-weighted renewable yield profiles for wind and solar, using the same 2009 real weather-year already established for this whole project.",
@@ -2920,11 +2920,11 @@ pdf.callout(
     "forecast horizon, simply runs out before DE's shortfall is fully covered. A genuine "
     "fix would mean making AMIRIS's per-zone SensitivityForecaster cross-zone-shortage-aware "
     "- a real source-level change to the forecaster itself, not a configuration parameter, "
-    "and a materially larger undertaking than anything tested this session.",
+    "and a materially larger undertaking than anything tested so far.",
     color=NAVY,
 )
 pdf.body(
-    "Consistent with the project's overall finding this session: of every real, defensible "
+    "Consistent with the project's overall finding: of every real, defensible "
     "AMIRIS mechanism tested (ShortagePriceMethod, DecayInterval, three fuels' markup bands, "
     "both storage agents' scheduling horizons, ForecastError), only ShortagePriceMethod "
     "produced a genuine improvement - and even that changes price representation only, not "
@@ -3049,7 +3049,7 @@ pdf.callout(
     "substituting the real 2025 date of each SAME-NAMED holiday for the mechanically-shifted "
     "(wrong) source day, leaving every other day on the standard shift - confirmed to resolve "
     "the crash (AMIRIS ran to completion afterward). 2029's 3-day shift was not re-checked "
-    "this session and may carry the same latent risk.",
+    "and may carry the same latent risk.",
     color=BAD,
 )
 pdf.table(
@@ -3120,7 +3120,7 @@ pdf.callout(
     "Mean price actually improves marginally (67.74 vs 67.45, both near Brainpool's real "
     "68.04) - the only metric favouring the challenger. Shortage hours, excl-shortage "
     "correlation, bias, and MAE all move the wrong way. This is now the SECOND independent "
-    "test this session (after Phase 49's demand result) reaching the identical structural "
+    "test (after Phase 49's demand result) reaching the identical structural "
     "conclusion: closer real alignment with Brainpool's stated weather basis does not "
     "reliably improve the actual AMIRIS-vs-Brainpool comparison. AMIRIS's own 2019-default "
     "wind-offshore profile remains the better choice.",
@@ -3174,10 +3174,10 @@ pdf.callout(
     "Every trusted metric moves the wrong way again, but only marginally this time (shortage "
     "hours +1, correlation -0.0019, bias -0.12, MAE +0.08) - materially smaller than the "
     "demand or wind-offshore regressions. Completes a full, honest three-for-three real "
-    "test of this session's central question: across demand shape, wind-offshore, and "
+    "test of this investigation's central question: across demand shape, wind-offshore, and "
     "run-of-river, no real alternative year tested improved on the Phase 37 headline build's "
     "existing choices. The headline build is now stress-tested against every real weather/"
-    "demand-year alternative this session could source data for, and none displaced it.",
+    "demand-year alternative that could be sourced, and none displaced it.",
     color=GOOD,
 )
 pdf.body(
@@ -3185,7 +3185,7 @@ pdf.body(
     "See fetch_ror_candidate_years.py and build_ror_2025_test.py for the full method. "
     "Germany2027_MarketCoupling_ROEFlex (Phase 37) remains this project's standing best "
     "result and reference build, now validated against real challengers on every major "
-    "weather- and demand-year input this session identified as testable."
+    "weather- and demand-year input identified as testable."
 )
 
 # =====================================================================
